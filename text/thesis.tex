@@ -1,0 +1,304 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% I, the copyright holder of this work, release this of into the
+%% public domain. This applies worldwide. In some countries this may
+%% not be legally possible; if so: I grant anyone the right to use
+%% this work for any purpose, without any conditions, unless such
+%% conditions are required by law.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+  print, %% This option enables the default options for the
+           %% digital version of a document. Replace with `printed`
+           %% to enable the default options for the printed version
+           %% of a document.
+  Table,   %% Causes the coloring of tables. Replace with `notable`
+           %% to restore plain tables.
+  nolof,     %% `lof` Prints the List of Figures. Replace with `nolof` to
+           %% hide the List of Figures.
+  nolot,     %% `lot` Prints the List of Tables. Replace with `nolot` to
+           %% hide the List of Tables.
+           %draft, %TODO remove, place final instead
+  oneside  %% twoside for print
+  %% More options are listed in the user guide at
+  %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
+]{fithesis3}
+%% The following section sets up the locales used in the thesis.
+\usepackage[resetfonts]{cmap} %% We need to load the a T2A font encoding
+\usepackage[T1]{fontenc}  %% to use the Cyrillic fonts with Russian texts.
+\usepackage[
+  main=english, %% By using `czech` or `slovak` as the main locale
+                %% instead of `english`, you can typeset the thesis
+                %% in either Czech or Slovak, respectively.
+  %german, russian, czech, slovak %% The additional keys allow
+]{babel}        %% foreign texts to be typeset as follows:
+%%
+%%   \begin{otherlanguage}{german}  ... \end{otherlanguage}
+%%   \begin{otherlanguage}{russian} ... \end{otherlanguage}
+%%   \begin{otherlanguage}{czech}   ... \end{otherlanguage}
+%%   \begin{otherlanguage}{slovak}  ... \end{otherlanguage}
+%%
+%% For non-Latin scripts, it may be necessary to load additional
+%% fonts:
+%\usepackage{paratype}
+%\def\textrussian#1{{\usefont{T2A}{PTSerif-TLF}{m}{rm}#1}}
+%%
+%% The following section sets up the metadata of the thesis.
+\thesissetup{
+    date          = \the\year/\the\month/\the\day,
+    university    = mu,
+    faculty       = fi,
+    type          = mgr,
+    author        = Karel Kubíček,
+    gender        = m,
+    advisor       = {RNDr. Petr Švenda, Ph.D.},
+    title         = {Advancing EACirc, an automation tool for cryptanalysis of stream, block and hash functions},
+    TeXtitle      = {Advancing EACirc, an automation tool for cryptanalysis of stream, block and hash functions},
+    keywords      = {randomness testing, cryptoanalysis, block functions, stream functions, hash functions, problem optimization, metaheuristics},
+    TeXkeywords   = {randomness testing, cryptoanalysis, block functions, stream functions, hash functions, problem optimization, metaheuristics},
+}
+\thesislong{abstract}{
+    TODO
+}
+\thesislong{thanks}{
+    TODO (collegues, friends, Marta, Petr, family)
+}
+%% The following section sets up the bibliography.
+\usepackage{csquotes}
+\usepackage[              %% When typesetting the bibliography, the
+  backend=biber,          %% `numeric` style will be used for the
+  style=numeric,          %% entries and the `numeric-comp` style
+  citestyle=numeric-comp, %% for the references to the entries. The
+  sorting=none,           %% entries will be sorted in cite order.
+  sortlocale=auto         %% For more unformation about the available
+]{biblatex}               %% `style`s and `citestyles`, see:
+%% <http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf>.
+\addbibresource{thesis.bib} %% The bibliograpic database within
+                          %% the file `example.bib` will be used.
+\usepackage{makeidx}      %% The `makeidx` package contains
+\makeindex                %% helper commands for index typesetting.
+%% These additional packages are used within the document:
+\usepackage{paralist}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{url}
+\usepackage{menukeys}
+
+
+\usepackage{wrapfig}
+\usepackage{subcaption}
+\usepackage{tabularx}
+
+\begin{document}
+
+
+%% We will define several mathematical sectioning commands.
+%\newtheorem{theorem}{Theorem}[section] %% The numbering of theorems
+                               %% will be reset after each section.
+%\newtheorem{lemma}[theorem]{Lemma}     %% The numbering of lemmas
+%\newtheorem{corr}[theorem]{Corrolary}  %% and corrolaries will
+                                %% share the counter with theorems.
+%\theoremstyle{definition}
+%\newtheorem{definition}{Definition}
+%\theoremstyle{remark}
+%\newtheorem*{remark}{Remark}
+
+\chapter{Introduction}
+
+Cryptography is a field of computer science, used daily by all Internet users. Users connecting to HTTPS websites are using asymmetric cryptography to generate a symmetric key for encryption of the following communication. For such use-case, as well as various others, are used cryptographic primitives as public-key encryption functions, hash functions, block functions and stream functions. Current research of cryptoprimitives has a nontrivial goal. Design and develop algorithms, such that can hold against unknown threats as long as possible. Therefore cryptographers follow the standardised approach in cryptoprimitives development to ensure quality by a lengthy process of preparation, comparison and testing.
+
+\section{Cryptoprimitives selection process}
+
+A standardisation committee reacts on inquiry for new or updated cryptoprimitive by issuing a competition for it. For example competitions during last 20 years were AES, which called for a symmetric block cipher, eSTREAM, for new stream ciphers, SHA-3 for hash function and CAESAR for authenticated ciphers. Those competitions last usually around five years. The first phase is collecting proposals, which are filtered in the second phase to the gradual selection of the winner candidate in the third. The winning solution became standard, and the developers will use it usually for at least ten years. For example, Data Encryption Standard was standardised in 1976, and Triple-DES modification surpassed it as a standard in 1999. Final successor Advanced Encryption Standard came in 2002, and it remains functional until today (2017).
+
+\section{Cryptoanalysis}
+
+During the second phase, proposals are analysed by cryptoanalysts. While proposing own design is possible for both skilled teams and almost cryptography beginners, the analysis is demanding process that needs both skill and time.
+
+Cryptanalysis is expensive work, as the required cryptoanalyst skills are demanding. It consumes a significant amount of time to reject even proposals vulnerable to known threats. Therefore, a software tool capable of rejecting vulnerable proposals can save cryptoanalyst's time. Moreover, the cryptanalyst can use the tool for quicker dive into the candidates' specifications. Such tool can, for example, identify optional parts and show weak or even threat parts of the proposed function.
+
+\subsection[Cryptorimitives properties]{Overview of expected properties of cryptorimitives}
+
+Field of the analysis, which is this thesis aiming for, are hash functions, block ciphers and stream ciphers (further referred as functions). There are several properties, formulated as a minimal set of conditions for these functions which has to be satisfied. If the function does not meet some property, it is considered weak, while satisfaction of all of the properties does not imply nonvulnerable function. Some of the properties are following.
+
+Irreversibility without the encryption key: from given ciphertext, the attacker is not able to reconstruct any bit of plaintext with a probability higher than 50\,\%. If the probability were over 50\,\%, the ciphertext would reveal some information about the plaintext.
+
+Strict avalanche criterion: every bit flip of plaintext changes around 50\,\% of output bits. Not satisfying this would allow an attacker to start with plaintext of zeroes and continuously modify single bits to get closer to given ciphertext.
+
+Oracle, semantic security: even thou plaintext usually does not look like a random data, the ciphertext have to look so. If the output were distinguishable from random data, it would reveal information about the plaintext. This property is tested in our tool EACirc. However, the previous properties are tested as well, yet not directly.
+
+\section{Cryptoanalysis automatization}
+
+
+
+\subsection[Optimization problem for a cryptoprimitive]{Building an optimization problem from property of cryptoprimitives}
+
+
+\section{Statistical testing}
+
+Testing of randomness is a common area of statistics research. Thus statisticians have developed a rigorous theory of probability, and they also produced practical tools, that can test randomness. These tools are used even in cryptography to analyse function for properties from the previous section.
+
+\subsection{Statistical batteries}
+
+The statistical battery is a set of simple tests, which are analysing simple properties of the binary stream. For example, a monobit test counts an amount of zeros and ones in the input data, which should be similar in the case of the uniform stream. The tests can analyse the stream for patterns, which should not be present in random data.
+
+The design of the tests accords to some statistical property. As the theory behind the statistical test is complex, the development of the test is difficult. The test set is fixed, so they cannot adapt to the input. The main advantage of EACirc is an ability to adapt to tested data. The tool itself learns on given data, and after this learning process, the output is randomness test for this specific type of data.
+
+Best known statistical batteries are (chronologically by time of development) NIST STS, Diehard and Dieharder and TestU01. While NIST STS is already completely surpassed by its successors, statisticians still consider it as a golden standard of statistical testing. The EACirc performs better than NIST STS, is comparable with Dieharder and currently perform worse than TestU01. The ultimate goal of implementation of metaheuristics would be surpassing Dieharder and compete with TestU01.
+
+\subsection{EACirc}
+
+\section{EACirc computation loop}
+
+\section{EACirc's potential}
+
+\subsection{Individual representation}
+
+\subsubsection{Circuit}
+
+\subsubsection{Polynomials}
+
+\subsection{Speed-up of computation}
+
+\subsection{Evaluation}
+
+\subsection{Learning process}
+
+\section{Problem optimization}
+
+\subsection{Metaheuristics}
+
+A computational problem is a task to find a feasible solution for given question. An optimisation problem is a task to find the feasible solution, which satisfies the criteria best. Usually, we formulate fitness function to compare how well are the criteria met. A heuristic is a problem specific technique for finding some an approximative solution, where exact techniques fail. Finally, the metaheuristic is technique abstracted from the problem so that it can be used for various optimisation problems.
+
+Metaheuristics are applicable for optimisation problems if a programmer can provide three crucial parts. First is an instance of solution for the problem (despite the quality). Second is a function to vary the solution, called neighbourhood function. Third and usually the most important is the fitness function, which measures the quality of the solution. Metaheuristic uses these parts to follow the landscape of the problem, and they try to find better solutions during the time.
+
+The main advantage of metaheuristics is that they are well known, compared together in many studies (see 849 references in Metaheuristics book [1]) that also provided tips for the implementation.
+
+\subsection{ANN}
+
+\subsection{...}
+
+\chapter{Current approaches in problem optimization}
+
+The main categorization of metaheuristics is by a number of solutions inspected in one moment: single-solution based metaheuristics and population-based metaheuristics. The original idea of EACirc used genetic programming -- a population-based metaheuristic for optimisation. One of the weaknesses of this approach was a rather difficult interpretation of the results [cite Martin's thesis - understanding "random" number 0.52].
+
+The main advantage of having multiple concurrent solutions is handling population diversity. Diversity can help avoid local optimums and together with sexual crossover can also produce better individuals faster. However, maintaining the diversity of the population is difficult, if the fitness does not increase continuously [cite something - probably Martin's thesis]. An individual having a unique feature, which increases its fitness, is going to be spread trough mutations in next generations, rather than another feature would emerge randomly within a different individual. Besides, the implementation of sexual crossover was never widely used and tested [cite Martin's thesis].
+
+The next solution proposed in [paper Syso] simplified the interpretation by using the population of only one individual. This solution allowed statistical postprocessing of fitness values and together with categories evaluator surpassed the previous approach in all tests [again Syso's paper?]. The population with a single individual changed the used method to local search. Because the test vectors were changed every 100 iterations, the metaheuristic can be described as iterated local search [cite], or sometimes called global search?.
+
+EACirc 4.0 simplified and optimised the computations by substituting GALib -- a genetic algorithm library by a custom implementation of the iterated local search.  To question if iterated local search is the best approach, I analysed the problem and tried other metaheuristics.
+
+\section{Single-solution metaheuristics}
+
+Figure ... shows the classification of the improved variants of local search metaheuristics by authors of ParadisEO library.
+
+\subsection{Local search}
+\subsection{Iterative local search}
+\subsection{GRASP}
+
+The greedy randomised adaptive search procedure is splitting each iteration into two steps: a feasible solution construction by greedy algorithm and performing the local search using the generated solution. As we did not found any greedy algorithm for circuit construction that would reflect tested data, this approach was abandoned.
+
+\subsection{Multi-start local search}
+
+Is another approach how to surpass local optimum to find the global optimum. The metaheuristic starts the computation with k randomly generated individuals that are concurrently optimised by local search. However, this method is already used in EACirc, neither on the level of single computation, but in the iteration of experiment over 1000 runs per unique settings to obtain statistically significant results. Implementation of multi-start local search on the level of single computation would make the results interpretation more difficult, same as in the case of EA with a population in [Martin's thesis].
+
+\subsection{Guided local search}
+
+Guided local search is metaheuristic based on dynamic changing of the fitness function. If the metaheuristic got stuck in local optima, guided local search would change the fitness function so the individual can follow climbing.
+
+The EACirc computation can get trapped in local optima mainly in two cases:
+
+\begin{enumerate}
+    \item the individual got lucky to guess current test set, but it will not be successful in next epoch, or
+    \item the individual is already successful due to finding feature of the tested data, but it could not get better.
+\end{enumerate}
+
+We do not need to fix the first case, as such individual would be replaced in next epoch. However, we can use Guided local search to improve individual from the second case. Our alternative fitness function can be designed as the sum of our current fitness and e.g. the number of connectors. Such change would simplify the solution, which would help us with the interpretation of the last individual. Alternatively, we can use completely different fitness function.
+
+\subsection{Noisy method}
+
+The noisy method is a metaheuristic, which allows escaping local optima by noised fitness function. At the beginning of the computation, the noise is the strongest, and it disappears during the computation. The suggested approach for implementing the noise by [metaheuristics book, pp 160] is randomization of tested input. As EACirc works with discrete randomly-looking data, such approach could flip important bit which would make progress impossible. Therefore this method was abandoned.
+
+\subsection{Smoothing method}
+
+Smoothing method is the last inspected metaheuristics, which uses changes in fitness function to escape local optima. The method is based on smoothing the landscape of fitness function by computing the local average. It can work well for example figure [fitness function graph], however as the neighbourhood of an individual is enormous, and it is not continuous, this method would not be possible due to computation requirements.
+
+\subsection{Variable neighbourhood search}
+
+Compared to metaheuristics that change fitness function, variable neighbourhood search is not able to escape local optima in all the cases. However, it still can increase the escaping probability, as the searched neighbourhood space would contain more desired solutions. If we already have a successful solution, we can inspect only solutions with fewer connectors, or in contrast, we can press more to connect the individual in case that the input and output are not connected and fitness is equal to 0.
+
+\subsection{Simulated annealing}
+
+Remaining two single-solution metaheuristics are based on acceptance of non-improving neighbours. Short term acceptance of worse solution can lead to escape from local optima and finding global optima in whole computation.
+
+Simulated annealing metaheuristic is inspired by the physical process of annealing in metallurgy. Annealing is an iterative process of heating the metal to increase the size of the crystals, which reduces the probability of a defect. During the process, the metal is heated to lower and lower temperatures.
+
+Simulated annealing uses variable temperature, which describes probability for acceptance of worse neighbour. This probability is decreasing during the computations, such that in the beginning, the likelihood of acceptance worse solution is high, but at the end of the computation, only better solutions are accepted.
+
+This metaheuristic is widely used, which was the reason for implementing it as a testing scenario for metaheuristics. On the other hand, accepting non-improving solution is has a very limited positive effect on computation of EACirc, as a bad neighbour can substitute a good solution.
+
+\subsection{Tabu search}
+
+Like Simulated annealing, Tabu search can also accept non-improving solutions to escape from local optima. However, the decision whether to accept a non-improving solution is not based on probability, but on knowledge, if considered solution was visited. Therefore, Tabu search holds a memory of visited solutions, called *tabu list*, and it would not use twice the same solution. This way, Tabu search avoids cycles during the optimisation process.
+
+Application of Tabu search in EACirc has several issues. Firstly, how to store used individuals (memory usage may be a problem), which can be solved by storing only a hash of the solution. Secondly, the neighbourhood space of an individual is huge [note calculation] -- higher than the number of individuals tested during whole computation. Choosing twice the same solution is unlikely. Therefore I chose to try only Simulated annealing and leave the decision of Tabu search implementation on the result of Simulated annealing.
+
+\section{Multi-solutions metaheuristics}
+\subsection{Evolutionary algorithms}
+\subsection{Ant colony optimization}
+\subsection{Scatter search}
+\subsection{Swarm intelligence}
+\section{Other methods}
+\subsection{ANN}
+\subsection{...}
+
+\chapter{Experiment methodology}
+
+\section{Used data}
+\subsection{eSTREAM candidates}
+\subsection{SHA-3 candidates}
+\subsection{Well-known functions}
+\subsubsection{Reimplementation of stream handling in EACirc}
+\subsubsection{Implementation of functions}
+\subsubsection{?Testing correctness of the solution?}
+\subsubsection{?Publication of the generator tool?}
+\section{Automatization}
+\subsection{Determination of testbed}
+\section{Approach specific methodology}
+\subsection{Single-solution methodology}
+\subsubsection{Goal specification}
+\subsection{Multi-solutions methodology}
+\subsection{ANN methodology}
+
+\chapter{Experiment results}
+
+\section{Single-solution}
+\subsection{Iterated local search baseline}
+\subsubsection{Overlearning analysis}
+\subsection{Simulated annealing}
+\subsubsection{Overlearning analysis}
+\subsection{Guided local search}
+\subsubsection{Overlearning analysis}
+\subsection{Variable neighbourhood search}
+\subsubsection{Overlearning analysis}
+\section{Multi-solutions}
+\subsection{Bruteforce baseline}
+\subsection{Ant colony optimization}
+\section{ANN}
+\section{Inter-approach comparison}
+
+\chapter{Related work}
+
+\section{Statistical batteries}
+\subsection{Results}
+\section{?Search for papers on same topic?}
+\section{EACirc previous work}
+
+\chapter{Conclusion}
+
+\section{Methodology}
+\section{Results}
+\section{Future work}
+
+
+\end{document}
