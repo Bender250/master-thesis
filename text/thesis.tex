@@ -17,7 +17,8 @@
            %% hide the List of Figures.
   nolot,     %% `lot` Prints the List of Tables. Replace with `nolot` to
            %% hide the List of Tables.
-           %draft, %TODO remove, place final instead
+  draft, %TODO remove, place final instead
+  11pt, % TODO disscus this
   oneside  %% twoside for print
   %% More options are listed in the user guide at
   %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
@@ -88,6 +89,29 @@
 \usepackage{wrapfig}
 \usepackage{subcaption}
 \usepackage{tabularx}
+
+%% My own inputs:
+% enabling new fonts support (nicer)
+\usepackage{lmodern}
+% code
+\usepackage{minted}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning}
+
+% package to make bullet list nicer
+\usepackage{enumitem}
+\setitemize{noitemsep,topsep=3pt,parsep=3pt,partopsep=3pt}
+
+% intendation
+\usepackage{parskip}
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+
+\newcommand{\todo}[1]{TODO: \textit{#1}}
+\newcommand{\rewrite}[1]{rewrite: \textit{#1}}
+\newcommand{\reread}[1]{reread: \textbf{#1}}
+
 
 \begin{document}
 
@@ -239,7 +263,7 @@ This metaheuristic is widely used, which was the reason for implementing it as a
 
 \subsection{Tabu search}
 
-Like Simulated annealing, Tabu search can also accept non-improving solutions to escape from local optima. However, the decision whether to accept a non-improving solution is not based on probability, but on knowledge, if considered solution was visited. Therefore, Tabu search holds a memory of visited solutions, called *tabu list*, and it would not use twice the same solution. This way, Tabu search avoids cycles during the optimisation process.
+Like Simulated annealing, Tabu search can also accept non-improving solutions to escape from local optima. However, the decision whether to accept a non-improving solution is not based on probability, but on knowledge, if considered solution was visited. Therefore, Tabu search holds a memory of visited solutions, called \textit{tabu list}, and it would not use twice the same solution. This way, Tabu search avoids cycles during the optimisation process.
 
 Application of Tabu search in EACirc has several issues. Firstly, how to store used individuals (memory usage may be a problem), which can be solved by storing only a hash of the solution. Secondly, the neighbourhood space of an individual is huge [note calculation] -- higher than the number of individuals tested during whole computation. Choosing twice the same solution is unlikely. Therefore I chose to try only Simulated annealing and leave the decision of Tabu search implementation on the result of Simulated annealing.
 
@@ -254,15 +278,106 @@ Application of Tabu search in EACirc has several issues. Firstly, how to store u
 
 \chapter{Experiment methodology}
 
+The main testing goal of EACirc is to asses randomness of ciphertext of cryptographic functions. As most of the functions are semantic secure, EACirc is able to identify non-randomness only to reduced functions. The functions can be reduced either in number of rounds, by processing selected plaintexts, and by selecting only specific bits of the output. As this is the main goal of EACirc project, it will also be the testing scenario for comparison of analysed metaheuristics.
+
+The approach for evaluation is [briefly?] described in [chapter EACirc]. The tested data were produced from 16 different cryptographic functions and pseudo random data generator PCG [cite] as exemplary data. These functions are reduced to the edge of distinguishing capability of EACirc, such that the EACirc is capable to distinguish function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds. Usually, some extra surrounding is tested as well for broader usage of the results.
+
 \section{Used data}
-\subsection{eSTREAM candidates}
-\subsection{SHA-3 candidates}
-\subsection{Well-known functions}
-\subsubsection{Reimplementation of stream handling in EACirc}
-\subsubsection{Implementation of functions}
+
+Previous works on EACirc analysed candidates of cryptoprimitives competitions [cite eSTREAM, SHA-3 and CAESAR works]. This way was EACirc extended by many functions sharing the same interface. This approach was effective for broad analysis of the competition candidates, but it does not test well known cryptographic functions like AES, DES and others.
+
+Therefore, for the comparison with other randomness testing tools and other research papers on semantics security, we decided select new test set. We chose the finalist of competitions SHA-3 (BLAKE, Grostl, JH, Keccak and Skein) and eSTREAM (HC-128, Rabbit, Salsa20, SOSEMANUK and Grain), and above that, we implemented other block (AES, DES, 3-DES and TEA) and stream (RC4) functions.
+
+\subsection{Reimplementation of stream handling in EACirc}
+
+The implementation of SHA-3 and eStream candidates in EACirc was called projects. The projects were handling everything related to data generation: generation of IV, keys and plaintext, that can be produced by various sources. Every project has its own implementation of counter plaintext generator, strict avalanche criterion generators and others.
+
+For implementation of new project for block ciphers, we decided to reimplement data generation in more variable and modifiable way. For this, we decided for data manipulation via streams, whose can be pipelined into each other. Each stream implements simple interface with constructor and function \texttt{next}, which returns next test vector. The stream is specified only by the size of the test vector.
+
+Firstly, all the data sources are streams, from true and false bits generators, over counter and strict avalanche criterion test vector generators, to PRNG test vector generators. Secondly, the projects eSTREAM, SHA-3 and my block ciphers take these simple streams as the origin of inputs for computation. These projects are streams as well, as they produces ciphertext test vectors. And finally, the ciphertext can be postprocessed by streams for selection of only some bits of the output.
+
+All this described data manipulation was implemented as a part of this thesis.
+
+\subsection{Implementation of functions}
+
+For the source of AES, DES and 3-DES implementations, was used educational repository~\cite{cryptoFunc}. This repository compares the encryption to the test vectors to ensure correctly working implementation.  The only change in the code is limitation of the functions in the number of rounds.
+
+TEA implementation is based on Wikipedia code~\cite{teaWiki}, and it was already implemented in EACirc before. The implementation was simplified and reduced due to changes in the interface. It is also reduced to selected amount of rounds.
+
+RC4 is also based on the educational repository~\cite{cryptoFunc}, but as RC4 has no round structure, therefore, the code is unchanged.
+
+All these functions together with the new interface of new block project and test vectors processing algorithm were released as a part of minor version EACirc 4.1.
+
+\subsection{Determining the limits of EACirc}
+
+
+
 \subsubsection{?Testing correctness of the solution?}
 \subsubsection{?Publication of the generator tool?}
+
+
 \section{Automatization}
+
+TODO: read this, copy-pasted from PA018 report.
+
+The created scripts are necessary to support computations on MetaCentrum grid infrastructure. The scripts consist of a preprocessor, which creates necessary configuration files for the experiment, scripts for distribution among the computation infrastructure and following results collection, and postprocessing script, that will aggregate the results in easy to interpret way.
+
+The solution called Oneclick and created by Lubomír Obrátil for his bachelor thesis~\cite{obratilBcThesis} was in use previously. The Oneclick was a single tool for both preprocessing and postprocessing phase, and the run was parametrized. However, this approach is outdated for MetaCentrum infrastructure, because it does much work on the client side and compilation of C++ for the Debian servers make it user unfriendly. The advantages of new scripts are: 
+
+\begin{itemize}
+    \item they are one purpose, so it is easier to modify one without affecting other,
+    \item they are written in bash (running scripts for MetaCentrum scheduler) and Python (processing), so they do not need to be compiled, and more researchers understand, how to modify them
+    \item they are written for EACirc 4 mainly (but they support EACirc 3 as well), so they more fit the computation process of new version, so they save a vast part of processing
+    \item they are faster (up to 3\,600 times in case of postprocessor).
+\end{itemize}
+
+These scripts are expected to be modified by individual researchers for the needs of their experiments, so the scripts are stored in GitHub repository~\cite{eaUtils}, and users are supposed to fork them. The repository also contains \texttt{readme.md} file, with specifies the first steps with computations on MetaCentrum with these scripts. Every script then contains documentation in the code (concerning expected modifications for individual purposes), and when it is run without arguments, it prints out a help message.
+
+\begin{figure}[H]
+    \centering
+    \tikzstyle{block} = [draw, rectangle, minimum height=3em, minimum width=3em]
+    \tikzstyle{el} = [draw, ellipse, minimum height=3em, minimum width=3em]
+    \tikzstyle{cl} = [cloud, cloud puffs=10,cloud puff arc=120, minimum height=3em, minimum width=3em]
+    \begin{tikzpicture}[>=stealth, auto, node distance=3cm, every text node part/.style={align=center}]
+        \node [el] (e) [] {\bf{experiment idea}};
+        \node [block] (pre) [below of = e,yshift=0.5cm] {\bf{preprocessor}};
+        \node [block,text width=3cm] (run) [below of = pre,yshift=-0.5cm] {\vspace{0.1cm}{\bf runner scripts} \texttt{run\_experiment.sh} runs for every config file script \texttt{single\_job.sh}};
+        \node [block] (eac) [below of = run] {EACirc};
+        \node [block] (pos) [below of = eac,yshift=0.6cm] {postprocessor};
+        \node [el] (res) [below of = pos,yshift=0.6cm] {readable results};
+
+        \draw [->] (e) -- node [right] {researcher modifies\\general setting} (pre);
+        \draw [->] (pre) -- node [right] {produces config for\\all combinations\\of function and round} (run);
+        \draw [->] (run) -- node [right] {distributes computations\\on MetaCentrum grid} (eac);
+        \draw [->] (eac) -- node [right] {results are returned\\to the frontend server} (pos);
+        \draw [->] (pos) -- node [right] {aggregates the results\\and computes the statistics} (res);
+    \end{tikzpicture}
+    \caption{Execution of EACirc on MetaCentrum grid -- order and purpose of the scripts.}
+    \label{fig:scripts}
+\end{figure}
+
+\subsection{Preprocessor}
+
+EACirc computation is based on a config file, and that specify what are the sources of data for comparison and various other settings. As the test suite contains tens variations of parameters, it is necessary to automatize config file creation, so the user would not make a mistake during this process.
+
+I created Python scripts for both old EACirc, which used XML config files and the new version of EACirc with JSON configs\footnote{Oneclick was generating XML configs based on its own XML config, complete rewrite to JSON would be harder, than was the creation of new scripts}. There are also different test sets that have dedicated version of the preprocessor.
+
+The preprocessor scripts are already tuned to expected behaviour of EACirc. EAcirc is capable of finding nonrandomness in functions limited to reduced count of rounds. These counts were chosen by running experiments and finding EACirc capabilities, and the preprocessor creates only the necessary config files.
+
+\subsection{Running scripts}
+
+The scripts for distribution of computations among the MetaCentrum network are mainly work of Martin Ukrop for the purpose of his thesis~\cite{ukropMgrThesis}. However, as part of this project, I have updated them accordingly to the new EACirc version, and as different researchers used various modifications of the scripts, I also polished the scripts and chose the basic set of features.
+
+As our experiments need to be run multiple times for statistical evaluation, the scripts repeat the computation in a loop with different seeds usually for 1\,000 times. All runs are then collected by running scripts.
+
+The current version of these scripts is also published on the GitHub, and the forked repository is ready to run experiments in the usual way.
+
+\subsection{Postprocessor}
+
+As the computations are repeated for statistical significance, the postprocessor script has to aggregate results from many produced files. It searches through output files and collects the results. Afterwards, it calculates a statistics of the experiment -- both statistics used since EACirc 2 and my alternative statistics, which was an additional work to the scope of this project. Having both statistics together may help with the comparison of these approaches, and it can help new approach substitute the old in future.
+
+The postprocessor has multiple ways for execution. One is optimised for least access to files on MetaCentrum, as accessing files is slow on network file system used there. For evaluation of local experiments can be used another parameter, that scans file tree and searches for results files.
+
 \subsection{Determination of testbed}
 \section{Approach specific methodology}
 \subsection{Single-solution methodology}

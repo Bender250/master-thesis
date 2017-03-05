@@ -3,11 +3,11 @@ filename=thesis
 all: pdf
 
 pdf:
-	pdflatex -output-directory=build ${filename}.tex
+	pdflatex -shell-escape -output-directory=build ${filename}.tex
 	cp thesis.bib build
 	cd build && biber ${filename}.bcf
-	pdflatex -output-directory=build ${filename}.tex
-	pdflatex -output-directory=build ${filename}.tex
+	pdflatex -shell-escape -output-directory=build ${filename}.tex
+	pdflatex -shell-escape -output-directory=build ${filename}.tex
 	cp build/${filename}.pdf .
 
 clean:
