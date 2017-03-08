@@ -17,7 +17,7 @@
            %% hide the List of Figures.
   nolot,     %% `lot` Prints the List of Tables. Replace with `nolot` to
            %% hide the List of Tables.
-  draft, %TODO remove, place final instead
+  %draft, %TODO remove, place final instead
   11pt, % TODO disscus this
   oneside  %% twoside for print
   %% More options are listed in the user guide at
@@ -86,6 +86,7 @@
 \usepackage{menukeys}
 
 
+\usepackage{cleveref}
 \usepackage{wrapfig}
 \usepackage{subcaption}
 \usepackage{tabularx}
@@ -276,59 +277,103 @@ Application of Tabu search in EACirc has several issues. Firstly, how to store u
 \subsection{ANN}
 \subsection{...}
 
+
+
 \chapter{Experiment methodology}
 
-The main testing goal of EACirc is to asses randomness of ciphertext of cryptographic functions. As most of the functions are semantic secure, EACirc is able to identify non-randomness only to reduced functions. The functions can be reduced either in number of rounds, by processing selected plaintexts, and by selecting only specific bits of the output. As this is the main goal of EACirc project, it will also be the testing scenario for comparison of analysed metaheuristics.
+The main testing goal of EACirc is to asses randomness of ciphertext of cryptographic functions. As most of the cryptographic functions are semantic secure, EACirc is able to identify non-randomness only for reduced functions. The functions can be reduced in number of rounds, by processing selected plaintexts, and by selecting only specific bits of the output. As analysis of reduced versions of cryptographic functions is the main goal of EACirc project, it is also selected as the testing scenario for comparison of analysed metaheuristics.
 
-The approach for evaluation is [briefly?] described in [chapter EACirc]. The tested data were produced from 16 different cryptographic functions and pseudo random data generator PCG [cite] as exemplary data. These functions are reduced to the edge of distinguishing capability of EACirc, such that the EACirc is capable to distinguish function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds. Usually, some extra surrounding is tested as well for broader usage of the results.
+The approach for evaluation is \todo{[briefly?] described in [chapter EACirc]}. The tested data were produced from 16 different cryptographic functions and pseudo random data generator PCG [cite] as reference data. These functions are reduced to the edge of distinguishing capability of EACirc, such that the EACirc is capable to distinguish function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round settings reffered as "an edge".}. Usually, some extra surrounding is tested as well for broader usage of the results.
 
 \section{Used data}
 
-Previous works on EACirc analysed candidates of cryptoprimitives competitions [cite eSTREAM, SHA-3 and CAESAR works]. This way was EACirc extended by many functions sharing the same interface. This approach was effective for broad analysis of the competition candidates, but it does not test well known cryptographic functions like AES, DES and others.
+Previous works on EACirc analysed candidates of cryptoprimitives competitions [cite eSTREAM, SHA-3 and CAESAR works]. These works extended EACirc by many functions sharing the same interface. This approach was effective for broad analysis of the competition candidates, but it does not test well known cryptographic functions like AES and DES.
 
-Therefore, for the comparison with other randomness testing tools and other research papers on semantics security, we decided select new test set. We chose the finalist of competitions SHA-3 (BLAKE, Grostl, JH, Keccak and Skein) and eSTREAM (HC-128, Rabbit, Salsa20, SOSEMANUK and Grain), and above that, we implemented other block (AES, DES, 3-DES and TEA) and stream (RC4) functions.
+Therefore, for the comparison with other randomness testing tools and other research papers on semantics security, we decided select new test set of cryptographic functions. We chose the finalist of competitions SHA-3 (BLAKE, Grostl, JH, Keccak and Skein) and eSTREAM (HC-128, Rabbit, Salsa20, SOSEMANUK and Grain), and above that, we implemented other block (AES, DES, 3-DES and TEA) and stream (RC4) functions.
 
 \subsection{Reimplementation of stream handling in EACirc}
 
-The implementation of SHA-3 and eStream candidates in EACirc was called projects. The projects were handling everything related to data generation: generation of IV, keys and plaintext, that can be produced by various sources. Every project has its own implementation of counter plaintext generator, strict avalanche criterion generators and others.
+The implementation of SHA-3 and eStream candidates in EACirc was called projects. The projects were handling everything related to data generation: generation of IV, key and plaintext, produced by specific sources. Every project has its own implementation of counter plaintext generator, strict avalanche criterion generator and so on.
 
-For implementation of new project for block ciphers, we decided to reimplement data generation in more variable and modifiable way. For this, we decided for data manipulation via streams, whose can be pipelined into each other. Each stream implements simple interface with constructor and function \texttt{next}, which returns next test vector. The stream is specified only by the size of the test vector.
+For implementation of the new project for block ciphers, we decided to reimplement data generation in more variable and modifiable way. For this, we decided for data manipulation via streams, whose can be pipelined into each other. Each stream implements simple interface with constructor and function \texttt{next}, which returns next test vector. The stream is specified only by the output size of the test vector.
 
-Firstly, all the data sources are streams, from true and false bits generators, over counter and strict avalanche criterion test vector generators, to PRNG test vector generators. Secondly, the projects eSTREAM, SHA-3 and my block ciphers take these simple streams as the origin of inputs for computation. These projects are streams as well, as they produces ciphertext test vectors. And finally, the ciphertext can be postprocessed by streams for selection of only some bits of the output.
+The whole data generations is currently provided by streams. Firstly, all the data sources are streams, from true and false bits generators, over counter and strict avalanche criterion test vector generators, to PRNG test vector generators. Secondly, the projects eSTREAM, SHA-3 and the block ciphers take these simple streams as the input for computation. These projects are streams as well, as they produces ciphertext vectors. And finally, the ciphertext can be postprocessed by streams for selection of only some bits of the output.
 
-All this described data manipulation was implemented as a part of this thesis.
+All this described data manipulation and project eSTREAM and SHA-3 refactoring was implemented as a part of this thesis.
 
 \subsection{Implementation of functions}
 
-For the source of AES, DES and 3-DES implementations, was used educational repository~\cite{cryptoFunc}. This repository compares the encryption to the test vectors to ensure correctly working implementation.  The only change in the code is limitation of the functions in the number of rounds.
+As the source of AES, DES and 3-DES implementations was used educational repository~\cite{cryptoFunc}. The author of this repository verifies the encryption to the test vectors to ensure correctly working implementation. The only modification of the code is limitation of the functions in the number of rounds.
 
 TEA implementation is based on Wikipedia code~\cite{teaWiki}, and it was already implemented in EACirc before. The implementation was simplified and reduced due to changes in the interface. It is also reduced to selected amount of rounds.
 
 RC4 is also based on the educational repository~\cite{cryptoFunc}, but as RC4 has no round structure, therefore, the code is unchanged.
 
-All these functions together with the new interface of new block project and test vectors processing algorithm were released as a part of minor version EACirc 4.1.
-
-\subsection{Determining the limits of EACirc}
-
-
+All these functions together with the new interface of new block project and test vectors processing algorithm were released in minor version EACirc 4.1.
 
 \subsubsection{?Testing correctness of the solution?}
 \subsubsection{?Publication of the generator tool?}
 
 
-\section{Automatization}
+\section{Approach specific methodology}
 
-TODO: read this, copy-pasted from PA018 report.
+As the tested scenarios vary not only by method, but by used tools as well, the methodology changes for given metaheuristics. The base of the experiment was used for single-solution metaheuristics, as they were implemented directly to the EACirc and they inherited the experiment environment of our tool.
 
-The created scripts are necessary to support computations on MetaCentrum grid infrastructure. The scripts consist of a preprocessor, which creates necessary configuration files for the experiment, scripts for distribution among the computation infrastructure and following results collection, and postprocessing script, that will aggregate the results in easy to interpret way.
+For direct inter-method comparison, we need to use the same data for testing. Therefore, all used data from the \todo{Usable testbed} are generated from the same implementation. This was allowed by implementation of the Generator tool \todo{described later in ... reference to part of the thesis with Generator}.
 
-The solution called Oneclick and created by Lubomír Obrátil for his bachelor thesis~\cite{obratilBcThesis} was in use previously. The Oneclick was a single tool for both preprocessing and postprocessing phase, and the run was parametrized. However, this approach is outdated for MetaCentrum infrastructure, because it does much work on the client side and compilation of C++ for the Debian servers make it user unfriendly. The advantages of new scripts are: 
+\subsection{Single-solution methodology}
+
+\subsection{Statistical evaluation}
+
+The fitness of an individual is a $p$-value of $\chi^{2}$ test on output bytes for current test vectors set. For a good individual for a weak version of function, the fitness is close to 1. As the quality of the individual decreases, the fitness decreases as well. However, completely random guess like coin tossing has the $p$-value uniformly distributed on interval (0, 1).
+
+Getting one such $p$-value for whole computation says nothing, as we could be lucky to observe high, however internally random, fitness. Therefore we perform Kolmogorov-Smirnov test of uniformity of the $p$-values. This test is using critical value $\alpha = 1\,\%$, therefore it rejects the null hypothesis that tested data seems nonrandom in 1\,\% of runs. To avoid such case, we run the experiment with the same settings 1\,000 times and we analyse the rejection ration given as amount of failed KS tests over 1000. If it is around 1\,\%, the data seem to be random, while in it is much higher, the experiment rejected randomness hypothesis of tested data.
+
+This approach is vastly increasing the amount of data needed for the computation, as well as the overall run-time. This approach is a trade-off for success rate of EACirc, as different evaluators do not need statistical evaluation, hence they need much less data and they are slightly worse based on results from~\cite{svenda2013towards}.
+
+When we consider basic setup for single-solutions metaheuristics, EACirc consumes 2.4\,GB of ciphertext of tested function~\cref{fig:dataUsage}. The runtime of the experiment on Metacentrum varies from 4 to 20 hours on single core.
+
+%http://tex.stackexchange.com/questions/57732/placing-figures-inside-a-two-column-document 3rd answer
+\begin{figure*}[t]
+    \begin{equation*}
+        \begin{aligned}
+    \Sigma = 1\,000 \;
+             \frac{\textnormal{runs}}
+                  {\textnormal{experiment}}
+             \cdot
+             \left(
+             \frac{30\,000 \frac{\textnormal{generations}}{\textnormal{run}}}
+                  {100 \; \frac{\textnormal{generations}}{\textnormal{test set}}}
+             \cdot
+             1\,000 \;
+             \frac{\textnormal{vectors}}
+                  {\textnormal{test set}}
+             \cdot
+             8 \;
+             \frac{\textnormal{bytes}}
+                  {\textnormal{vector}}
+             \right) \approx\\
+             \approx 2,4 \textnormal{\,GiB per experiment}
+        \end{aligned}
+    \end{equation*}
+    \caption{The amount of data analyzed by EACirc for a single configuration of randomness testing experiment.}
+    \label{fig:dataUsage}
+\end{figure*}
+
+
+\section{Computation automatization}
+
+As EACirc needs repeated computation on Metacentrum grid infrastructure, the automation for binary deployment, computation distribution, aggregation of the results and their postprocessing are needed.
+
+The scripts consist of a preprocessor, which creates necessary configuration files for the experiment, scripts for distribution among the computation infrastructure and following results collection, postprocessing script, that will aggregate the results, and the final script for generation of human readable version of the script as well as database dump of the experiment\cref{fig:scripts}.
+
+Earlier was in use solution called Oneclick created by Lubomír Obrátil for his bachelor thesis~\cite{obratilBcThesis}. The Oneclick was a single tool for both preprocessing and postprocessing phase, and the run was parametrized. However, this approach is outdated for MetaCentrum infrastructure. The advantages of new scripts are: 
 
 \begin{itemize}
     \item they are one purpose, so it is easier to modify one without affecting other,
-    \item they are written in bash (running scripts for MetaCentrum scheduler) and Python (processing), so they do not need to be compiled, and more researchers understand, how to modify them
-    \item they are written for EACirc 4 mainly (but they support EACirc 3 as well), so they more fit the computation process of new version, so they save a vast part of processing
-    \item they are faster (up to 3\,600 times in case of postprocessor).
+    \item they are written in bash (running scripts for MetaCentrum scheduler) and Python (processing), so they do not need to be compiled, and more researchers understand, how to modify them,
+    \item they are mainly written for the newest released EACirc version (but they support EACirc 3 as well), so they fit more the computation process of new version, so they save a vast part of processing,
+    \item they are faster (up to 3\,600 times in case of postprocessor), as MetaCentrum computation do not require previously used redundancy procedures.
 \end{itemize}
 
 These scripts are expected to be modified by individual researchers for the needs of their experiments, so the scripts are stored in GitHub repository~\cite{eaUtils}, and users are supposed to fork them. The repository also contains \texttt{readme.md} file, with specifies the first steps with computations on MetaCentrum with these scripts. Every script then contains documentation in the code (concerning expected modifications for individual purposes), and when it is run without arguments, it prints out a help message.
@@ -341,16 +386,18 @@ These scripts are expected to be modified by individual researchers for the need
     \begin{tikzpicture}[>=stealth, auto, node distance=3cm, every text node part/.style={align=center}]
         \node [el] (e) [] {\bf{experiment idea}};
         \node [block] (pre) [below of = e,yshift=0.5cm] {\bf{preprocessor}};
-        \node [block,text width=3cm] (run) [below of = pre,yshift=-0.5cm] {\vspace{0.1cm}{\bf runner scripts} \texttt{run\_experiment.sh} runs for every config file script \texttt{single\_job.sh}};
+        \node [block,text width=3.5cm] (run) [below of = pre,yshift=-0.5cm] {\vspace{0.1cm}{\bf runner scripts} \texttt{run\_experiment.sh} runs for every config file script \texttt{single\_job.sh}};
         \node [block] (eac) [below of = run] {EACirc};
         \node [block] (pos) [below of = eac,yshift=0.6cm] {postprocessor};
-        \node [el] (res) [below of = pos,yshift=0.6cm] {readable results};
+        \node [block] (gen) [below of = pos,yshift=0.6cm] {table generator};
+        \node [el] (res) [below of = gen,yshift=0.6cm] {readable results};
 
         \draw [->] (e) -- node [right] {researcher modifies\\general setting} (pre);
         \draw [->] (pre) -- node [right] {produces config for\\all combinations\\of function and round} (run);
         \draw [->] (run) -- node [right] {distributes computations\\on MetaCentrum grid} (eac);
         \draw [->] (eac) -- node [right] {results are returned\\to the frontend server} (pos);
-        \draw [->] (pos) -- node [right] {aggregates the results\\and computes the statistics} (res);
+        \draw [->] (pos) -- node [right] {aggregates the results\\and computes the statistics} (gen);
+        \draw [->] (gen) -- node [right] {generates human readable tables\\and dump the results} (res);
     \end{tikzpicture}
     \caption{Execution of EACirc on MetaCentrum grid -- order and purpose of the scripts.}
     \label{fig:scripts}
@@ -360,35 +407,59 @@ These scripts are expected to be modified by individual researchers for the need
 
 EACirc computation is based on a config file, and that specify what are the sources of data for comparison and various other settings. As the test suite contains tens variations of parameters, it is necessary to automatize config file creation, so the user would not make a mistake during this process.
 
-I created Python scripts for both old EACirc, which used XML config files and the new version of EACirc with JSON configs\footnote{Oneclick was generating XML configs based on its own XML config, complete rewrite to JSON would be harder, than was the creation of new scripts}. There are also different test sets that have dedicated version of the preprocessor.
-
-The preprocessor scripts are already tuned to expected behaviour of EACirc. EAcirc is capable of finding nonrandomness in functions limited to reduced count of rounds. These counts were chosen by running experiments and finding EACirc capabilities, and the preprocessor creates only the necessary config files.
+The scripts are written in Python and have dedicated version per the scenario of tested functions.
 
 \subsection{Running scripts}
 
-The scripts for distribution of computations among the MetaCentrum network are mainly work of Martin Ukrop for the purpose of his thesis~\cite{ukropMgrThesis}. However, as part of this project, I have updated them accordingly to the new EACirc version, and as different researchers used various modifications of the scripts, I also polished the scripts and chose the basic set of features.
+The scripts for distribution of computations among the MetaCentrum network are mainly work of Martin Ukrop for the purpose of his thesis~\cite{ukropMgrThesis}. However, they are continuously maintained in \texttt{EACirc-utils} repository~\cite{eaUtils} for current EACirc version.
 
-As our experiments need to be run multiple times for statistical evaluation, the scripts repeat the computation in a loop with different seeds usually for 1\,000 times. All runs are then collected by running scripts.
+As each experiment needs to be run multiple times for statistical evaluation, the scripts repeat the computation in a loop with different seeds usually for 1\,000 times. All runs are then collected by running scripts.
 
-The current version of these scripts is also published on the GitHub, and the forked repository is ready to run experiments in the usual way.
+The current version of these scripts is also published on the GitHub~\cite{eaUtils}, and the forked repository is ready to run experiments in the usual way.
 
 \subsection{Postprocessor}
 
-As the computations are repeated for statistical significance, the postprocessor script has to aggregate results from many produced files. It searches through output files and collects the results. Afterwards, it calculates a statistics of the experiment -- both statistics used since EACirc 2 and my alternative statistics, which was an additional work to the scope of this project. Having both statistics together may help with the comparison of these approaches, and it can help new approach substitute the old in future.
+As the computations are repeated for statistical significance, the postprocessor script has to aggregate results from many produced files. It searches through output files and collects the results. Afterwards, it calculates an aggregated statistics of the experiment.
 
-The postprocessor has multiple ways for execution. One is optimised for least access to files on MetaCentrum, as accessing files is slow on network file system used there. For evaluation of local experiments can be used another parameter, that scans file tree and searches for results files.
+The output of the postprocessor is \todo{\texttt{JSON} dump} of the results, whose are used both for human readable results generation and also storing the results for later usage.
 
-\subsection{Determination of testbed}
-\section{Approach specific methodology}
-\subsection{Single-solution methodology}
+\subsection{Table generator}
+
+The generator takes as an input the \texttt{JSON} dump of the results from the postprocessor. Currently, it only generates \LaTeX table with highlighted results, but it can be rewritten for more complex manipulation with the results.
+
 \subsubsection{Goal specification}
+
+The ultimate goal of the experiments with metaheuristics is to increase amount of rounds distinguished by EACirc. However, such goal is enormously difficult, as the randomness increases rapidly with the additional rounds. We would need functions with low increase of entropy per round as a benchmark, but we did not observed such behaviour by any of the tested functions, nor our own design of benchmarking function do not behave that way [LUT cipher].
+
+Less ambitious, but still useful goal can be increase of the rejection rate of the null hypothesis per experiment. Rejecting only 10\,\% of runs imply having difficulties with analysis of the output test. The higher is the rejection rate, the easier is interpretation of found distinguisher. Also in case our rejection rate is close to critical value $\alpha$, then the higher rejection rate can overcome the edge value\footnote{For 1000 runs per experiment, this edge value is typically $2\cdot\alpha$. Such results can happen in less than 0.15\,\% of the experiments.} and we can reject the overall null hypothesis about the randomness of the source with higher confidentiality.
+
+Other goal can be decrease of the amount of computations or the amount of used data. As we usually fix the epoch length to 100 iterations, the data usage and CPU time are directly related. And as the amount of used data is already high in this settings of EACirc, the time comparison is more valuable than consumed data comparison.
+
+We can also analyse specific goals per metaheuristics. Both Variable neighbourhood search and Guided local search set complementary target in simplification of the circuits for later analysis. This goal is more difficult to measure, so the analysis is done less rigorously.
+
+EACirc project is using adaptive learning. During the computation, the tested data are changing. We analysed over-learning of the individuals during the learning process, and the over-learning can be analysed as well. Therefore, decrease over-learning can be another goal for metaheuristics.
+
 \subsection{Multi-solutions methodology}
 \subsection{ANN methodology}
 
 \chapter{Experiment results}
 
+To verify the implementation, we perform sanity experiment comparing random data to random data. Such test gives us real measured expected output in case that two tested streams cannot be distinguished by selected approach. Expected value of such experiment differs per methodology and therefore is stated per every testing scenarion.
+
 \section{Single-solution}
+
+%http://stattrek.com/online-calculator/binomial.aspx
+
+Single solutions metaheuristics use evaluation described in [reference to Statistical evaluation subsubsect]. As we use critical value $\alpha=1\,\%$, the random random experiment should reject randomness hypothesis in around $1\,\%$ of the runs. As we would like to have better confidentiality in this sanity experiment, we perform not only 1\,000 runs for this settings, but 100\,000 runs. Confidentiality for such run can be computed from binomial distribution and obtaining value $1.2\,\%$ has probability 4.787\,\% for 1\,000 runs, while it is lower than 0.001\,\% for 100\,000 runs.
+
+Other results are summarized in table, where every row corresponds to one cryptographical function and this function is reduced to rounds given by column of the table. The dash means that such setup was not tested. Number represents ratio runs where KS test rejected the randomness hypothesis by 1000 runs. Values around measured ratio from random-random experiment are expected, results twice this value can happen in less then 0.15\,\% measures for randomly looking data. Therefore results over double of this measured critical value are considered as nonrandom.
+
+Our own evaluation of the result is highlighted by color. Red highlight sign that EACirc detected nonrandomness. Green highlight sign that EACirc has not found anything and from the notion of hypothesis testing, we cannot say anything about the randomness of data (we cannot accept the randomness hypothesis).
+
 \subsection{Iterated local search baseline}
+
+
+
 \subsubsection{Overlearning analysis}
 \subsection{Simulated annealing}
 \subsubsection{Overlearning analysis}
