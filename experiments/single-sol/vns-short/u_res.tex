@@ -1,0 +1,58 @@
+
+\documentclass[twoside,a4paper]{article}
+
+% ===== LOADING PACKAGES =====
+% language settings, main documnet language last
+\usepackage[english]{babel}
+% enabling new fonts support (nicer)
+\usepackage{lmodern}
+% setting input encoding
+\usepackage[utf8]{inputenc}
+% setting output encoding
+\usepackage[T1]{fontenc}
+% math symbols and environments
+\usepackage{mathtools}
+% packages for complex tables
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{float}
+
+\usepackage[top=3.0cm, bottom=3cm, left=3cm, right=3cm]{geometry} % pc version
+% package to make bullet list nicer
+\usepackage{enumitem}
+\setitemize{noitemsep,topsep=3pt,parsep=3pt,partopsep=3pt}
+
+\usepackage[table]{xcolor}
+
+\begin{document}
+
+\newcommand{\fd}{\cellcolor{red!13}}
+\newcommand{\fn}{\cellcolor{green!13}}
+
+\begin{table}[H]
+\centering
+\label{res_usable}
+\begin{tabular}{l|l l l l l l l l l l l}
+Function\textbackslash{}rounds & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\ \hline
+rnd\_rnd     & \fn{}0.0846 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+AES          & \fd{}--    & \fd{}1.0   & \fd{}1.0   & \fd{}0.992 & \fn{}0.075 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+BLAKE        & \fd{}1.0   & \fd{}0.219 & \fn{}0.1   & \fn{}0.092 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+Grain        & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.079 & \fn{}0.081 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+Grostl       & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.071 & \fn{}0.087 & \fn{}0.085 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+HC-128       & \fn{}0.083 & \fn{}0.085 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+JH           & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.106 & \fn{}0.085 & \fn{}--    & \fn{}--   \\
+Keccak       & \fd{}--    & \fd{}1.0   & \fd{}1.0   & \fn{}0.058 & \fn{}0.085 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+MD6          & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}0.842 & \fn{}0.083 & \fn{}0.081\\
+Rabbit       & \fn{}0.096 & \fn{}0.096 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+RC4          & \fd{}--    & \fn{}0.102 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+Salsa20      & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.092 & \fn{}0.085 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+SINGLE-DES   & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}1.0   & \fd{}0.264 & \fn{}0.084 & \fn{}0.092 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+Skein        & \fn{}0.087 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+SOSEMANUK    & \fn{}0.079 & \fn{}0.065 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+TEA          & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.078 & \fn{}0.102 & \fn{}0.093 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+TRIPLE-DES   & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.085 & \fn{}0.083 & \fn{}0.094 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   
+\end{tabular}
+\caption{Usable testbed results}
+\end{table}
+
+\end{document}
