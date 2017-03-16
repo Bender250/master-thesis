@@ -85,13 +85,21 @@
 \usepackage{url}
 \usepackage{menukeys}
 
-
-\usepackage{cleveref}
+% cref, has to be loaded after hyperref
+\usepackage{hyperref}
+\usepackage[capitalise]{cleveref}
+% for long equation wrap
 \usepackage{wrapfig}
+% ???
 \usepackage{subcaption}
 
+% tables
 \usepackage{tabularx}
-%\usepackage[table]{xcolor}
+% colored cells (cellcolor)
+\usepackage{colortbl}
+
+% my colours
+\usepackage{xcolor}
 
 %% My own inputs:
 % enabling new fonts support (nicer)
@@ -108,8 +116,6 @@
 
 % intendation
 \usepackage{parskip}
-\setlength{\parskip}{5pt}
-\setlength{\parindent}{0pt}
 
 % my own progress commands
 \newcommand{\todo}[1]{TODO: \textit{#1}}
@@ -120,9 +126,16 @@
 \newcommand{\fd}{\cellcolor{red!13}}
 \newcommand{\fn}{\cellcolor{green!13}}
 
+% make captions italic
+\usepackage[format=plain,
+            font=it]{caption}
+
 
 \begin{document}
 
+% English indentation, vertical, not horizontal
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
 
 %% We will define several mathematical sectioning commands.
 %\newtheorem{theorem}{Theorem}[section] %% The numbering of theorems
@@ -136,20 +149,24 @@
 %\newtheorem*{remark}{Remark}
 
 \chapter{Introduction}
+\label{chap:introduction}
 
 Cryptography is a field of computer science, used daily by all Internet users. Users connecting to HTTPS websites are using asymmetric cryptography to generate a symmetric key for encryption of the following communication. For such use-case, as well as various others, are used cryptographic primitives as public-key encryption functions, hash functions, block functions and stream functions. Current research of cryptoprimitives has a nontrivial goal. Design and develop algorithms, such that can hold against unknown threats as long as possible. Therefore cryptographers follow the standardised approach in cryptoprimitives development to ensure quality by a lengthy process of preparation, comparison and testing.
 
 \section{Cryptoprimitives selection process}
+\label{sec:crypto-sel-proc}
 
 A standardisation committee reacts on inquiry for new or updated cryptoprimitive by issuing a competition for it. For example competitions during last 20 years were AES, which called for a symmetric block cipher, eSTREAM, for new stream ciphers, SHA-3 for hash function and CAESAR for authenticated ciphers. Those competitions last usually around five years. The first phase is collecting proposals, which are filtered in the second phase to the gradual selection of the winner candidate in the third. The winning solution became standard, and the developers will use it usually for at least ten years. For example, Data Encryption Standard was standardised in 1976, and Triple-DES modification surpassed it as a standard in 1999. Final successor Advanced Encryption Standard came in 2002, and it remains functional until today (2017).
 
 \section{Cryptoanalysis}
+\label{sec:cryptoanalysis}
 
 During the second phase, proposals are analysed by cryptoanalysts. While proposing own design is possible for both skilled teams and almost cryptography beginners, the analysis is demanding process that needs both skill and time.
 
 Cryptanalysis is expensive work, as the required cryptoanalyst skills are demanding. It consumes a significant amount of time to reject even proposals vulnerable to known threats. Therefore, a software tool capable of rejecting vulnerable proposals can save cryptoanalyst's time. Moreover, the cryptanalyst can use the tool for quicker dive into the candidates' specifications. Such tool can, for example, identify optional parts and show weak or even threat parts of the proposed function.
 
 \subsection[Cryptorimitives properties]{Overview of expected properties of cryptorimitives}
+\label{subsec:crypto-prop}
 
 Field of the analysis, which is this thesis aiming for, are hash functions, block ciphers and stream ciphers (further referred as functions). There are several properties, formulated as a minimal set of conditions for these functions which has to be satisfied. If the function does not meet some property, it is considered weak, while satisfaction of all of the properties does not imply nonvulnerable function. Some of the properties are following.
 
@@ -159,18 +176,22 @@ Strict avalanche criterion: every bit flip of plaintext changes around 50\,\% of
 
 Oracle, semantic security: even thou plaintext usually does not look like a random data, the ciphertext have to look so. If the output were distinguishable from random data, it would reveal information about the plaintext. This property is tested in our tool EACirc. However, the previous properties are tested as well, yet not directly.
 
-\section{Cryptoanalysis automatization}
+\section{Cryptoanalysis automisation}
+\label{sec:cryptoanalysis-automisation}
 
 
 
 \subsection[Optimization problem for a cryptoprimitive]{Building an optimization problem from property of cryptoprimitives}
+\label{subsec:opti-crypto}
 
 
 \section{Statistical testing}
+\label{sec:stat-testing}
 
 Testing of randomness is a common area of statistics research. Thus statisticians have developed a rigorous theory of probability, and they also produced practical tools, that can test randomness. These tools are used even in cryptography to analyse function for properties from the previous section.
 
 \subsection{Statistical batteries}
+\label{subsec:stat-batt}
 
 The statistical battery is a set of simple tests, which are analysing simple properties of the binary stream. For example, a monobit test counts an amount of zeros and ones in the input data, which should be similar in the case of the uniform stream. The tests can analyse the stream for patterns, which should not be present in random data.
 
@@ -179,26 +200,37 @@ The design of the tests accords to some statistical property. As the theory behi
 Best known statistical batteries are (chronologically by time of development) NIST STS, Diehard and Dieharder and TestU01. While NIST STS is already completely surpassed by its successors, statisticians still consider it as a golden standard of statistical testing. The EACirc performs better than NIST STS, is comparable with Dieharder and currently perform worse than TestU01. The ultimate goal of implementation of metaheuristics would be surpassing Dieharder and compete with TestU01.
 
 \subsection{EACirc}
+\label{subsec:eacirc}
 
 \section{EACirc computation loop}
+\label{sec:eac-comp}
 
 \section{EACirc's potential}
+\label{sec:eac-potential}
 
 \subsection{Individual representation}
+\label{subsec:eac-indiv-repres}
 
 \subsubsection{Circuit}
+\label{subsubsec:eac-indiv-repres-circuit}
 
 \subsubsection{Polynomials}
+\label{subsubsec:eac-indiv-repres-poly}
 
 \subsection{Speed-up of computation}
+\label{subsec:eac-speedup}
 
 \subsection{Evaluation}
+\label{subsec:eac-eval}
 
 \subsection{Learning process}
+\label{subsec:eac-learning}
 
-\section{Problem optimization}
+\section{Problem optimisation}
+\label{sec:prob-opt}
 
 \subsection{Metaheuristics}
+\label{subsec:prob-opt-meta}
 
 A computational problem is a task to find a feasible solution for given question. An optimisation problem is a task to find the feasible solution, which satisfies the criteria best. Usually, we formulate fitness function to compare how well are the criteria met. A heuristic is a problem specific technique for finding some an approximative solution, where exact techniques fail. Finally, the metaheuristic is technique abstracted from the problem so that it can be used for various optimisation problems.
 
@@ -207,10 +239,12 @@ Metaheuristics are applicable for optimisation problems if a programmer can prov
 The main advantage of metaheuristics is that they are well known, compared together in many studies (see 849 references in Metaheuristics book [1]) that also provided tips for the implementation.
 
 \subsection{ANN}
+\label{subsec:prob-opt-ann}
 
 \subsection{...}
 
 \chapter{Current approaches in problem optimization}
+\label{chap:optimisation}
 
 The number of solutions inspected in one moment splits metaheuristics into two categories: single-solution based metaheuristics and population-based metaheuristics. The original idea of EACirc used genetic programming -- a population-based metaheuristic for optimisation. One of the weaknesses of this approach was a rather difficult interpretation of the results [cite Martin's thesis - understanding "random" number 0.52].
 
@@ -221,20 +255,26 @@ The next solution proposed in [paper Syso] simplified the interpretation by usin
 EACirc 4.0 simplified and optimised the computations by substituting GALib -- a genetic algorithm library by a custom implementation of the iterated local search.  To question if iterated local search is the best approach, I analysed the problem and tried other metaheuristics.
 
 \section{Single-solution metaheuristics}
+\label{sec:opt-single-sol}
 
 Figure ... shows the classification of the improved variants of local search metaheuristics by authors of ParadisEO library.
 
 \subsection{Local search}
+\label{subsec:opt-single-sol-ls}
 \subsection{Iterative local search}
+\label{subsec:opt-single-sol-ils}
 \subsection{GRASP}
+\label{subsec:opt-single-sol-grasp}
 
 The greedy randomised adaptive search procedure is splitting each iteration into two steps: a feasible solution construction by greedy algorithm and performing the local search using the generated solution. As we did not found any greedy algorithm for circuit construction that would reflect tested data, this approach was abandoned.
 
 \subsection{Multi-start local search}
+\label{subsec:opt-single-sol-msls}
 
 Is another approach how to surpass local optimum to find the global optimum. The metaheuristic starts the computation with k randomly generated individuals that are concurrently optimised by local search. However, this method is already used in EACirc, neither on the level of single computation, but in the iteration of experiment over 1000 runs per unique settings to obtain statistically significant results. Implementation of multi-start local search on the level of single computation would make the results interpretation more difficult, same as in the case of EA with a population in [Martin's thesis].
 
 \subsection{Guided local search}
+\label{subsec:opt-single-sol-gls}
 
 Guided local search is metaheuristic based on dynamic changing of the fitness function. If the metaheuristic got stuck in local optima, guided local search would change the fitness function so the individual can follow climbing.
 
@@ -248,18 +288,22 @@ The EACirc computation can get trapped in local optima mainly in two cases:
 We do not need to fix the first case, as such individual would be replaced in next epoch. However, we can use Guided local search to improve individual from the second case. Our alternative fitness function can be designed as the sum of our current fitness and e.g. the number of connectors. Such change would simplify the solution, which would help us with the interpretation of the last individual. Alternatively, we can use completely different fitness function.
 
 \subsection{Noisy method}
+\label{subsec:opt-single-sol-nois}
 
 The noisy method is a metaheuristic, which allows escaping local optima by noised fitness function. At the beginning of the computation, the noise is the strongest, and it disappears during the computation. The suggested approach for implementing the noise by [metaheuristics book, pp 160] is randomization of tested input. As EACirc works with discrete randomly-looking data, such approach could flip important bit which would make progress impossible. Therefore this method was abandoned.
 
 \subsection{Smoothing method}
+\label{subsec:opt-single-sol-smooth}
 
 Smoothing method is the last inspected metaheuristics, which uses changes in fitness function to escape local optima. The method is based on smoothing the landscape of fitness function by computing the local average. It can work well for example figure [fitness function graph], however as the neighbourhood of an individual is enormous, and it is not continuous, this method would not be possible due to computation requirements.
 
 \subsection{Variable neighbourhood search}
+\label{subsec:opt-single-sol-vns}
 
 Compared to metaheuristics that change fitness function, variable neighbourhood search is not able to escape local optima in all the cases. However, it still can increase the escaping probability, as the searched neighbourhood space would contain more desired solutions. If we already have a successful solution, we can inspect only solutions with fewer connectors, or in contrast, we can press more to connect the individual in case that the input and output are not connected and fitness is equal to 0.
 
 \subsection{Simulated annealing}
+\label{subsec:opt-single-sol-sa}
 
 Remaining two single-solution metaheuristics are based on acceptance of non-improving neighbours. Short term acceptance of worse solution can lead to escape from local optima and finding global optima in whole computation.
 
@@ -270,35 +314,46 @@ Simulated annealing uses variable temperature, which describes probability for a
 This metaheuristic is widely used, which was the reason for implementing it as a testing scenario for metaheuristics. On the other hand, accepting non-improving solution is has a very limited positive effect on computation of EACirc, as a bad neighbour can substitute a good solution.
 
 \subsection{Tabu search}
+\label{subsec:opt-single-sol-tabu}
 
 Like Simulated annealing, Tabu search can also accept non-improving solutions to escape from local optima. However, the decision whether to accept a non-improving solution is not based on probability, but on knowledge, if considered solution was visited. Therefore, Tabu search holds a memory of visited solutions, called \textit{tabu list}, and it would not use twice the same solution. This way, Tabu search avoids cycles during the optimisation process.
 
 Application of Tabu search in EACirc has several issues. Firstly, how to store used individuals (memory usage may be a problem), which can be solved by storing only a hash of the solution. Secondly, the neighbourhood space of an individual is huge [note calculation] -- higher than the number of individuals tested during whole computation. Choosing twice the same solution is unlikely. Therefore we decided to try only Simulated annealing and leave the decision of Tabu search implementation on the result of Simulated annealing.
 
 \section{Multi-solutions metaheuristics}
+\label{sec:opt-multi-sol}
 \subsection{Evolutionary algorithms}
+\label{subsec:opt-multi-sol-ea}
 \subsection{Ant colony optimization}
+\label{subsec:opt-multi-sol-aco}
 \subsection{Scatter search}
+\label{subsec:opt-multi-sol-scatter}
 \subsection{Swarm intelligence}
+\label{subsec:opt-multi-sol-si}
 \section{Other methods}
+\label{sec:opt-other}
 \subsection{ANN}
+\label{subsec:opt-other-ann}
 \subsection{...}
 
 
 
 \chapter{Experiment methodology}
+\label{chap:method}
 
 The primary testing goal of EACirc is to assess randomness of ciphertext of cryptographic functions. As most of the cryptographic functions are semantic secure, EACirc can identify non-randomness only for reduced functions. The functions can be reduced in a number of rounds, by processing selected plaintexts, and by selecting only specific bits of the output. As the analysis of reduced versions of cryptographic functions is the main goal of the EACirc project, it is also selected as the testing scenario for comparison of analysed metaheuristics.
 
 The approach for evaluation is \todo{[briefly?] described in [chapter EACirc]}. The tested data were produced from 16 different cryptographic functions and pseudo-random data generator PCG [cite] as reference data. These functions are reduced to the edge of distinguishing capability of EACirc, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually, some extra surrounding is tested as well for broader usage of the results.
 
 \section{Used data}
+\label{sec:method-data}
 
 Previous works on EACirc analysed candidates of cryptoprimitives competitions [cite eSTREAM, SHA-3 and CAESAR works]. These works extended EACirc by many functions sharing the same interface. This approach was effective for breadth analysis of the competition candidates, but it does not test well known cryptographic functions like AES and DES.
 
 Therefore, for the comparison with other randomness testing tools and other research papers on semantics security, we decided select new test set of cryptographic functions. We chose the finalist of competitions SHA-3 (BLAKE, Grostl, JH, Keccak and Skein) and eSTREAM (HC-128, Rabbit, Salsa20, SOSEMANUK and Grain), and above that, we implemented other block (AES, DES, 3-DES and TEA) and stream (RC4) functions.
 
 \subsection{Reimplementation of stream handling in EACirc}
+\label{subsec:method-data-streams}
 
 The implementation of SHA-3 and eStream candidates in EACirc was called projects. The projects were handling everything related to data generation, specifically IV, key and plaintext. Every project had its own implementation of counter plaintext generator, strict avalanche criterion generator and so on.
 
@@ -309,6 +364,7 @@ Streams currently provide the whole data manipulation. Firstly, all the data sou
 All this described data manipulation and project eSTREAM and SHA-3 refactoring were implemented as a part of this thesis.
 
 \subsection{Implementation of functions}
+\label{subsec:method-data-funcs}
 
 As the source of AES, DES and 3-DES implementations was used educative repository~\cite{cryptoFunc}. The author of this repository verifies the encryption to the test vectors to ensure correctly working implementation. The only modification of the code is a limitation of the functions in the number of rounds.
 
@@ -323,14 +379,17 @@ All these functions together with the new interface of new block project and tes
 
 
 \section{Approach specific methodology}
+\label{sec:method-spec}
 
 As the tested scenarios vary not only by method but by used tools as well, the methodology changes for given metaheuristics. The base of the experiment was used for single-solution metaheuristics, as they were implemented directly to the EACirc and they inherited the experiment environment of our tool.
 
 For direct inter-method comparison, we need to use the same data for testing. Therefore, all used data from the \todo{Usable testbed} are generated from the same implementation. A unified source of data was a significant demand that led to an implementation of the Generator tool \todo{described later in ... reference to part of the thesis with Generator}.
 
 \subsection{Single-solution methodology}
+\label{subsec:method-spec-ss}
 
-\subsection{Statistical evaluation}
+\subsubsection{Statistical evaluation}
+\label{subsubsec:method-spec-ss-stat}
 
 The fitness of an individual is a $p$-value of $\chi^{2}$ test on output bytes for current test vectors set. For a well-working individual for a weak source of data, the fitness is close to 1. As the quality of the individual decreases, the fitness decreases as well. However, completely random guess like coin tossing has the $p$-value uniformly distributed on the interval (0, 1).
 
@@ -368,7 +427,8 @@ When we consider basic setup for single-solution metaheuristics, EACirc consumes
 \end{figure*}
 
 
-\section{Computation automatization}
+\subsubsection{Computation automisation}
+\label{subsubsec:method-spec-ss-auto}
 
 As EACirc needs repeated computation on MetaCentrum grid infrastructure, the automation for binary deployment, computation distribution, aggregation of the results and their postprocessing are required.
 
@@ -410,13 +470,13 @@ These scripts are expected to be modified by individual researchers for the need
     \label{fig:scripts}
 \end{figure}
 
-\subsection{Preprocessor}
+\paragraph{Preprocessor}
 
 EACirc computation is based on a config file, and that specify what the sources of data for comparison and various other settings are. As the test suite contains tens variations of parameters, it is necessary to automatize config file creation, so the user would not make a mistake during this process.
 
 The scripts are written in Python and have dedicated version per the scenario of tested functions.
 
-\subsection{Running scripts}
+\paragraph{Running scripts}
 
 The scripts for distribution of computation among the MetaCentrum network are a result of Martin Ukrop's thesis~\cite{ukropMgrThesis}. However, they are continuously maintained in \texttt{EACirc-utils} repository~\cite{eaUtils} for current EACirc version.
 
@@ -424,17 +484,18 @@ As each experiment needs to be run multiple times for statistical evaluation, th
 
 The current version of these scripts is also published on the GitHub~\cite{eaUtils}, and the forked repository is ready to run experiments in the usual way.
 
-\subsection{Postprocessor}
+\paragraph{Postprocessor}
 
 As the computations are repeated for statistical significance, the postprocessor script has to aggregate results from many produced files. It searches through output files and collects the results. Afterwards, it calculates an aggregated statistics of the experiment.
 
-The output of the postprocessor is \todo{\texttt{JSON} dump} of the results, whose are used both for human readable results generation and also storing the results for later usage.
+The output of the postprocessor is \texttt{JSON} dump of the results, whose are used both for human readable results generation and also storing the results for later usage.
 
-\subsection{Table generator}
+\paragraph{Table generator}
 
-The generator takes as an input the \texttt{JSON} dump of the results from the postprocessor. Currently, it only generates a \LaTeX table with highlighted results, but it can be rewritten for more complex manipulation with the results.
+The generator takes as an input the \texttt{JSON} dump of the results from the postprocessor. Currently, it only generates a \LaTeX table with highlighted results, but it can be extended for more complex manipulation with the results.
 
 \subsubsection{Goal specification}
+\label{subsubsec:method-spec-ss-goal}
 
 The ultimate goal of the experiments with metaheuristics is to increase the number of rounds distinguished by EACirc. However, such goal is enormously difficult, as the randomness increases rapidly with the additional rounds. We would need functions with a low increase of entropy per round as a benchmark, but we did not observe such behaviour by any of the tested functions, nor our own design of benchmarking function do not behave that way [LUT cipher].
 
@@ -447,52 +508,58 @@ We can also analyse specific goals per metaheuristics. Both Variable neighbourho
 The EACirc project is using adaptive learning. During the computation, the tested data are changing. We analysed over-learning of the individuals during the learning process, and the over-learning can be analysed as well. Therefore, decrease over-learning can be another goal for metaheuristics.
 
 \subsection{Multi-solutions methodology}
-\subsection{ANN methodology}
+\label{subsec:method-spec-ms}
+\subsubsection{ANN methodology}
+\label{subsubsec:method-spec-ms-aco}
 
 \chapter{Experiment results}
+\label{chap:res}
 
 To verify the implementation, we perform sanity experiment comparing random data to random data. Such test gives us measured expected output in case that selected approach can not distinguish two tested streams. Expected value of such experiment differs per methodology and therefore is stated per every test scenario.
 
 % SS methodology ref
 \section{Single-solution metaheuristics}
+\label{sec:res-ss}
 
 %http://stattrek.com/online-calculator/binomial.aspx
 
 Single solutions metaheuristics use evaluation described in [reference to Statistical evaluation subsubsect]. As we use critical value $\alpha=1\,\%$, the random-random experiment should reject randomness hypothesis in around $1\,\%$ of the runs. As we would like to have better confidentiality in this sanity experiment, we perform not only 1\,000 runs for this settings, but 100\,000 runs. Confidentiality for such run can be computed from the binomial distribution and obtaining value $1.2\,\%$ has probability 4.787\,\% for 1\,000 runs, while it is lower than 0.001\,\% for 100\,000 runs.
 
-Other results are summarised in tables\todo{ref table}, where every row corresponds to one cryptographical function, and this function is reduced to rounds given by column of the table. A dash in the cell signalises that scenario was not tested. The number represents ratio of runs where KS test rejected the randomness hypothesis by 1\,000 runs. Values around measured ratio from the random-random experiment are expected, results twice this value can happen in less then 0.15\,\% measures for randomly looking data. Therefore results over double of this measured critical value are considered as nonrandom.
+% todo https://texblog.org/2013/05/06/cleveref-a-clever-way-to-reference-in-latex/ cref multiple tables
+Other results are summarised in tables (i.e. \cref{table:res-usable-ils}), where every row corresponds to one cryptographical function, and this function is reduced to rounds given by column of the table. A dash in the cell signalises that scenario was not tested. The number represents ratio of runs where KS test rejected the randomness hypothesis by 1\,000 runs. Values around measured ratio from the random-random experiment are expected, results twice this value can happen in less then 0.15\,\% measures for randomly looking data. Therefore results over double of this measured critical value are considered as nonrandom.
 
 The colour highlights our evaluation of the result. Red highlight signs that EACirc detected nonrandomness. Green highlight signs that EACirc has not found anything and from the notion of hypothesis testing, we cannot say anything about the randomness of data (we cannot accept the randomness hypothesis).
 
 \subsection{Iterated local search baseline}
+\label{subsec:res-ss-ils}
 
 As was stated in \todo{ref to EACirc is using ILS}, EACirc used Iterative local search as the heuristics since version 4.0. Therefore measuring this heuristics serves as a baseline, which allows direct comparison of other metaheuristics and also can be used to estimate comparison to previous EACirc results, whose were in this work verified.
 
-%\begin{table}[H]
-%\centering
-%\label{res_usable}
-%\begin{tabular}{l|l l l l l l l l l l l}
-%Function\textbackslash{}rounds & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\ \hline
-%rnd\_rnd     & \fn{}0.01112 & --    & --    & --    & --    & --    & --    & --    & --    & --    & --   \\
-%AES          & \fd{}--    & \fd{}1.0   & \fd{}1.0   & \fd{}0.171 & \fn{}0.015 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%BLAKE        & \fd{}1.0   & \fd{}0.135 & \fn{}0.007 & \fn{}0.012 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%Grain        & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.006 & \fn{}0.007 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%Grostl       & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.013 & \fn{}0.013 & \fn{}0.013 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%HC-128       & \fn{}0.009 & \fn{}0.007 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%JH           & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.015 & \fn{}0.012 & \fn{}--    & \fn{}--   \\
-%Keccak       & \fd{}--    & \fd{}1.0   & \fd{}1.0   & \fn{}0.018 & \fn{}0.017 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%MD6          & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}0.825 & \fn{}0.009 & \fn{}0.007\\
-%Rabbit       & \fn{}0.014 & \fn{}0.009 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%RC4          & \fd{}--    & \fn{}0.01  & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%Salsa20      & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.016 & \fn{}0.01  & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%SINGLE-DES   & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}1.0   & \fd{}0.183 & \fn{}0.017 & \fn{}0.01  & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%Skein        & \fn{}0.012 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%SOSEMANUK    & \fn{}0.012 & \fn{}0.01  & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%TEA          & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.008 & \fn{}0.01  & \fn{}0.01  & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-%TRIPLE-DES   & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.01  & \fn{}0.015 & \fn{}0.012 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   
-%\end{tabular}
-%\caption{Results of iterated local search as EACirc metaheuristics on usable testbed.}
-%\end{table}
+\begin{table}[H]
+\centering
+\begin{tabular}{l|l l l l l l l l l l l}
+Function\textbackslash{}rounds & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\ \hline
+rnd\_rnd     & \fn{}0.01112 & --    & --    & --    & --    & --    & --    & --    & --    & --    & --   \\
+AES          & \fd{}--    & \fd{}1.0   & \fd{}1.0   & \fd{}0.171 & \fn{}0.015 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+BLAKE        & \fd{}1.0   & \fd{}0.135 & \fn{}0.007 & \fn{}0.012 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+Grain        & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.006 & \fn{}0.007 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+Grostl       & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.013 & \fn{}0.013 & \fn{}0.013 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+HC-128       & \fn{}0.009 & \fn{}0.007 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+JH           & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.015 & \fn{}0.012 & \fn{}--    & \fn{}--   \\
+Keccak       & \fd{}--    & \fd{}1.0   & \fd{}1.0   & \fn{}0.018 & \fn{}0.017 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+MD6          & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}0.825 & \fn{}0.009 & \fn{}0.007\\
+Rabbit       & \fn{}0.014 & \fn{}0.009 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+RC4          & \fd{}--    & \fn{}0.01  & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+Salsa20      & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.016 & \fn{}0.01  & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+SINGLE-DES   & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}1.0   & \fd{}0.183 & \fn{}0.017 & \fn{}0.01  & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+Skein        & \fn{}0.012 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+SOSEMANUK    & \fn{}0.012 & \fn{}0.01  & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+TEA          & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.008 & \fn{}0.01  & \fn{}0.01  & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
+TRIPLE-DES   & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.01  & \fn{}0.015 & \fn{}0.012 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   
+\end{tabular}
+\caption{Results of iterated local search as EACirc metaheuristics on usable testbed.}
+\label{table:res-usable-ils}
+\end{table}
 
 From these results, we can have some general notes to the usable testbed.
 
@@ -510,6 +577,7 @@ We also performed other tests, which showed some aditional information.
 
 
 \subsection{Simulated annealing}
+\label{subsec:res-ss-sa}
 
 The Simulated annealing was tested as a representative of single solution metaheuristics that can accept non-improving solution. The results are added to appendix in \todo{do so and refer table from here}, as they are wery similar to \todo{ref table from iterative local search} with Iterative local search results.
 
@@ -519,31 +587,56 @@ The \todo{ref SA table} is final the best result of 9 tested configurations. The
 
 
 \subsection{Guided local search}
-
+\label{subsec:res-ss-gls}
 
 
 \subsection{Variable neighbourhood search}
+\label{subsec:res-ss-vns}
 
 
 \subsection{Overfitting analysis}
+\label{subsec:res-ss-overfitting}
+
 \section{Multi-solutions metaheuristics}
+\label{sec:res-ms}
 \subsection{Bruteforce baseline}
+\label{subsec:res-ms-bruteforce}
 \subsection{Ant colony optimization}
+\label{subsec:res-ms-aco}
+
 \section{ANN}
+\label{sec:res-ann}
+
 \section{Inter-approach comparison}
+\label{sec:res-comp}
 
 \chapter{Related work}
+\label{chap:relatwork}
 
 \section{Statistical batteries}
+\label{sec:relatwork-stat}
+
 \subsection{Results}
+\label{subsec:relatwork-stat-res}
+
+\section{Compression algorithms}
+\label{sec:relatwork-compress}
+
 \section{?Search for papers on same topic?}
+\label{sec:relatwork-paper}
+
 \section{EACirc previous work}
+\label{sec:relatwork-eac}
 
 \chapter{Conclusion}
+\label{chap:conclusion}
 
 \section{Methodology}
+\label{sec:conclusion-method}
 \section{Results}
+\label{sec:conclusion-results}
 \section{Future work}
+\label{sec:conclusion-future}
 
 
 \end{document}
