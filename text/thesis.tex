@@ -87,7 +87,7 @@
 
 % cref, has to be loaded after hyperref
 \usepackage{hyperref}
-\usepackage[capitalise]{cleveref}
+\usepackage{cleveref}
 % for long equation wrap
 \usepackage{wrapfig}
 % ???
@@ -246,11 +246,11 @@ The main advantage of metaheuristics is that they are well known, compared toget
 \chapter{Current approaches in problem optimization}
 \label{chap:optimisation}
 
-The number of solutions inspected in one moment splits metaheuristics into two categories: single-solution based metaheuristics and population-based metaheuristics. The original idea of EACirc used genetic programming -- a population-based metaheuristic for optimisation. One of the weaknesses of this approach was a rather difficult interpretation of the results [cite Martin's thesis - understanding "random" number 0.52].
+The number of solutions inspected in one moment splits metaheuristics into two categories: single-solution based metaheuristics and population-based metaheuristics. The original idea of EACirc used genetic programming -- a population-based metaheuristic for optimisation. One of the weaknesses of this approach was a rather difficult interpretation of the results, as is described in section 5.1 of~\cite{ukropBcThesis}.
 
-The main advantage of having multiple concurrent solutions is handling population diversity. Diversity can help avoid local optimums and together with sexual crossover can also produce better individuals faster. However, maintaining the diversity of the population is difficult, if the fitness does not increase continuously [cite something - probably Martin's thesis]. An individual having a unique feature, which increases its fitness, is going to be spread trough mutations in next generations, rather than another feature would emerge randomly within a different individual. Besides, the implementation of sexual crossover was never widely used and tested [cite Martin's thesis].
+The main advantage of having multiple concurrent solutions is handling population diversity. Diversity can help avoid local optima and together with sexual crossover can produce better individuals faster. However, maintaining the diversity of the population is difficult, if the fitness does not increase continuously \todo{find something to cite or change the sentence (as we observed)}. An individual having a unique feature, which increases its fitness, is going to be spread trough mutations in next generations, rather than another feature would emerge randomly within a different individual. Besides, the impact of sexual crossover was never sufficiently tested, and it was abandoned with EACirc 2 and later implementations~\cite{ukropMgrThesis,sys2014constructing}.
 
-The next solution proposed in [paper Syso] simplified the interpretation by using the population of only one individual. This solution allowed statistical postprocessing of fitness values and together with categories evaluator surpassed the previous approach in all tests [again Syso's paper?]. The population with a single individual changed the used method to local search. Because the test vectors were changed every 100 iterations, the metaheuristic can be described as iterated local search [cite], or sometimes called global search?.
+The next solution proposed in [paper Syso] simplified the interpretation by using the population of only one individual. This solution allowed statistical postprocessing of fitness values and together with categories evaluator surpassed the previous approach in all tests~\cite{sys2014constructing}. The population with a single individual changed the used method to local search. Because the test vectors were changed every 100 iterations, the metaheuristic can be described as iterated local search \todo{[cite], or sometimes called global search?}.
 
 EACirc 4.0 simplified and optimised the computations by substituting GALib -- a genetic algorithm library by a custom implementation of the iterated local search.  To question if iterated local search is the best approach, I analysed the problem and tried other metaheuristics.
 
@@ -343,12 +343,12 @@ Application of Tabu search in EACirc has several issues. Firstly, how to store u
 
 The primary testing goal of EACirc is to assess randomness of ciphertext of cryptographic functions. As most of the cryptographic functions are semantic secure, EACirc can identify non-randomness only for reduced functions. The functions can be reduced in a number of rounds, by processing selected plaintexts, and by selecting only specific bits of the output. As the analysis of reduced versions of cryptographic functions is the main goal of the EACirc project, it is also selected as the testing scenario for comparison of analysed metaheuristics.
 
-The approach for evaluation is \todo{[briefly?] described in [chapter EACirc]}. The tested data were produced from 16 different cryptographic functions and pseudo-random data generator PCG [cite] as reference data. These functions are reduced to the edge of distinguishing capability of EACirc, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually, some extra surrounding is tested as well for broader usage of the results.
+The approach for evaluation is \todo{briefly?} described in \cref{subsec:eacirc}. The tested data were produced from 16 different cryptographic functions and pseudo-random data generator PCG~\cite{pcgGen} as reference data \todo{why is this better?}. These functions are reduced to the edge of distinguishing capability of EACirc, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually, some extra surrounding is tested as well for broader usage of the results.
 
 \section{Used data}
 \label{sec:method-data}
 
-Previous works on EACirc analysed candidates of cryptoprimitives competitions [cite eSTREAM, SHA-3 and CAESAR works]. These works extended EACirc by many functions sharing the same interface. This approach was effective for breadth analysis of the competition candidates, but it does not test well known cryptographic functions like AES and DES.
+Previous works on EACirc analysed candidates of cryptoprimitives competitions~\cite{estreamMgrThesis,sha3Thesis,ukropMgrThesis}[cite eSTREAM, SHA-3 and CAESAR works]. These works extended EACirc by many functions sharing the same interface. This approach was effective for breadth analysis of the competition candidates, but it does not test well known cryptographic functions like AES and DES.
 
 Therefore, for the comparison with other randomness testing tools and other research papers on semantics security, we decided select new test set of cryptographic functions. We chose the finalist of competitions SHA-3 (BLAKE, Grostl, JH, Keccak and Skein) and eSTREAM (HC-128, Rabbit, Salsa20, SOSEMANUK and Grain), and above that, we implemented other block (AES, DES, 3-DES and TEA) and stream (RC4) functions.
 
@@ -397,7 +397,7 @@ Getting one such $p$-value for whole computation says nothing, as we could be lu
 
 This approach is vastly increasing the amount of data needed for the computation, as well as the overall run-time. This method is a trade-off for the success rate of EACirc, as different evaluators do not need statistical evaluation. Hence they need much fewer data; however, such evaluators are slightly worse based on results from~\cite{svenda2013towards}.
 
-When we consider basic setup for single-solution metaheuristics, EACirc consumes 2.4\,GB of ciphertext of tested function~\cref{fig:dataUsage}. The runtime of the experiment on MetaCentrum varies from 4 to 20 hours on a single core.
+When we consider basic setup for single-solution metaheuristics, EACirc consumes 2.4\,GB of ciphertext of tested function \cref{fig:dataUsage}. The runtime of the experiment on MetaCentrum varies from 4 to 20 hours on a single core.
 
 %http://tex.stackexchange.com/questions/57732/placing-figures-inside-a-two-column-document 3rd answer
 \begin{figure*}[t]
@@ -432,7 +432,7 @@ When we consider basic setup for single-solution metaheuristics, EACirc consumes
 
 As EACirc needs repeated computation on MetaCentrum grid infrastructure, the automation for binary deployment, computation distribution, aggregation of the results and their postprocessing are required.
 
-The scripts are executed in few steps. Firstly, a preprocessor creates necessary configuration files for the experiment. Secondly, MetCentrum scripts distribute the computation among the grid infrastructure. Thirdly, after the computation finishes the postprocessor script aggregate the results. Finally, the table generator script generates a human readable version of the results as well as database dump of the whole experiment\cref{fig:scripts}.
+The scripts are executed in few steps. Firstly, a preprocessor creates necessary configuration files for the experiment. Secondly, MetCentrum scripts distribute the computation among the grid infrastructure. Thirdly, after the computation finishes the postprocessor script aggregate the results. Finally, the table generator script generates a human readable version of the results as well as database dump of the whole experiment \cref{fig:scripts}.
 
 Earlier was in use solution called Oneclick created by Lubomír Obrátil for his bachelor thesis~\cite{obratilBcThesis}. The Oneclick was a single tool for both preprocessing and postprocessing phase, and the run was parametrized. However, this approach is outdated for MetaCentrum infrastructure. The advantages of new scripts are: 
 
@@ -533,7 +533,9 @@ The colour highlights our evaluation of the result. Red highlight signs that EAC
 \subsection{Iterated local search baseline}
 \label{subsec:res-ss-ils}
 
-As was stated in \todo{ref to EACirc is using ILS}, EACirc used Iterative local search as the heuristics since version 4.0. Therefore measuring this heuristics serves as a baseline, which allows direct comparison of other metaheuristics and also can be used to estimate comparison to previous EACirc results, whose were in this work verified.
+As was stated in \cref{subsec:eacirc} \todo{delete me, when you check this}, EACirc used Iterative local search as the heuristics since version 4.0. Therefore measuring this heuristics serves as a baseline, which allows direct comparison of other metaheuristics and also can be used to estimate comparison to previous EACirc results, whose were in this work verified.
+
+\todo{fix the table}
 
 \begin{table}[H]
 \centering
@@ -564,22 +566,22 @@ TRIPLE-DES   & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.01  & \fn{}0.015 & 
 From these results, we can have some general notes to the usable testbed.
 
 \begin{itemize}
-    \item The random-random experiment result is notably higher than 1\,\%. It is caused by known, but unresolved bug, described in the documentation\todo{cite EAC doc, exact page}. This bug is consequence of unconnected input to output in the graph, so it is denoted \textit{connection bug}.
-    \item Three rounds AES, 1 round BLAKE, eight rounds MD6 and 4 rounds DES are in the interpretation described in \todo{ref SS methodology} rejected, however rejection rate is less than 1, therefore we would not obtain a strong distinguisher. These functions take role as \textit{benchmarking functions}, as the different metaheuristics directly affect them.
+    \item The random-random experiment result is notably higher than 1\,\%. It is caused by known, but unresolved bug, described in the documentation~\cite{EACirc-wiki-bug}. This bug is a consequence of unconnected input to output in the circuit, so it is denoted \textit{connection bug}.
+    \item Three rounds AES, 1 round BLAKE, eight rounds MD6 and 4 rounds DES are in the interpretation described in \cref{subsec:method-spec-ss} rejected, however rejection rate is less than 1, therefore we would not obtain a strong distinguisher. These functions take role as \textit{benchmarking functions}, as the different metaheuristics directly affect them.
 \end{itemize}
 
 We also performed other tests, which showed some aditional information.
 
 \begin{itemize}
-    \item The creation of distinguisher for one more round, or stronger distinguisher for e.g. three rounds AES is possible, however it needs manual fine-tuning to the data and more tested data. In study of TEA\cite{kubicek2016new}, we showed distinguisher for 4 rounds TEA. Obtaining such result required different shape of the circuit due to TEA block length and 100 times more test vectors.
-    \item The length of an epoch, which describes number of iterations performed on same dataset, was 100 for showed results. This setup seems to lead to overfitting, as was examined for example in \todo{MU bc thesis overfitting}. We tried decreasing the epoch length to 20, which lead to increase of influence of the \textit{connection bug}, as the random-random experiment critical value was 0.03127. Such setup did not increased number of distinguished rounds for any function, but increased rejection rate of all the \textit{benchmarking functions}. However, only three rounds AES increased significantly to 0.982. Same behaviour appeared for shorter epochs of all metaheuristics.
+    \item The creation of distinguisher for one more round, or stronger distinguisher for e.g. three rounds AES is possible, however it needs manual fine-tuning to the data and more tested data. In study of TEA~\cite{kubicek2016new}, we showed distinguisher for 4 rounds TEA. Obtaining such result required different shape of the circuit due to TEA block length and 100 times more test vectors.
+    \item The length of an epoch, which describes number of iterations performed on same dataset, was 100 for showed results. This setup seems to lead to overfitting, as was examined for example in section 7.1 of~\cite{ukropBcThesis}. We tried decreasing the epoch length to 20, which lead to increase of influence of the \textit{connection bug}, as the random-random experiment critical value was 0.03127. Such setup did not increased number of distinguished rounds for any function, but increased rejection rate of all the \textit{benchmarking functions}. However, only three rounds AES increased significantly to 0.982. Same behaviour appeared for shorter epochs of all metaheuristics.
 \end{itemize}
 
 
 \subsection{Simulated annealing}
 \label{subsec:res-ss-sa}
 
-The Simulated annealing was tested as a representative of single solution metaheuristics that can accept non-improving solution. The results are added to appendix in \todo{do so and refer table from here}, as they are wery similar to \todo{ref table from iterative local search} with Iterative local search results.
+The Simulated annealing was tested as a representative of single solution metaheuristics that can accept non-improving solution. The results are added to appendix in \todo{do so and refer table from here}, as they are wery similar to \cref{table:res-usable-ils} with Iterative local search results.
 
 The random-random experiment ended with 0.01681, which corresponds to higher influence of \textit{connection bug} for metaheuristics, which accepts non-improving neighbour. It probably also influenced \textit{benchmarking functions} results, so the higher rejection rate 0.293 of three rounds AES is not such significant improvement.
 
@@ -588,6 +590,13 @@ The \todo{ref SA table} is final the best result of 9 tested configurations. The
 
 \subsection{Guided local search}
 \label{subsec:res-ss-gls}
+
+Guided local search can escape local optima by change of evaluation method. Our goal was set to escape not local optima, but unwanted solution with fitness equal to 0, which we refer as \textit{connection bug}. We penalise \textit{unconnected} solutions by the number of connectors, where more connected individuals have higher fitness. This proved to lead to more connected solutions faster. In contrast, solutions with fitness higher than 0.9 are penalised, if they have too many connectors. Our hypothesis, that this approach should remove unnecessary connectors of the circuit, was not proved by our experiments.
+
+We also analysed the original idea of Guided local search, such that we should change between unrelated fitnesses to help the metaheuristic to find better solution. We implemented another fitness method called \textit{weight evaluator}, which is not based on $\chi^{2}$ test. The output of the circuit is bit by bit evaluated as an guess, what was the source of the tested vector. These guesses are sum per all random test vectors and all test vectors from tested function. For 1\,000 test vectors per each group and 1 output byte, this means 8\,000 guesses per group. Random guesses should have similar amount of zeroes and ones. The ration is described by binomial distribution with same probability $p = 0.5$ for zero and one and $N = 8\,000$. We know this expected distribution of the guesses, so we can compute $p$-value of the measured data. Our analysis of this separate fitness function showed it is performing slightly worse than $\chi^{2}$ test, as it test only one criteria of the output, while $\chi^{2}$ test can detect also other sources of nonrandomness.
+
+Concurrent usage of those both fitnesses resulted in worse distinguishing capabilities than the first method described in this sub-section.
+
 
 
 \subsection{Variable neighbourhood search}
