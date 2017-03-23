@@ -52,8 +52,8 @@
     author        = Karel Kubíček,
     gender        = m,
     advisor       = {RNDr. Petr Švenda, Ph.D.},
-    title         = {Advancing EACirc, an automation tool for cryptanalysis of stream, block and hash functions},
-    TeXtitle      = {Advancing EACirc, an automation tool for cryptanalysis of stream, block and hash functions},
+    title         = {Optimisation heuristics in randomness testing},
+    TeXtitle      = {Optimisation heuristics in randomness testing},
     keywords      = {randomness testing, cryptoanalysis, block functions, stream functions, hash functions, problem optimization, metaheuristics},
     TeXkeywords   = {randomness testing, cryptoanalysis, block functions, stream functions, hash functions, problem optimization, metaheuristics},
 }
@@ -246,32 +246,88 @@ The main advantage of metaheuristics is that they are well known, compared toget
 \chapter{Current approaches in problem optimization}
 \label{chap:optimisation}
 
-The number of solutions inspected in one moment splits metaheuristics into two categories: single-solution based metaheuristics and population-based metaheuristics. The original idea of EACirc used genetic programming -- a population-based metaheuristic for optimisation. One of the weaknesses of this approach was a rather difficult interpretation of the results, as is described in section 5.1 of~\cite{ukropBcThesis}.
+The number of candidate solutions inspected simultaneously splits metaheuristics into two categories: single-solution based metaheuristics and population-based metaheuristics.
 
-The main advantage of having multiple concurrent solutions is handling population diversity. Diversity can help avoid local optima and together with sexual crossover can produce better individuals faster. However, maintaining the diversity of the population is difficult, if the fitness does not increase continuously \todo{find something to cite or change the sentence (as we observed)}. An individual having a unique feature, which increases its fitness, is going to be spread trough mutations in next generations, rather than another feature would emerge randomly within a different individual. Besides, the impact of sexual crossover was never sufficiently tested, and it was abandoned with EACirc 2 and later implementations~\cite{ukropMgrThesis,sys2014constructing}.
+The main advantage of having multiple concurrent solutions is handling population diversity. Diversity can help avoid ending in local optima and together with other techniques can produce better individuals faster. However, maintaining the diversity of the population is generally difficult, if the fitness does not increase continuously. An individual having a unique feature, which increases its fitness, is going to be quickly spread in next generations, suppressing other promising, but not yet so well performing other individuals.
 
-The next solution proposed in [paper Syso] simplified the interpretation by using the population of only one individual. This solution allowed statistical postprocessing of fitness values and together with categories evaluator surpassed the previous approach in all tests~\cite{sys2014constructing}. The population with a single individual changed the used method to local search. Because the test vectors were changed every 100 iterations, the metaheuristic can be described as iterated local search \todo{[cite], or sometimes called global search?}.
+The initial version of EACirc tended to use the advantages of the genetic programming, which is a population based metaheuristic. Encoding the candidate solutions as a simulated electronic circuit allowed operations for mutation and crossover. Together with fitness evaluation was the optimisation process specified and used on cryptographic data, it was capable of distinguishing weak sources from truly random data~\cite{svenda2013towards}.
 
-EACirc 4.0 simplified and optimised the computations by substituting GALib -- a genetic algorithm library by a custom implementation of the iterated local search.  To question if iterated local search is the best approach, I analysed the problem and tried other metaheuristics.
+However, this approach was very complex and not enough understood. The sexual crossover did not have reasonable implementation and holding the diversity of the population was not analysed. Also the interpretation of the results difficult. The succeeding solution proposed in \cite{sys2014constructing} simplified the interpretation by using the population of only one individual. This solution allowed statistical postprocessing of fitness values and together with categories evaluator surpassed the previous approach in all tests~\cite{sys2014constructing}. The population with a single individual changed effectively the used method to iterated local search -- a single solution metaheuristic.
+
+EACirc 4.0 simplified and optimised the computations by substituting GALib -- a genetic algorithm library by a custom implementation of the iterated local search. To question if iterated local search is the best approach, this work analyses the problem and tries other metaheuristics.
 
 \section{Single-solution metaheuristics}
 \label{sec:opt-single-sol}
 
 Figure ... shows the classification of the improved variants of local search metaheuristics by authors of ParadisEO library.
 
+\begin{figure}[H]
+    \centering
+    \footnotesize{
+    \begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 7cm/#1,
+        level distance = 1.5cm}, every node/.style = {shape=rectangle, 
+        draw, align=center}]]
+      \node {Strategies for improving local search}
+        child { node [xshift=3 cm] {Iterate with different\\solutions} 
+            child { node {Multi-start\\local search} }
+            child { node [xshift=-0.8 cm] {Iterative local\\search, GRASP} }
+        }
+        child { node [yshift=-1.2 cm] {Change landscape\\of the problem}
+            child { node [xshift=-0.8 cm] {Change of the objective function\\or the input data}
+                child { node {Guided\\local\\search} }
+                child { node {Noisy method} }
+                child { node {Smoothing\\method} } }
+            child { node [xshift=0.8 cm]  {Use different\\neighbourhoods}
+                child { node {Variable\\neighbourhood\\search} }
+            } 
+        }
+        child { node [xshift=-3 cm] {Accept non-improving\\neighbours} 
+            child { node [xshift=0.8 cm] {Simulated\\annealing} }
+            child { node [xshift=-0.8 cm] {Tabu\\search} }
+        };
+    \end{tikzpicture}
+    }
+    \caption{Single-solution metaheuristics as specialized version of local search. \todo{source}}
+    \label{fig:opt-single-sol-overview}
+\end{figure}
+
 \subsection{Local search}
 \label{subsec:opt-single-sol-ls}
+
+This metaheuristic is the very basic approach in problem optimisation. We begin with single candidate solution and we apply changes to this solution so we create a neighbour candidate. We compare fitnesses of these two solutions and we select the better candidate to the next generation. We iterate this approach until we find sufficient solution, or we tested limited amount of iterations.
+
+The algorithm can be referred also as hill-climbing, as we with acceptance of an improving solution, we step up in the fitness space. This also means, that we can find only sub optimal solution -- a local optima.
+
+Escaping local optima is an important phenomena, as local optima can be relative to tested data, or to the specific approach of the evaluation.
+
+As EACirc is using an iterated version of local search, the application of local search would be straightforward. However, this would decrease the capabilities of EACirc do to omit of the learning process.
+
 \subsection{Iterative local search}
 \label{subsec:opt-single-sol-ils}
+
+Iterative local search is and extension of local search. After defined amounts of iteration of basic local search, the tested data are changed. The computation on one set of data is called an \textit{epoch}, and the amount of iteration is called \textit{epoch length}.
+
+During the epoch, the fitness progress is non-decreasing, however, after the end of each epoch, fitness is expected to drop. The final fitness has to be tested on new dataset, which applies for every metaheuristic. Therefore, we distinguish between the learning dataset and the testing dataset.
+
+The \textit{epoch length} is crucial parameter of this metaheuristic. A short epoch length can be computationally more demanding due to higher data consumption, and the solution may not be able to learn anything on the data. Too long \textit{epoch} leads to \textit{overfitting}, a situation, when the individual is learning specific pattern of the current dataset over general patterns of all datasets.
+
+The iterated local search is used in EACirc since~\cite{sys2014constructing}. Therefore it is used as an baseline of the single solution metaheuristics tested in this work. The overfitting process in EACirc was examined in chapter 7 of~\cite{ukropBcThesis}.
+
 \subsection{GRASP}
 \label{subsec:opt-single-sol-grasp}
 
-The greedy randomised adaptive search procedure is splitting each iteration into two steps: a feasible solution construction by greedy algorithm and performing the local search using the generated solution. As we did not found any greedy algorithm for circuit construction that would reflect tested data, this approach was abandoned.
+The greedy randomised adaptive search procedure is splitting each iteration into two steps: a feasible solution construction by greedy algorithm and performing the local search using the generated solution.
+
+This metaheuristics was abandoned as we did not found any greedy algorithm for circuit construction, such that would reflect tested data. Also it does not fit the iterative process of learning in \textit{epochs}.
 
 \subsection{Multi-start local search}
 \label{subsec:opt-single-sol-msls}
 
-Is another approach how to surpass local optimum to find the global optimum. The metaheuristic starts the computation with k randomly generated individuals that are concurrently optimised by local search. However, this method is already used in EACirc, neither on the level of single computation, but in the iteration of experiment over 1000 runs per unique settings to obtain statistically significant results. Implementation of multi-start local search on the level of single computation would make the results interpretation more difficult, same as in the case of EA with a population in [Martin's thesis].
+Multi-start local search is another approach how to surpass local optimum to find the global optimum. The metaheuristic starts the computation with $k$ randomly generated individuals that are concurrently optimised by local search.
+
+This parallelism could increase the usage of the testing data in EACirc. The disadvantage is more difficult evaluation, as stated in chapter 5~\cite{ukropBcThesis}. It is a question, if we should evaluate the best, or the average, or random solution, or more solution simultaneously. Another possible advantage of multi-start local search can be parallelization of the computation. However, EACirc computation is already parallelized, neither on the level of single computation. Due to statistical interpretation, we have to repeat the computation process 1\,000 times.
+
+We decided to not cover multi-start local search, as saving percents of computation time per more difficult interpretation is a bad trade-off.
 
 \subsection{Guided local search}
 \label{subsec:opt-single-sol-gls}
@@ -281,26 +337,35 @@ Guided local search is metaheuristic based on dynamic changing of the fitness fu
 The EACirc computation can get trapped in local optima mainly in two cases:
 
 \begin{enumerate}
-    \item the individual got lucky to guess current test set, but it will not be successful in next epoch, or
+    \item the individual got lucky to guess current test set, but it will not be successful in next \textit{epoch}, or
     \item the individual is already successful due to finding feature of the tested data, but it could not get better.
 \end{enumerate}
 
-We do not need to fix the first case, as such individual would be replaced in next epoch. However, we can use Guided local search to improve individual from the second case. Our alternative fitness function can be designed as the sum of our current fitness and e.g. the number of connectors. Such change would simplify the solution, which would help us with the interpretation of the last individual. Alternatively, we can use completely different fitness function.
+We do not need to fix the first case, as such individual would be replaced in next \textit{epoch}. However, we can use guided local search to improve individual from the second case. Our alternative fitness function can be designed as the sum of our current fitness and e.g. the number of connectors. Such fitness would simplify the solution, which would help us with the interpretation of the last individual. Alternatively, we can use completely different fitness function.
+
+We decided to implement guided local search in EACirc, as it also represents single-solution metaheuristics with change of the objective function from \cref{fig:opt-single-sol-overview}.
 
 \subsection{Noisy method}
 \label{subsec:opt-single-sol-nois}
 
-The noisy method is a metaheuristic, which allows escaping local optima by noised fitness function. At the beginning of the computation, the noise is the strongest, and it disappears during the computation. The suggested approach for implementing the noise by [metaheuristics book, pp 160] is randomization of tested input. As EACirc works with discrete randomly-looking data, such approach could flip important bit which would make progress impossible. Therefore this method was abandoned.
+The noisy method is a another metaheuristic, which changes the fitness space to escape local optima. It is done by adding a random noise to the input data [metaheuristics book, pp 160]. At the beginning of the computation, the noise is the strongest, and it disappears during the computation, so the final \textit{epochs} can be evaluated on the original data.
 
+In EACirc, our research goal is already distinguishing pseudo-random data from truly-random data. An additional random noise in the input would probably lead to even more difficult learning process. For example, the noise could flip bit on position, which is necessary for distinguishing between the data sources. Therefore was this method abandoned.
 \subsection{Smoothing method}
 \label{subsec:opt-single-sol-smooth}
 
-Smoothing method is the last inspected metaheuristics, which uses changes in fitness function to escape local optima. The method is based on smoothing the landscape of fitness function by computing the local average. It can work well for example figure [fitness function graph], however as the neighbourhood of an individual is enormous, and it is not continuous, this method would not be possible due to computation requirements.
+Smoothing method is the another metaheuristic, which uses changes in fitness function to escape local optima. The method is based on smoothing the landscape of fitness function by computing a local average of all neigbours to given distance. If the fitness is overally increasing in one direction, but more zoomed observation shows small fluctuation, smoothing method smooths the fluctuation and allows locating the global optima.
+
+\textit{Neigbours} in EACirc are defined as solutions obtained by mutation of the circuit. Available mutation are connecting or disconnecting a connector, or change of the Boolean function in the node. The neighbourhood of an individual in EACirc is enormous (over $2^{25}$ neigbours in distance 1 for basic EACirc setup), this method would not be possible due to computational requirements.
 
 \subsection{Variable neighbourhood search}
 \label{subsec:opt-single-sol-vns}
 
-Compared to metaheuristics that change fitness function, variable neighbourhood search is not able to escape local optima in all the cases. However, it still can increase the escaping probability, as the searched neighbourhood space would contain more desired solutions. If we already have a successful solution, we can inspect only solutions with fewer connectors, or in contrast, we can press more to connect the individual in case that the input and output are not connected and fitness is equal to 0.
+Variable neighbourhood search also change the landscape of the problem. However, it do not change the fitness function or its interpretation, but it defines other method for neigbour selection. IF the computation stucks in local optima, the neigbourhood method is changed. Or the neigbourhood can be changed periodically. This method does not guarantee escaping from local optima, as all neigbourhoods can contain only worse solutions.
+
+It is difficult to specify different neigbourhood in EACirc, however, the method lead us to different idea. EACirc is heading two mutually exclusive problems. We would like to have circuit connected sparsely for easier interpretation of the final solution. However, we also want to have the circuit's input and output nodes connected. This can be provided by reduction of the searched neigbourhood.
+
+If we already have a successful solution, we can inspect only solutions with fewer connectors. In contrast, if the circuit is not connected (therefore the circuit's fitness is equal to zero), we can inspect only individual with more connectors.
 
 \subsection{Simulated annealing}
 \label{subsec:opt-single-sol-sa}
@@ -309,16 +374,18 @@ Remaining two single-solution metaheuristics are based on acceptance of non-impr
 
 Simulated annealing metaheuristic is inspired by the physical process of annealing in metallurgy. Annealing is an iterative process of heating the metal to increase the size of the crystals, which reduces the probability of a defect. During the process, the metal is heated to lower and lower temperatures.
 
-Simulated annealing uses variable temperature, which describes probability for acceptance of worse neighbour. This probability is decreasing during the computations, such that in the beginning, the likelihood of acceptance worse solution is high, but at the end of the computation, only better solutions are accepted.
+Simulated annealing uses variable temperature, which describes probability of acceptance of worse neighbour. This probability is decreasing during the computations, such that in the beginning, the likelihood of acceptance of worse solution is high, but at the end of the computation, only better solutions are accepted.
 
-This metaheuristic is widely used, which was the reason for implementing it as a testing scenario for metaheuristics. On the other hand, accepting non-improving solution is has a very limited positive effect on computation of EACirc, as a bad neighbour can substitute a good solution.
+This metaheuristic is widely used, which was the reason for implementing it as a testing scenario for metaheuristics as an representation of group of single solution metaheuristics that accepts non-improving solutions. Its implementation in EACirc do not require any changes, only specification of this method.
+
+However, this method is not specified for the iterative approach with learning \textit{epochs}. Also the acceptance of non-improving solution can lead to discarding good solution.
 
 \subsection{Tabu search}
 \label{subsec:opt-single-sol-tabu}
 
 Like Simulated annealing, Tabu search can also accept non-improving solutions to escape from local optima. However, the decision whether to accept a non-improving solution is not based on probability, but on knowledge, if considered solution was visited. Therefore, Tabu search holds a memory of visited solutions, called \textit{tabu list}, and it would not use twice the same solution. This way, Tabu search avoids cycles during the optimisation process.
 
-Application of Tabu search in EACirc has several issues. Firstly, how to store used individuals (memory usage may be a problem), which can be solved by storing only a hash of the solution. Secondly, the neighbourhood space of an individual is huge [note calculation] -- higher than the number of individuals tested during whole computation. Choosing twice the same solution is unlikely. Therefore we decided to try only Simulated annealing and leave the decision of Tabu search implementation on the result of Simulated annealing.
+Application of Tabu search in EACirc has several issues. Firstly, how to store used individuals (memory usage may be a problem), which can be solved by storing only a hash of the solution. Secondly, the neighbourhood space of an individual is huge, as stated in \cref{subsec:opt-single-sol-smooth}. It is higher than the number of individuals tested during whole computation. Choosing twice the same solution is unlikely. Therefore we decided to try only Simulated annealing and leave the decision of Tabu search implementation on the result of Simulated annealing.
 
 \section{Multi-solutions metaheuristics}
 \label{sec:opt-multi-sol}
@@ -341,27 +408,39 @@ Application of Tabu search in EACirc has several issues. Firstly, how to store u
 \chapter{Experiment methodology}
 \label{chap:method}
 
-The primary testing goal of EACirc is to assess randomness of ciphertext of cryptographic functions. As most of the cryptographic functions are semantic secure, EACirc can identify non-randomness only for reduced functions. The functions can be reduced in a number of rounds, by processing selected plaintexts, and by selecting only specific bits of the output. As the analysis of reduced versions of cryptographic functions is the main goal of the EACirc project, it is also selected as the testing scenario for comparison of analysed metaheuristics.
+The primary testing goal of EACirc is to assess randomness of ciphertext of cryptographic functions. As most of the cryptographic functions are in a scope of automated analysis semantic secure, EACirc can identify non-randomness only for reduced functions. The functions can be reduced in a number of rounds, by processing selected plaintexts, and by selecting only specific bits of the output. As the analysis of reduced versions of cryptographic functions is the main goal of the EACirc project, it is also selected as the testing scenario for comparison of analysed metaheuristics.
 
-The approach for evaluation is \todo{briefly?} described in \cref{subsec:eacirc}. The tested data were produced from 16 different cryptographic functions and pseudo-random data generator PCG~\cite{pcgGen} as reference data \todo{why is this better?}. These functions are reduced to the edge of distinguishing capability of EACirc, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually, some extra surrounding is tested as well for broader usage of the results.
+The approach for evaluation is \todo{briefly?} described in \cref{subsec:eacirc}. The tested data were produced from 16 different cryptographic functions and pseudo-random data generator PCG~\cite{pcgGen} as reference data \todo{why is this better?}. These functions are reduced to the edge of distinguishing capability of EACirc, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually we test also $i-1$ and $i+2$ rounds, for broader comparison of the results with state of the art of cryptoanalysis.
 
 \section{Used data}
 \label{sec:method-data}
 
-Previous works on EACirc analysed candidates of cryptoprimitives competitions~\cite{estreamMgrThesis,sha3Thesis,ukropMgrThesis}[cite eSTREAM, SHA-3 and CAESAR works]. These works extended EACirc by many functions sharing the same interface. This approach was effective for breadth analysis of the competition candidates, but it does not test well known cryptographic functions like AES and DES.
+Previous works on EACirc analysed candidates of cryptoprimitives competitions~\cite{estreamMgrThesis,sha3Thesis,ukropMgrThesis}. These works extended EACirc by many functions sharing the same interface. This approach was effective for broad analysis of the competition candidates, but it does not test well known cryptographic functions like AES and DES.
 
 Therefore, for the comparison with other randomness testing tools and other research papers on semantics security, we decided select new test set of cryptographic functions. We chose the finalist of competitions SHA-3 (BLAKE, Grostl, JH, Keccak and Skein) and eSTREAM (HC-128, Rabbit, Salsa20, SOSEMANUK and Grain), and above that, we implemented other block (AES, DES, 3-DES and TEA) and stream (RC4) functions.
 
 \subsection{Reimplementation of stream handling in EACirc}
 \label{subsec:method-data-streams}
 
-The implementation of SHA-3 and eStream candidates in EACirc was called projects. The projects were handling everything related to data generation, specifically IV, key and plaintext. Every project had its own implementation of counter plaintext generator, strict avalanche criterion generator and so on.
+The implementation of SHA-3 and eStream candidates in EACirc was called \todo{projects}. The projects were handling everything related to data generation, specifically IV, key and plaintext. Every project had its own implementation of counter plaintext generator, strict avalanche criterion generator and so on.
 
-For the implementation of the new project for block ciphers, we decided to reimplement data generation in more variable and modifiable way. For this, we decided for data manipulation via streams, whose can be pipelined into each other. Each stream implements simple interface with constructor and function \texttt{next}, which returns next test vector. The stream is specified only by the output size of the test vector.
+For the implementation of the new project for block ciphers, we decided to reimplement data generation in more variable and modifiable way. For this, we decided for data manipulation via streams, whose can be nested into each other. Each stream implements simple interface with constructor and function \texttt{next}, which returns next test vector. The stream is specified only by the output size of the test vector.
 
-Streams currently provide the whole data manipulation. Firstly, all the data sources are streams, such as true and false bits generators, counter and Strict avalanche criterion test vector generators, to PRNG test vector generators. Secondly, the projects eSTREAM, SHA-3 and the block ciphers take these simple streams as the input for computation. These projects are streams as well, as they produce ciphertext vectors. Finally, the ciphertext can be postprocessed by streams for selection of only some bits of the output.
+The purpose of stream is unification of all data manipulation in the whole project, independently on the used cryptographic function. All streams inherit from abstract class \texttt{stream} with minimalistic interface. The streams have to specify its \texttt{size} and they have to implement method \texttt{next()}, which returns next test vector. We have currently many types of streams in EACirc.
 
-All this described data manipulation and project eSTREAM and SHA-3 refactoring were implemented as a part of this thesis.
+\begin{itemize}
+    \item Data sources streams, that are used as an input to cryptographic functions or as reference data. Example of such streams are:
+    \begin{itemize}
+        \item input streams: true and false bits generators, counter and multiple variants of the strict avalanche criterion generator, and
+        \item PRNG's PCG32 and Mersenne Twister. \todo{cite?}
+    \end{itemize}
+    \item Projects of cryptographic functions. Namely project eSTREAM and SHA-3.
+    \item Postprocessing streams are applied to data from cryptographic functions for more advanced experiments. They allows us analysis of selected bits of the function.
+\end{itemize}
+
+The streams are completely configurable via \texttt{JSON} configuration file. As the streams can be nested, the structure is described as a \texttt{JSON} tree. This updates changed the structure of the configuration file, therefore the configuration files are not backwards compatible. Nevertheless, the configuration is described and showed on examples in the project's documentation~\cite{EACirc-wiki-streams}.
+
+All these changes significantly simplified the codebase, unified many implementations of the same functionality and broadened the experiment capabilities of EACirc. Therefore it was the main feature for EACirc~4.1 release.
 
 \subsection{Implementation of functions}
 \label{subsec:method-data-funcs}
@@ -378,10 +457,10 @@ All these functions together with the new interface of new block project and tes
 \subsubsection{?Publication of the generator tool?}
 
 
-\section{Approach specific methodology}
+\section{Methodology for specific optimisation methods}
 \label{sec:method-spec}
 
-As the tested scenarios vary not only by method but by used tools as well, the methodology changes for given metaheuristics. The base of the experiment was used for single-solution metaheuristics, as they were implemented directly to the EACirc and they inherited the experiment environment of our tool.
+As the tested scenarios vary not only by optimisation method but by used tools as well, the methodology changes for given metaheuristics. The base of the experiment was used for single-solution metaheuristics, as they were implemented directly to the EACirc and they inherited the experiment environment of our tool.
 
 For direct inter-method comparison, we need to use the same data for testing. Therefore, all used data from the \todo{Usable testbed} are generated from the same implementation. A unified source of data was a significant demand that led to an implementation of the Generator tool \todo{described later in ... reference to part of the thesis with Generator}.
 
@@ -391,9 +470,9 @@ For direct inter-method comparison, we need to use the same data for testing. Th
 \subsubsection{Statistical evaluation}
 \label{subsubsec:method-spec-ss-stat}
 
-The fitness of an individual is a $p$-value of $\chi^{2}$ test on output bytes for current test vectors set. For a well-working individual for a weak source of data, the fitness is close to 1. As the quality of the individual decreases, the fitness decreases as well. However, completely random guess like coin tossing has the $p$-value uniformly distributed on the interval (0, 1).
+The fitness of an individual is a $p$-value of two sample $\chi^{2}$ test, which tests, if the output bytes per source have same distribution. For a well-working individual on a weak source of data, the fitness is close to 1. As the quality of the individual decreases, the fitness decreases as well. However, completely random guess like coin tossing has the $p$-value uniformly distributed on the interval (0, 1).
 
-Getting one such $p$-value for whole computation says nothing, as we could be lucky to observe high, however internally random, fitness. Therefore we perform Kolmogorov-Smirnov test of uniformity of the $p$-values. This test is using critical value $\alpha = 1\,\%$, therefore it rejects the null hypothesis that tested data seems nonrandom in 1\,\% of runs. To avoid such case, we run the experiment with the same settings 1\,000 times and we analyse the rejection ration given as the amount of failed KS tests over 1000. If it is around 1\,\%, the data seem to be random, while in it is much higher, the experiment rejected randomness hypothesis of tested data.
+As the $p$-values are uniformly distributed for random guess, getting high $p$-value can imply two cases. Either the $\chi^{2}$ test rejected the hypothesis and scored high confidential output, or the tested data, or in case of random guess, we were lucky and obtained high value from uniform ditribution on interval $(0, 1)$. Therefore, we avoid interpretation of a single $p$-value, we collect an $p$-value per every \textit{epoch}, and we process these $p$-values to Kolmogorov-Smirnov test. It analyses the uniformity of usually 300 $p$-values. This test is using critical value $\alpha = 1\,\%$, therefore it rejects the null hypothesis that tested data seems nonrandom in 1\,\% of runs. To avoid such case, we run the experiment with the same settings 1\,000 times and we analyse the rejection rate given as the amount of failed KS tests over 1000. If it is around 1\,\%, the data seem to be random, while in it is much higher, the experiment rejected randomness hypothesis of tested data.
 
 This approach is vastly increasing the amount of data needed for the computation, as well as the overall run-time. This method is a trade-off for the success rate of EACirc, as different evaluators do not need statistical evaluation. Hence they need much fewer data; however, such evaluators are slightly worse based on results from~\cite{svenda2013towards}.
 
@@ -432,18 +511,27 @@ When we consider basic setup for single-solution metaheuristics, EACirc consumes
 
 As EACirc needs repeated computation on MetaCentrum grid infrastructure, the automation for binary deployment, computation distribution, aggregation of the results and their postprocessing are required.
 
-The scripts are executed in few steps. Firstly, a preprocessor creates necessary configuration files for the experiment. Secondly, MetCentrum scripts distribute the computation among the grid infrastructure. Thirdly, after the computation finishes the postprocessor script aggregate the results. Finally, the table generator script generates a human readable version of the results as well as database dump of the whole experiment \cref{fig:scripts}.
+The scripts are executed in few following steps.
 
-Earlier was in use solution called Oneclick created by Lubomír Obrátil for his bachelor thesis~\cite{obratilBcThesis}. The Oneclick was a single tool for both preprocessing and postprocessing phase, and the run was parametrized. However, this approach is outdated for MetaCentrum infrastructure. The advantages of new scripts are: 
+\begin{enumerate}
+ \item Firstly, a preprocessor creates necessary configuration files for the experiment.
+ \item Secondly, MetaCentrum scripts distribute the computation among the grid infrastructure.
+ \item Thirdly, after the computation finishes the postprocessor script aggregate the results. 
+ \item Finally, the table generator script generates a human readable version of the results as well as database dump of the whole experiment \cref{fig:scripts}.
+\end{enumerate}
+
+The EACirc project formelly used tool Oneclick created by Lubomír Obrátil~\cite{obratilBcThesis}. The Oneclick was a single tool for both preprocessing and postprocessing phase, and the run was parametrized. However, this approach was programmed for BOINC infrastracture and it is outdated for the MetaCentrum. The advantages of new scripts are: 
 
 \begin{itemize}
-    \item they are one purpose, so it is easier to modify one without affecting other,
-    \item they are written in bash (running scripts for MetaCentrum scheduler) and Python (processing), so they do not need to be compiled, and more researchers understand, how to modify them,
-    \item they are mainly written for the newest released EACirc version (but they support EACirc 3 as well), so they fit more the computation process of the current release, so they save a vast part of processing,
-    \item they are faster (up to 3\,600 times in case of postprocessor), as MetaCentrum computation do not require previously used redundancy procedures.
+    \item they are single purpose, easier to modify one without affecting other,
+    \item they are written in bash (running scripts for MetaCentrum scheduler) and Python (processing), so they do not need to be compiled,
+    \item they maintained up-to-date for the newest EACirc,
+    \item they are faster, as MetaCentrum computation do not require previously used redundancy procedures.
 \end{itemize}
 
 These scripts are expected to be modified by individual researchers for the needs of their experiments, so the scripts are stored in GitHub repository~\cite{eaUtils}, and users are supposed to fork them. The repository also contains \texttt{readme.md} file, with specifies the first steps with computations on MetaCentrum with these scripts. Every script then contains documentation in the code (concerning expected modifications for individual purposes), and when it is run without arguments, it prints out a help message.
+
+\todo{rotate to safe space?}
 
 \begin{figure}[H]
     \centering
@@ -472,13 +560,13 @@ These scripts are expected to be modified by individual researchers for the need
 
 \paragraph{Preprocessor}
 
-EACirc computation is based on a config file, and that specify what the sources of data for comparison and various other settings are. As the test suite contains tens variations of parameters, it is necessary to automatize config file creation, so the user would not make a mistake during this process.
+EACirc computation is based on a configuration file with specification and environment settings for particular experiment. As the test suite contains tens variations of parameters, it is necessary to automatize config file creation, so the user would not make a mistake during this process.
 
-The scripts are written in Python and have dedicated version per the scenario of tested functions.
+The scripts are written in Python and are maintained in variants per the scenario of tested functions.
 
 \paragraph{Running scripts}
 
-The scripts for distribution of computation among the MetaCentrum network are a result of Martin Ukrop's thesis~\cite{ukropMgrThesis}. However, they are continuously maintained in \texttt{EACirc-utils} repository~\cite{eaUtils} for current EACirc version.
+The scripts for distribution of computation among the MetaCentrum network are a result of Martin Ukrop's thesis~\cite{ukropMgrThesis}. They are continuously maintained in \texttt{EACirc-utils} repository~\cite{eaUtils} for current EACirc version.
 
 As each experiment needs to be run multiple times for statistical evaluation, the scripts repeat the computation in a loop with different seeds usually for 1\,000 times. All runs are then collected by running scripts.
 
@@ -497,7 +585,9 @@ The generator takes as an input the \texttt{JSON} dump of the results from the p
 \subsubsection{Goal specification}
 \label{subsubsec:method-spec-ss-goal}
 
-The ultimate goal of the experiments with metaheuristics is to increase the number of rounds distinguished by EACirc. However, such goal is enormously difficult, as the randomness increases rapidly with the additional rounds. We would need functions with a low increase of entropy per round as a benchmark, but we did not observe such behaviour by any of the tested functions, nor our own design of benchmarking function do not behave that way [LUT cipher].
+\todo{Petr's comments are not corrected}
+
+The ultimate goal of the experiments with metaheuristics is increasing detection capabilities of nonrandomness of tested datastream. For testing and measuring how a metaheuristic performs, we analyse swet of functions described in \cref{sec:method-data}. We increase the resolution of the comparison by testing cryptographic function reduced in number of rounds. However, reduction of the function to specific number of rounds is still a very steep, therefore the goal is hardly measurable on this scenario. The randomness of the data increases rapidly with the additional rounds of the cryptographic function. We would need functions with a low increase of entropy per round as a benchmark, but we did not observe such behaviour by any of the tested functions, nor our own design of benchmarking function do not behave that way [LUT cipher].
 
 Less ambitious, but still useful goal can be an increase of the rejection rate of the null hypothesis per experiment. Rejecting only 10\,\% of runs lead to difficulties with the analysis of the output test. The higher is the rejection rate, the easier is the interpretation of found distinguisher. Also, if our rejection rate is close to critical value $\alpha$, then the higher rejection rate can overcome the edge value\footnote{For 1000 runs per experiment, this edge value is typically $2\cdot\alpha$. Such results can happen in less than 0.15\,\% of the experiments.} and we can reject the overall null hypothesis about the randomness of the source with higher confidentiality.
 
