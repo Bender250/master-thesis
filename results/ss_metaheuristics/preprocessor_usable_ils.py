@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Experiment: Simulated Annealing metaheuristic, Thesis Karel Kubicek
+# Experiment: Iterated local search metaheuristic, Thesis Karel Kubicek
 # Tested functions: sha3 and estream finalists and well-known (mainly block) functions
 # Settings: basic settings for CPU computations, used in many papers (as EACirc 2.0 paper)
 # Purpose: comparison of single solution metaheuristics
@@ -80,9 +80,7 @@ backend1 = """
         "type" : "circuit",
         "solver" : {
             "type" : "global-search",
-            "internal" : "simulated-annealing",
-            "initial-temperature" : 500,
-            "cooling-ratio" : 0.9
+            "internal" : "local-search"
         },
 
         "function-set" : [ "NOP", "CONS", "NOT",
