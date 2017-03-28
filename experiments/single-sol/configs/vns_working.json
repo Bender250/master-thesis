@@ -1,0 +1,60 @@
+{
+    "notes" : "./block/AES_r03",
+    "seed" : null,
+
+    "num-of-epochs" : 100,
+    "significance-level" : 1,
+    "tv-size" : 16,
+    "tv-count" : 1000,
+    "stream-a" : {
+        "type" : "block",
+        "generator" : "pcg32",
+        "init-frequency" : "only-once",
+        "algorithm" : "AES",
+        "round" : 3,
+        "block-size" : 16,
+        "plaintext" : {
+            "type" : "counter"
+        },
+        "key-size" : 16,
+        "key" : {
+            "type" : "pcg32-stream"
+        },
+        "mode" : "ECB",
+        "iv" : {
+            "type" : "false-stream"
+        }
+    },
+    "stream-b" : {
+        "type" : "pcg32-stream"
+    },
+
+    "backend" : {
+        "type" : "circuit",
+        "solver" : {
+            "type" : "global-search",
+            "internal" : "variable-neighbourhood-search"
+        },
+
+        "function-set" : [ "NOP", "CONS", "NOT",
+                           "AND", "NAND", "OR", "XOR", "NOR",
+                           "SHIL", "SHIR", "ROTL", "ROTR",
+                           "MASK" ],
+        "num-of-generations": 20,
+
+        "initializer" : {
+            "type" : "basic-initializer"
+        },
+        "mutator" : {
+            "type" : "basic-mutator",
+            "changes-of-functions" : 2,
+            "changes-of-arguments" : 2,
+            "changes-of-connectors" : 3
+        },
+        "evaluator" : {
+            "type" : "categories-evaluator",
+            "normalise" : true,
+            "num-of-categories" : 8
+        }
+    }
+}
