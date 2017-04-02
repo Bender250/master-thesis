@@ -289,7 +289,7 @@ EACirc 4.0 simplified and optimised the computations by substituting GALib -- a 
         };
     \end{tikzpicture}
     }
-    \caption{Single-solution metaheuristics as specialized version of local search. The source is figure~2.24 in~\cite{talbi2009metaheuristics}.}
+    \caption{Single-solution metaheuristics as specialized version of local search. The source:~\cite[figure~2.24, p.~125]{talbi2009metaheuristics}.}
     \label{fig:opt-single-sol-overview}
 \end{figure}
 
@@ -432,9 +432,45 @@ We wanted to use ant colony optimisation on polynomials, however, we did not fin
 \label{subsec:opt-multi-sol-si}
 \section{Other methods}
 \label{sec:opt-other}
+
+% what ML problem specification heads-to?
+% ML is well studied, but the main problem is selection of the method, fine-tuning the parameters and setting up the features
+% 
+
 \subsection{ANN}
 \label{subsec:opt-other-ann}
-\subsection{...}
+
+% Introduce the idea - look for some thesis using btw. ANN
+%   inspired by hebbian learning
+%   backpropagation: Werbos 1975
+%      gradient descent (optimisation method for backpropagation)
+% Cite usage - find commonly cited papers, go trough them quickly
+%   images
+%   curves (signals)
+%   text (selection of features)
+% No-one tried to analyse binary data
+%   feature selection is not straightforward, as it is specific to analysed data and we would have to learn even the process of feature selection.
+%       EACirc: the circuit can be viewed as a feature selector, where the features are used afterwards for statistical testing (in the $\chi^{2}$ test)
+
+The artificial neural networks (ANN) are classification optimisation method inspired by process of learning of brain and neural system. The initial idea was inspired by research of Donald Hebb~\todo{Cite: Hebb, Donald (1949)}. The Organization of Behavior. New York: Wiley.}, who described the process of learning of neurons of living beings. Trivial nonsupervised learning methods were based on Hebbian learning. Further Developement came with invention of backpropagation algorithm by Paul Werbos~\todo{Cite: Werbos, P.J. (1975). Beyond Regression: New Tools for Prediction and Analysis in the Behavioral Sciences.}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of algorithm and its application on GPUs, which allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks.
+% deeper introduction to ANN can be found in book http://www.deeplearningbook.org
+
+The artificial neural network consists of purpose specialised layers. The first layer is called visible layer and its input is the data for classification. Then there may be many hidden layers, that sequentially process output of previous layers. The final is output layer, which decides the classification of the data. Each layer consists of neurons. Each neuron take as input the output from all neurons of previous layers, and these outputs are multiplied by weight for each connection. The output is process by an activation function, which ensures normalisation of the output. There are many types of activation function, and each layer can use different activation function. The most used activation function is sigmoid function, with input from real number and output is usually from the interval $(0, 1)$.
+
+\todo{citations: }
+The artificial neural networks were used to solve various problems in classification. The most common are application in image processing, signal processing, text data processing and in artificial intelligence systems.
+
+In cryptography, we have seen many application of ANN. For example researches from Google Brain showed experiment where they let neural network develop their own encryption for communication, while another neural network was intercepting the communication and attempting to decrypt it~\cite{abadi2016learning}. 
+We have not found any application of ANN in classification of binary data. 
+
+\subsection{Other statistical classification methods}
+%https://en.wikipedia.org/wiki/Statistical_classification
+
+% SVM
+% kNN
+% Decition trees (C4.5 algorithm https://en.wikipedia.org/wiki/C4.5_algorithm)
+% Bayesian netowrks
+% ...
 
 
 
@@ -485,6 +521,11 @@ TEA implementation is based on Wikipedia code~\cite{teaWiki}, and it was already
 RC4 is also based on the educative repository~\cite{cryptoFunc}, but as RC4 has no round structure, therefore, the code is unchanged.
 
 All these functions together with the new interface of new block project and test vectors processing algorithm were released in minor version EACirc 4.1.
+
+
+\subsection{Data generator tool}
+\label{subsec:method-data-generator}
+
 
 \subsubsection{?Testing correctness of the solution?}
 \subsubsection{?Publication of the generator tool?}
@@ -757,15 +798,28 @@ Same as in \cref{subsubsec:res-ss-gls-circ-anal}, we inspected the density of th
 \label{sec:res-ms}
 \subsection{Bruteforce baseline}
 \label{subsec:res-ms-bruteforce}
-\subsection{Ant colony optimization}
+\subsection{Evolutionary algorithms}
 \label{subsec:res-ms-aco}
 
 \section{ANN}
 \label{sec:res-ann}
 
+% Implementation
+%   preprocessing of input data
+%       usage - learning data, testing data are separated
+%   Keras library
+% ANN
+% CNN
+% automation
+% intepretation
+% results
+% cooperation with Italy
+% future work: learn on AES r2, re-learn on aes r3
+
 \section{Optimisation by grain fine-tuning selected metaheuristic}
 \label{sec:res-finetuning}
 
+% needs revision
 Trying multiple metaheuristic is broad approach. However, as stated in no free lunch theorem, there is a tendency, than no single metaheuristic guarantee better results, while dedicated human work on analysing and fine-tuning the method can bring better results.
 
 In~\cite{kubicek2016new}, we analysed deeply one single function -- Tiny Encryption Algorithm (\textit{TEA}). The aim of this analysis was finding best setup specific to tested function, so we can directly compare EACirc to other teams that were using genetics algorithm for testing randomness of TEA ciphertext.
