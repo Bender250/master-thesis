@@ -228,6 +228,8 @@ Best known statistical batteries are (chronologically by time of development) NI
 \subsection{Learning process}
 \label{subsec:eac-learning}
 
+% supervised learning (everywhere in this thesis)
+
 \section{Problem optimisation}
 \label{sec:prob-opt}
 
@@ -452,7 +454,7 @@ We wanted to use ant colony optimisation on polynomials, however, we did not fin
 %   feature selection is not straightforward, as it is specific to analysed data and we would have to learn even the process of feature selection.
 %       EACirc: the circuit can be viewed as a feature selector, where the features are used afterwards for statistical testing (in the $\chi^{2}$ test)
 
-The artificial neural networks (ANN) are classification optimisation method inspired by process of learning of brain and neural system. The initial idea was inspired by research of Donald Hebb~\todo{Cite: Hebb, Donald (1949)}. The Organization of Behavior. New York: Wiley.}, who described the process of learning of neurons of living beings. Trivial nonsupervised learning methods were based on Hebbian learning. Further Developement came with invention of backpropagation algorithm by Paul Werbos~\todo{Cite: Werbos, P.J. (1975). Beyond Regression: New Tools for Prediction and Analysis in the Behavioral Sciences.}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of algorithm and its application on GPUs, which allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks.
+The artificial neural networks (ANN) are classification optimisation method inspired by process of learning of brain and neural system. The initial idea was inspired by research of Donald Hebb~\todo{Cite: Hebb, Donald (1949). The Organization of Behavior. New York: Wiley.}, who described the process of learning of neurons of living beings. Trivial nonsupervised learning methods were based on Hebbian learning. Further Developement came with invention of backpropagation algorithm by Paul Werbos~\todo{Cite: Werbos, P.J. (1975). Beyond Regression: New Tools for Prediction and Analysis in the Behavioral Sciences.}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of algorithm and its application on GPUs, which allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks.
 % deeper introduction to ANN can be found in book http://www.deeplearningbook.org
 
 The artificial neural network consists of purpose specialised layers. The first layer is called visible layer and its input is the data for classification. Then there may be many hidden layers, that sequentially process output of previous layers. The final is output layer, which decides the classification of the data. Each layer consists of neurons. Each neuron take as input the output from all neurons of previous layers, and these outputs are multiplied by weight for each connection. The output is process by an activation function, which ensures normalisation of the output. There are many types of activation function, and each layer can use different activation function. The most used activation function is sigmoid function, with input from real number and output is usually from the interval $(0, 1)$.
@@ -462,6 +464,19 @@ The artificial neural networks were used to solve various problems in classifica
 
 In cryptography, we have seen many application of ANN. For example researches from Google Brain showed experiment where they let neural network develop their own encryption for communication, while another neural network was intercepting the communication and attempting to decrypt it~\cite{abadi2016learning}. 
 We have not found any application of ANN in classification of binary data. 
+
+% http://docsdrive.com/pdfs/sciencepublications/jcssp/2006/710-715.pdf
+%   ANN developes decryption of basic boolean blocks of permutation and 'doping'
+%   backprop, 3 layers (12-16-12), bits as -0.5, +0,5, linear activation
+%   they claim better security than DES (due to large state space), but it is a bullshit
+
+% http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=963786
+%   multiserver multiuser authentication - users classified by ANN
+
+% https://pdfs.semanticscholar.org/0860/8a61506de48da7e93320a5844b081801374a.pdf
+%   ANN creates encryption algorithm (same as Google's paper), 6 bits blocks
+%   network 6-6-6, sigmoid, nothing about bits representation
+%   they are not cryptographers!!! Security by obscurity (key is the weight of connectors in the network), again bullshit (OMG, they even do not meet semantics security!)
 
 \subsection{Other statistical classification methods}
 %https://en.wikipedia.org/wiki/Statistical_classification
@@ -808,6 +823,7 @@ Same as in \cref{subsubsec:res-ss-gls-circ-anal}, we inspected the density of th
 %   preprocessing of input data
 %       usage - learning data, testing data are separated
 %   Keras library
+% activation function
 % ANN
 % CNN
 % automation
