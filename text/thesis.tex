@@ -430,16 +430,49 @@ We wanted to use ant colony optimisation on polynomials, however, we did not fin
 
 \subsection{Scatter search}
 \label{subsec:opt-multi-sol-scatter}
+% multi solution variation of tabu search?
+% main idea:
+%   1. hold diverse population (use tabu search for help)
+%   2. get the best individuals in such population
+%   3. split the population in smaller sets
+%   4. combine the shared qualities of the individuals within the set, to get the ultimate individual with the core functionality
+% population = reference set 10-20 candidates, subsets can be for example of size 2-4
+% merge new candidates to the reference set and iteratively continue with the main steps
+% the algorithm may stop by number of iterations or by leaving the reference set unchanged
+% application in EACirc: we do not know, how to merge solutions
+
+The scatter search method is highly utilizing the combination of the individuals. The algorithm holds population of the best so far inspected individuals called \textit{reference set}. Like every population based metaheuristic, the diversity of the \textit{reference set} is crucial. Scatter search is an iterative algorithm, where one iteration consists of 4 steps.
+
+\begin{enumerate}
+    \item The \textit{reference set} is split to subset of size 2 to 4 individuals.
+    \item We combine the individuals of the subsets to create new candidate individuals.
+    \item We utilize a single-solution metaheuristic to improve the candidate individuals.
+    \item The candidate individuals are merged to the \textit{reference set} based on fitness.
+\end{enumerate}
+
+The main problem of application is the second step, where are solutions combined. We would have to develop a function, that combines multiple solutions and takes their shared properties. But there is no guarantee, that various advanced individuals share the same property. Also, the approach is similar to evolutionary algorithms, therefore we did not test it.
+
 \subsection{Other swarm intelligence methods}
 \label{subsec:opt-multi-sol-si}
+
+The swarm intelligence metaheuristics are based on collective behaviour of decentralized and self-organised systems. Similarly as ant colony optimisation, the behaviour of the swarm can be used to solve optimisation problems. Usually, the best application is in problems that are close to the origin of the behaviour of the swarm. Therefore, the main application is in decentralised control of robots, droids and other artificial individuals.
+
+The application issues for our problem are similar as for ant colony optimisation.
+
 \section{Other methods}
 \label{sec:opt-other}
+
+There are various optimisation methods, which are not classified as single or multi solutions metaheuristics. However, those models or algorithms are still capable of learning of classification.
+
+The classification is important in machine learning area. Therefore, the following models have developed advanced methods not only to the process of learning, but also interpretation of the results, detection of outliers, learning on low amount of data or non-complete data. Because of these advantages, we would like to experiment with them.
+
+These models and algorithms can be used for various goals. Two main are feature selection and classification. Our main goal is the classification, while we expect, that the model itself will select the features. The model has to adapt to the data, therefore we cannot do manual feature selection.
 
 % what ML problem specification heads-to?
 % ML is well studied, but the main problem is selection of the method, fine-tuning the parameters and setting up the features
 % 
 
-\subsection{ANN}
+\subsection{Artificial neural networks}
 \label{subsec:opt-other-ann}
 
 % Introduce the idea - look for some thesis using btw. ANN
@@ -454,26 +487,29 @@ We wanted to use ant colony optimisation on polynomials, however, we did not fin
 %   feature selection is not straightforward, as it is specific to analysed data and we would have to learn even the process of feature selection.
 %       EACirc: the circuit can be viewed as a feature selector, where the features are used afterwards for statistical testing (in the $\chi^{2}$ test)
 
-The artificial neural networks (ANN) are classification optimisation method inspired by process of learning of brain and neural system. The initial idea was inspired by research of Donald Hebb~\todo{Cite: Hebb, Donald (1949). The Organization of Behavior. New York: Wiley.}, who described the process of learning of neurons of living beings. Trivial nonsupervised learning methods were based on Hebbian learning. Further Developement came with invention of backpropagation algorithm by Paul Werbos~\todo{Cite: Werbos, P.J. (1975). Beyond Regression: New Tools for Prediction and Analysis in the Behavioral Sciences.}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of algorithm and its application on GPUs, which allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks.
+The artificial neural networks (ANN) are classification optimisation method inspired by process of learning of brain and neural system. The initial idea was inspired by research of Donald Hebb~\cite{hebb49learning}, who described the neurons and the process of learning of living beings. Trivial nonsupervised learning methods were based on Hebbian learning. Further development came with invention of backpropagation algorithm by Paul Werbos~\cite{werbos75beyondThesis}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of algorithm and its application on GPUs, which allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks.
 % deeper introduction to ANN can be found in book http://www.deeplearningbook.org
 
 The artificial neural network consists of purpose specialised layers. The first layer is called visible layer and its input is the data for classification. Then there may be many hidden layers, that sequentially process output of previous layers. The final is output layer, which decides the classification of the data. Each layer consists of neurons. Each neuron take as input the output from all neurons of previous layers, and these outputs are multiplied by weight for each connection. The output is process by an activation function, which ensures normalisation of the output. There are many types of activation function, and each layer can use different activation function. The most used activation function is sigmoid function, with input from real number and output is usually from the interval $(0, 1)$.
 
-\todo{citations: }
-The artificial neural networks were used to solve various problems in classification. The most common are application in image processing, signal processing, text data processing and in artificial intelligence systems.
+%\todo{citations: }
+The artificial neural networks were used to solve various problems in classification and pattern recognition. The most common are application in image processing, signal processing, text data processing and in robotics and system control.
 
-In cryptography, we have seen many application of ANN. For example researches from Google Brain showed experiment where they let neural network develop their own encryption for communication, while another neural network was intercepting the communication and attempting to decrypt it~\cite{abadi2016learning}. 
-We have not found any application of ANN in classification of binary data. 
+In cryptography, we have seen fewer applications of ANN. The main area of application of ANN in cryptography is authentication~\cite{li2001remote}, as it is a classification problem, where learning methods can bring speed-up traded off by approximation that allows errors.
 
-% http://docsdrive.com/pdfs/sciencepublications/jcssp/2006/710-715.pdf
+Application in encryption is even more rarer. For example researches from Google Brain showed experiment where they let neural network develop their own encryption for communication, while another neural network was intercepting the communication and attempting to decrypt it~\cite{abadi2016learning}. Predecessing works~\cite{shihab2006backpropagation, volna2012cryptography} did not get such attention as Google's work, but they had similar objective with simpler assumptions. However, all these works are far from application in cryptography. The only inspiration from them to this work is normalisation of binary data to floats, that was done by encoding 0 as $-0.5$ and 1 as $+0.5$. We have found no further relevant application of ANN in classification of binary data.
+
+We would like to utilize the developed approach of learning in classification by ANN. However, the application of ANN in our scope is not straightforward. We do not know in advance, what are the features in the data. Therefore the network has to have the whole ciphertext as an input. We encode the binary input to floats (0 as $-0.5$ and 1 as $+0.5$) based on intuition supported by other works~\cite{abadi2016learning,shihab2006backpropagation}. We tried both fully connected network (where every node is connected to every node of previous layer or every input bit), and convolution network, where the first layer has only limited local interval of inputs. 
+
+% shihab2006backpropagation http://docsdrive.com/pdfs/sciencepublications/jcssp/2006/710-715.pdf
 %   ANN developes decryption of basic boolean blocks of permutation and 'doping'
 %   backprop, 3 layers (12-16-12), bits as -0.5, +0,5, linear activation
 %   they claim better security than DES (due to large state space), but it is a bullshit
 
-% http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=963786
+% li2001remote http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=963786
 %   multiserver multiuser authentication - users classified by ANN
 
-% https://pdfs.semanticscholar.org/0860/8a61506de48da7e93320a5844b081801374a.pdf
+% volna2012cryptography https://pdfs.semanticscholar.org/0860/8a61506de48da7e93320a5844b081801374a.pdf
 %   ANN creates encryption algorithm (same as Google's paper), 6 bits blocks
 %   network 6-6-6, sigmoid, nothing about bits representation
 %   they are not cryptographers!!! Security by obscurity (key is the weight of connectors in the network), again bullshit (OMG, they even do not meet semantics security!)
@@ -487,7 +523,7 @@ We have not found any application of ANN in classification of binary data.
 % Bayesian netowrks
 % ...
 
-
+There are several other models or algorithms of statistical classification. Those are for example support vector machine (SVM), decision tree with C4.5 algorithm, $k$-nearest neighbours algorithm ($k$-NN), Bayes classifier and many others. Those methods usually relies on good feature selection, which we do not perform in our scenario. Therefore, the application of those models was rejected within this work, but can be an interesing question for further works.
 
 \chapter{Experiment methodology}
 \label{chap:method}
@@ -714,29 +750,27 @@ The colour highlights our evaluation of the result. Red highlight signs that EAC
 
 As was stated in \cref{subsec:eacirc} \todo{delete me, when you check this}, EACirc used Iterative local search as the heuristics since version 4.0. Therefore measuring this heuristics serves as a baseline, which allows direct comparison of other metaheuristics and also can be used to estimate comparison to previous EACirc results, whose were in this work verified.
 
-\todo{fix the table}
-
 \begin{table}[H]
 \centering
-\begin{tabular}{l|l l l l l l l l l l l}
-Function\textbackslash{}rounds & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\ \hline
-rnd\_rnd     & \fn{}0.01128 & --    & --    & --    & --    & --    & --    & --    & --    & --    & --   \\
-AES          & \fd{}--    & \fd{}1.0   & \fd{}1.0   & \fd{}0.182 & \fn{}0.016 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-BLAKE        & \fd{}1.0   & \fd{}0.107 & \fn{}0.014 & \fn{}0.01  & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-Grain        & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.017 & \fn{}0.01  & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-Grostl       & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.01  & \fn{}0.017 & \fn{}0.008 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-HC-128       & \fn{}0.014 & \fn{}0.016 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-JH           & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.008 & \fn{}0.014 & \fn{}--    & \fn{}--   \\
-Keccak       & \fd{}--    & \fd{}1.0   & \fd{}1.0   & \fn{}0.017 & \fn{}0.017 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-MD6          & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}0.748 & \fn{}0.01  & \fn{}0.012\\
-Rabbit       & \fn{}0.019 & \fn{}0.007 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-RC4          & \fd{}--    & \fn{}0.009 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-Salsa20      & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.01  & \fn{}0.013 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-SINGLE-DES   & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}1.0   & \fd{}0.193 & \fn{}0.01  & \fn{}0.008 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-Skein        & \fd{}1.0   & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-SOSEMANUK    & \fn{}0.011 & \fn{}0.013 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-TEA          & \fd{}--    & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.008 & \fn{}0.009 & \fn{}0.017 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   \\
-TRIPLE-DES   & \fd{}--    & \fd{}--    & \fd{}1.0   & \fn{}0.017 & \fn{}0.008 & \fn{}0.012 & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--    & \fn{}--   
+\begin{tabular}{l|l l l l}
+Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
+rnd\_rnd         & \fn{}0.01128 & --       & --         & --        \\\\
+AES$_{3}$        & \fd{}1.0   & \fd{}0.182 & \fn{}0.016 & \fn{}--   \\
+BLAKE$_{1}$      & \fd{}1.0   & \fd{}0.107 & \fn{}0.014 & \fn{}0.01 \\
+Grain$_{2}$      & \fd{}--    & \fd{}1.0   & \fn{}0.017 & \fn{}0.01 \\
+Grostl$_{2}$     & \fd{}--    & \fd{}1.0   & \fn{}0.01  & \fn{}0.017\\
+HC-128$_{0}$     & \fd{}--    & \fn{}0.014 & \fn{}0.016 & \fn{}--   \\
+JH$_{6}$         & \fd{}--    & \fd{}1.0   & \fn{}0.008 & \fn{}0.014\\
+Keccak$_{3}$     & \fd{}1.0   & \fn{}0.017 & \fn{}0.017 & \fn{}--   \\
+MD6$_{8}$        & \fd{}--    & \fd{}0.748 & \fn{}0.01  & \fn{}0.012\\
+Rabbit$_{0}$     & \fd{}--    & \fn{}0.019 & \fn{}0.007 & \fn{}--   \\
+RC4$_{no~rounds}$& --         & \fn{}0.009 & --         & --        \\
+Salsa20$_{2}$    & \fd{}--    & \fd{}1.0   & \fn{}0.01  & \fn{}0.013\\
+SINGLE-DES$_{4}$ & \fd{}1.0   & \fd{}0.193 & \fn{}0.01  & \fn{}0.008\\
+Skein$_{3}$      & \fd{}1.0   & \fd{}1.0   & \fn{}0.014 & \fn{}0.01 \\
+SOSEMANUK$_{0}$  & \fd{}--    & \fn{}0.011 & \fn{}0.013 & \fn{}--   \\
+TEA$_{3}$        & \fd{}--    & \fd{}1.0   & \fn{}0.008 & \fn{}0.009\\
+TRIPLE-DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.017 & \fn{}0.008
 \end{tabular}
 \caption{Results of iterated local search as EACirc metaheuristics on usable testbed.}
 \label{table:res-usable-ils}
