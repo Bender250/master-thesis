@@ -1,6 +1,6 @@
 @inproceedings{svenda2013towards,
   title={Towards cryptographic function distinguishers with evolutionary circuits},
-  author={Petr Švenda and Martin Ukrop and Matyáš, Vashek},
+  author={{Petr Švenda and Martin Ukrop and Vashek Matyáš}},
   booktitle={Security and Cryptography (SECRYPT), 2013 International Conference on},
   pages={1--12},
   year={2013},
@@ -9,7 +9,7 @@
 
 @inproceedings{sys2014constructing,
   title={Constructing empirical tests of randomness},
-  author={S{\`y}s, Marek and {\v{S}}venda, Petr and Ukrop, Martin and Maty{\'a}{\v{s}}, Vashek},
+  author={{Marek Sýs and Petr Švenda and Martin Ukrop and Vashek Matyáš}},
   booktitle={Security and Cryptography (SECRYPT), 2014 11th International Conference on},
   pages={1--9},
   year={2014},
@@ -18,11 +18,11 @@
 
 @article{kubicek2016new,
   title={{New results on reduced-round Tiny Encryption Algorithm using genetic programming}},
-  author={Karel Kubíček and Jiří Novotný and Petr Švenda and Martin Ukrop},
+  author={{Karel Kubíček and Jiří Novotný and Petr Švenda and Martin Ukrop}},
   journal={INFOCOMMUNICATIONS JOURNAL},
   volume={8},
   number={1},
-  pages={2--9},
+%  pages={2--9},
   year={2016},
   url = {http://crocs.fi.muni.cz/_media/public/papers/infocom/infocommunications2016.pdf},
   publisher={SCIENTIFIC ASSOC INFOCOMMUNICATIONS KOSSUTH LAJOS SQUARE 6-8, BUDAPEST, HUNGARY}
@@ -88,6 +88,7 @@
     urldate = {2016-12-15},
 }
 
+% EAC wiki
 @online{EACirc-wiki-bug,
     author = {Karel Kubíček and others},
     title = {EACirc -- documentation wiki},
@@ -98,10 +99,20 @@
     urldate = {2017-03-16},
 }
 
+@online{EACirc-lut,
+    author = {Marek Sýs and others},
+    title = {EACirc -- lookup table (LUT) cipher -- discontinued},
+    subtitle = {Generator with slow increase of entropy for benchmarking randomness testing},
+    organization = {Centre for Research on Cryptography and Security, Masaryk University},
+    year = {2016},
+    url = {https://github.com/crocs-muni/eacirc/commit/9808dda2401c15fac6f4984ba308140ebd2e3162},
+    urldate = {2017-04-08},
+}
+
 @online{EACirc-wiki-streams,
     author = {Karel Kubíček and others},
     title = {EACirc -- documentation wiki},
-    subtitle = {Known bugs},
+    subtitle = {Streams for data manipulation},
     organization = {Centre for Research on Cryptography and Security, Masaryk University},
     year = {2016},
     url = {https://github.com/crocs-muni/eacirc/wiki/Streams},
@@ -119,7 +130,7 @@
     urldate = {2016-12-15},
 }
 
-# data sources
+% data sources
 
 @online{cryptoFunc,
     author = {Brad Conte},
@@ -158,6 +169,7 @@
   publisher={John Wiley \& Sons}
 }
 
+% ACO
 @misc{moritz2010solving,
   title={Solving Satisfiability with Ant Colony Optimization and Genetic Algorithms},
   author={Moritz, Dominik and Springer, Matthias},
@@ -172,6 +184,28 @@
     subtitle = {{A Python3 implementation of the Ant Colony Optimization Meta-Heuristic}},
     url = {https://pypi.python.org/pypi/ACO-Pants},
     urldate = {2017-03-25}
+}
+
+@article{dorigo1997ant,
+  title={Ant colony system: a cooperative learning approach to the traveling salesman problem},
+  author={Dorigo, Marco and Gambardella, Luca Maria},
+  journal={IEEE Transactions on evolutionary computation},
+  volume={1},
+  number={1},
+  pages={53--66},
+  year={1997},
+  publisher={IEEE}
+}
+
+@article{dorigo1997ant,
+  title={Ant colonies for the travelling salesman problem},
+  author={Dorigo, Marco and Gambardella, Luca Maria},
+  journal={biosystems},
+  volume={43},
+  number={2},
+  pages={73--81},
+  year={1997},
+  publisher={Elsevier}
 }
 
 % ANN
@@ -192,16 +226,16 @@
     year = {1975}
 }
 
-@article{li2001remote,
-  title={A remote password authentication scheme for multiserver architecture using neural networks},
-  author={Li, Li-Hua and Lin, Luon-Chang and Hwang, Min-Shiang},
-  journal={IEEE Transactions on Neural Networks},
-  volume={12},
-  number={6},
-  pages={1498--1504},
-  year={2001},
-  publisher={IEEE}
-}
+%@article{li2001remote,
+  %title={A remote password authentication scheme for multiserver architecture using neural networks},
+  %author={Li, Li-Hua and Lin, Luon-Chang and Hwang, Min-Shiang},
+  %journal={IEEE Transactions on Neural Networks},
+  %volume={12},
+  %number={6},
+  %pages={1498--1504},
+  %year={2001},
+  %publisher={IEEE}
+%}
 
 @article{shihab2006backpropagation,
   title={A backpropagation neural network for computer network security},
@@ -224,7 +258,19 @@
 % Google ann crypto
 @article{abadi2016learning,
   title={Learning to Protect Communications with Adversarial Neural Cryptography},
-  author={Abadi, Mart{\'\i}n and Andersen, David G},
+  author={Abadi, Martín and Andersen, David G},
   journal={arXiv preprint arXiv:1610.06918},
   year={2016}
+}
+
+
+% Other
+
+@inproceedings{ellson2001graphviz,
+  title={Graphviz—open source graph drawing tools},
+  author={Ellson, John and Gansner, Emden and Koutsofios, Lefteris and North, Stephen C and Woodhull, Gordon},
+  booktitle={International Symposium on Graph Drawing},
+  pages={483--484},
+  year={2001},
+  organization={Springer}
 }
