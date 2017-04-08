@@ -470,7 +470,6 @@ These models and algorithms can be used for various goals. Two main are feature 
 
 % what ML problem specification heads-to?
 % ML is well studied, but the main problem is selection of the method, fine-tuning the parameters and setting up the features
-% 
 
 \subsection{Artificial neural networks}
 \label{subsec:opt-other-ann}
@@ -577,9 +576,11 @@ All these functions together with the new interface of new block project and tes
 \subsection{Data generator tool}
 \label{subsec:method-data-generator}
 
+For direct comparison of the tested methods, we need to analyse the same data. EACirc has build in generation of test vectors, to feed the computation, as is described in \cref{sec:method-data}. Therefore, we implemented side project from EACirc for production of data. We call it \textit{Generator} and it shares the source code of functions with EACirc.
 
-\subsubsection{?Testing correctness of the solution?}
-\subsubsection{?Publication of the generator tool?}
+The \textit{Generator} is fully configurable via \texttt{JSON} configuration file as EACirc. The structure of the file is reduced, as the configuration describes only generated data. So the \textit{Generator} inherits all the capabilities of streams, providing complex control on the data generation. For simplification and automation, we also prepared script, that generates configuration files for most common settings, which allows simple execution by command line arguments. For even simpler acces to testing data, we generated 160~MB file for each basic setup for each widely-known cryptographic function (described in \cref{subsec:method-data-funcs}) reduced to wide interval of rounds. This dataset is publicly accessible on \todo{add link}.
+
+We have ongoing plan of publication, which will crucially utilize the \textit{Generator}. It will be paper on comparison of statistical testing tools on wide variety of cryptographic data. The \textit{Generator} will be used as it unifies many different cryptographic functions and it can reduce the functions in number of rounds, or selection of specified bits. The \textit{Generator} has already all the necessary features, so we can start with writing of the paper when we select the conference, we are aiming for.
 
 
 \section{Methodology for specific optimisation methods}
@@ -587,10 +588,16 @@ All these functions together with the new interface of new block project and tes
 
 As the tested scenarios vary not only by optimisation method but by used tools as well, the methodology changes for given metaheuristics. The base of the experiment was used for single-solution metaheuristics, as they were implemented directly to the EACirc and they inherited the experiment environment of our tool.
 
-For direct inter-method comparison, we need to use the same data for testing. Therefore, all used data from the \todo{Usable testbed} are generated from the same implementation. A unified source of data was a significant demand that led to an implementation of the Generator tool \todo{described later in ... reference to part of the thesis with Generator}.
+For direct inter-method comparison, we need to use the same data for testing. Therefore, all used data are generated from the same implementation, described in \cref{subsec:method-data-funcs}. The cross-method comparison is still sensitive to the testing approach, therefore we describe it in detail in following sections.
+
 
 \subsection{Single-solution methodology}
 \label{subsec:method-spec-ss}
+
+All single solution metaheuristics were implemented into EACirc, therefore they share the same computation and interpretation. The solution is represented as simulation of a circuit, described in the \cref{subsubsec:eac-indiv-repres-circuit}.
+
+The main advantage of single-solution metaheuristics is their simplicity and straightforward interpretation. However, the overall interpretation of EACirc results became complex, as we work with randomness that needs to be evaluated statistically. The complex approach also leads to significantly better results. The statistical evaluation as well as distributed computation automation is described below.
+
 
 \subsubsection{Statistical evaluation}
 \label{subsubsec:method-spec-ss-stat}
