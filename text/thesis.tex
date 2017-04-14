@@ -113,6 +113,7 @@
 
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning}
+\usetikzlibrary{decorations.pathreplacing}
 
 % package to make bullet list nicer
 \usepackage{enumitem}
@@ -133,6 +134,13 @@
 % make captions italic
 \usepackage[format=plain,
             font=it]{caption}
+
+% Lubo's hack for margins
+\newcommand{\lmar}{3cm}
+\newcommand{\rmar}{3cm}
+\usepackage[top=2.8cm, left=\lmar, right=\rmar, bottom=3cm]{geometry}
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist{}
 
 
 \begin{document}
@@ -244,23 +252,18 @@ Metaheuristics are applicable for optimisation problems if a programmer can prov
 
 The main advantage of metaheuristics is that they are well known, compared together in many studies (see 849 references in \cite{talbi2009metaheuristics}) that also provided tips for the implementation.
 
-\subsection{ANN}
-\label{subsec:prob-opt-ann}
-
-\subsection{...}
-
 \chapter{Current approaches in problem optimization}
 \label{chap:optimisation}
 
 The number of candidate solutions inspected simultaneously splits metaheuristics into two categories: single-solution based metaheuristics and population-based metaheuristics.
 
-The main advantage of having multiple concurrent solutions is handling population diversity. Diversity can help avoid ending in local optima and together with other techniques can produce better individuals faster. However, maintaining the diversity of the population is generally difficult, if the fitness does not increase continuously. An individual having a unique feature, which increases its fitness, is going to be quickly spread in next generations, suppressing other promising, but not yet so well performing other individuals.
+The main advantage of having multiple concurrent solutions is handling population diversity. Diversity can help avoid ending in local optima and together with other techniques can produce better individuals faster. However, maintaining the diversity of the population is difficult, if the fitness does not increase continuously. When an individual has a unique feature, which increases its fitness, it is going to be quickly spread in next generations, suppressing other promising, but not yet so well performing other individuals.
 
-The initial version of EACirc tended to use the advantages of the genetic programming, which is a population based metaheuristic. Encoding the candidate solutions as a simulated electronic circuit allowed operations for mutation and crossover. Together with fitness evaluation was the optimisation process specified and used on cryptographic data, it was capable of distinguishing weak sources from truly random data~\cite{svenda2013towards}.
+The initial version of EACirc tended to use the advantages of the genetic programming, which is a population-based metaheuristic. Encoding the candidate solutions as a simulated electronic circuit allowed operations for mutation and crossover. Together with fitness evaluation was the optimisation process specified and used on cryptographic data, it was capable of distinguishing weak sources from truly random data~\cite{svenda2013towards}.
 
-However, this approach was very complex and not enough understood. The sexual crossover did not have reasonable implementation and holding the diversity of the population was not analysed. Also the interpretation of the results difficult. The succeeding solution proposed in \cite{sys2014constructing} simplified the interpretation by using the population of only one individual. This solution allowed statistical postprocessing of fitness values and together with categories evaluator surpassed the previous approach in all tests~\cite{sys2014constructing}. The population with a single individual changed effectively the used method to iterated local search -- a single solution metaheuristic.
+However, this approach was very complex and not enough understood. The sexual crossover did not have a sound implementation for the circuits. Besides, the expectation about the diversity of the population was not analysed. Also the interpretation of the results difficult. The following solution proposed in \cite{sys2014constructing} simplified the interpretation by using the population of only one individual. This solution allowed statistical postprocessing of fitness values and together with categories evaluator surpassed the previous approach in all tests~\cite{sys2014constructing}. Althout the project still used genetics library, by usage of single individual, the used metaheuristic became iterated local search.
 
-EACirc 4.0 simplified and optimised the computations by substituting GALib -- a genetic algorithm library by a custom implementation of the iterated local search. To question if iterated local search is the best approach, this work analyses the problem and tries other metaheuristics.
+EACirc 4.0 simplified and optimised the computations by substituting GALib -- a genetic algorithm library by a custom implementation of the iterated local search. This work analyses the problem and tries other metaheuristics to answer the question if iterated local search is the best approach.
 
 \section{Single-solution metaheuristics}
 \label{sec:opt-single-sol}
@@ -300,11 +303,12 @@ EACirc 4.0 simplified and optimised the computations by substituting GALib -- a 
 \subsection{Local search}
 \label{subsec:opt-single-sol-ls}
 
-This metaheuristic is the very basic approach in problem optimisation. We begin with single candidate solution and we apply changes to this solution so we create a neighbour candidate. We compare fitnesses of these two solutions and we select the better candidate to the next generation. We iterate this approach until we find sufficient solution, or we tested limited amount of iterations.
+Local search is the very basic approach in problem optimisation. The search begins with single candidate solution, and it applies changes to this solution, so it creates a neighbour candidate. Then the local search compares fitnesses of these two solutions and selects the better candidate to the next generation. The algorithm iterates this approach until 
+it finds a satisfactory solution, or it ran the limited amount of iterations.
 
-The algorithm can be referred also as hill-climbing, as we with acceptance of an improving solution, we step up in the fitness space. This also means, that we can find only sub optimal solution -- a local optima.
+The algorithm can also be referred as hill-climbing, as we with acceptance of an improving solution, we step up in the fitness space. Therefore local search often finds only the sub-optimal solution -- a local optimum.
 
-Escaping local optima is an important phenomena, as local optima can be relative to tested data, or to the specific approach of the evaluation.
+Escaping local optima is an important phenomenon, as fitness function landscape depends on tested data, or on the specific evaluation approach.
 
 As EACirc is using an iterated version of local search, the application of local search would be straightforward. However, this would decrease the capabilities of EACirc do to omit of the learning process.
 
@@ -313,34 +317,34 @@ As EACirc is using an iterated version of local search, the application of local
 
 Iterative local search is and extension of local search. After defined amounts of iteration of basic local search, the tested data are changed. The computation on one set of data is called an \textit{epoch}, and the amount of iteration is called \textit{epoch length}.
 
-During the epoch, the fitness progress is non-decreasing, however, after the end of each epoch, fitness is expected to drop. The final fitness has to be tested on new dataset, which applies for every metaheuristic. Therefore, we distinguish between the learning dataset and the testing dataset.
+During the epoch, the fitness progress is non-decreasing, however, after the end of each epoch, fitness is expected to drop. The final fitness has to be tested on a new dataset, which applies for every metaheuristic. Therefore, we distinguish between the learning dataset and the testing dataset.
 
-The \textit{epoch length} is crucial parameter of this metaheuristic. A short epoch length can be computationally more demanding due to higher data consumption, and the solution may not be able to learn anything on the data. Too long \textit{epoch} leads to \textit{overfitting}, a situation, when the individual is learning specific pattern of the current dataset over general patterns of all datasets.
+The \textit{epoch length} is the crucial parameter of this metaheuristic. A short epoch length can be computationally more demanding due to higher data consumption, and the solution may not be able to learn anything on the data. Too long \textit{epoch} leads to \textit{overfitting}, a situation when the individual is learning a specific pattern of the current dataset over general patterns of all datasets. Martin Ukrop examined the overfitting process in EACirc in~\cite[chapter~7]{ukropBcThesis}.
 
-The iterated local search is used in EACirc since~\cite{sys2014constructing}. Therefore it is used as an baseline of the single solution metaheuristics tested in this work. The overfitting process in EACirc was examined in chapter 7 of~\cite{ukropBcThesis}.
+The EACirc have used the iterated local search since~\cite{sys2014constructing}. Therefore it is used as a baseline for single solution metaheuristics tested in this work.
 
 \subsection{GRASP}
 \label{subsec:opt-single-sol-grasp}
 
 The greedy randomised adaptive search procedure is splitting each iteration into two steps: a feasible solution construction by greedy algorithm and performing the local search using the generated solution.
 
-This metaheuristics was abandoned as we did not found any greedy algorithm for circuit construction, such that would reflect tested data. Also it does not fit the iterative process of learning in \textit{epochs}.
+We abandoned this metaheuristic as we did not found any greedy algorithm for circuit construction, such that would reflect tested data. Also, it does not fit the iterative process of learning in \textit{epochs}.
 
 \subsection{Multi-start local search}
 \label{subsec:opt-single-sol-msls}
 
 Multi-start local search is another approach how to surpass local optimum to find the global optimum. The metaheuristic starts the computation with $k$ randomly generated individuals that are concurrently optimised by local search.
 
-This parallelism could increase the usage of the testing data in EACirc. The disadvantage is more difficult evaluation, as stated in chapter 5~\cite{ukropBcThesis}. It is a question, if we should evaluate the best, or the average, or random solution, or more solution simultaneously. Another possible advantage of multi-start local search can be parallelization of the computation. However, EACirc computation is already parallelized, neither on the level of single computation. Due to statistical interpretation, we have to repeat the computation process 1\,000 times.
+This parallelism could increase the usage of the testing data in EACirc. The disadvantage is a more difficult evaluation, as Ukrop stated in~\cite[chapter~5]{ukropBcThesis}. It is a question if we should evaluate the best, or the average, or random solution, or more solution simultaneously. Another possible advantage of multi-start local search can be parallelization of the computation. However, EACirc computation is already parallelized, neither on the level of single computation. Due to statistical interpretation, we have to repeat the computation process 1\,000 times.
 
-We decided to not cover multi-start local search, as saving percents of computation time per more difficult interpretation is a bad trade-off.
+We decided not to cover multi-start local search, as saving a small fraction of computation time for more complicated interpretation is a bad trade-off.
 
 \subsection{Guided local search}
 \label{subsec:opt-single-sol-gls}
 
 Guided local search is metaheuristic based on dynamic changing of the fitness function. If the metaheuristic got stuck in local optima, guided local search would change the fitness function so the individual can follow climbing.
 
-The EACirc computation can get trapped in local optima mainly in two cases:
+The EACirc computation can get trapped in a local optimum mainly in two cases:
 
 \begin{enumerate}[noitemsep,topsep=3pt,parsep=3pt,partopsep=3pt]
     \item the individual got lucky to guess current test set, but it will not be successful in next \textit{epoch}, or
@@ -349,42 +353,43 @@ The EACirc computation can get trapped in local optima mainly in two cases:
 
 We do not need to fix the first case, as such individual would be replaced in next \textit{epoch}. However, we can use guided local search to improve individual from the second case. Our alternative fitness function can be designed as the sum of our current fitness and e.g. the number of connectors. Such fitness would simplify the solution, which would help us with the interpretation of the last individual. Alternatively, we can use completely different fitness function.
 
-We decided to implement guided local search in EACirc, as it also represents single-solution metaheuristics with change of the objective function from \cref{fig:opt-single-sol-overview}.
+We decided to implement guided local search in EACirc, as it also represents single-solution metaheuristics with a change of the objective function from \cref{fig:opt-single-sol-overview}.
 
 \subsection{Noisy method}
 \label{subsec:opt-single-sol-nois}
 
-The noisy method is a another metaheuristic, which changes the fitness space to escape local optima. It is done by adding a random noise to the input data, as described in section 2.9.2 of~\cite{talbi2009metaheuristics}. At the beginning of the computation, the noise is the strongest, and it disappears during the computation, so the final \textit{epochs} can be evaluated on the original data.
+The noisy method is another metaheuristic, which changes the fitness space to escape local optima. It is done by adding random noise to the input data, as Talbi described in~\cite[section 2.9.2]{talbi2009metaheuristics}. At the beginning of the computation, the noise is the strongest, and it disappears during the computation, so the final \textit{epochs} can be evaluated on the original data.
 
-In EACirc, our research goal is already distinguishing pseudo-random data from truly-random data. An additional random noise in the input would probably lead to even more difficult learning process. For example, the noise could flip bit on position, which is necessary for distinguishing between the data sources. Therefore was this method abandoned.
+In EACirc, our research goal is already distinguishing pseudo-random data from truly random data. An additional random noise in the input would probably lead to an even more complicated learning process. For example, the noise could flip a bit on a position, which is necessary for distinguishing between the data sources. Therefore was this method abandoned.
+
 \subsection{Smoothing method}
 \label{subsec:opt-single-sol-smooth}
 
-Smoothing method is the another metaheuristic, which uses changes in fitness function to escape local optima. The method is based on smoothing the landscape of fitness function by computing a local average of all neigbours to given distance. If the fitness is overally increasing in one direction, but more zoomed observation shows small fluctuation, smoothing method smooths the fluctuation and allows locating the global optima.
+Smoothing method is the another metaheuristic, which uses changes in fitness function to escape local optima. The method is based on smoothing the landscape of fitness function by computing a local average of all neighbours to given distance. If the fitness is overall increasing in one direction, but more zoomed observation shows small fluctuation, smoothing method smooths the fluctuation and allows locating the global optima.
 
-\textit{Neigbours} in EACirc are defined as solutions obtained by mutation of the circuit. Available mutation are connecting or disconnecting a connector, or change of the Boolean function in the node. The neighbourhood of an individual in EACirc is enormous (over $2^{25}$ neigbours in distance 1 for basic EACirc setup), this method would not be possible due to computational requirements.
+\textit{Neigbours} in EACirc are defined as solutions obtained by mutation of the circuit. Available mutations are connecting or disconnecting a connector, or change of the Boolean function in the node. The neighbourhood of an individual in EACirc is enormous (over $2^{25}$ neighbours in the distance one for basic EACirc setup), this method would not be possible due to computational requirements.
 
 \subsection{Variable neighbourhood search}
 \label{subsec:opt-single-sol-vns}
 
-Variable neighbourhood search also change the landscape of the problem. However, it do not change the fitness function or its interpretation, but it defines other method for neigbour selection. IF the computation stucks in local optima, the neigbourhood method is changed. Or the neigbourhood can be changed periodically. This method does not guarantee escaping from local optima, as all neigbourhoods can contain only worse solutions.
+Variable neighbourhood search also changes the landscape of the problem. However, it does not modify the fitness function or its interpretation, but it defines other methods for neighbour selection. If the computation stuck in local optima, the neighbourhood method is changed. Alternatively, the neighbourhood can be changed periodically. This method does not guarantee to escape from local optima, as all neighbourhoods can contain only worse solutions.
 
-It is difficult to specify different neigbourhood in EACirc, however, the method lead us to different idea. EACirc is heading two mutually exclusive problems. We would like to have circuit connected sparsely for easier interpretation of the final solution. However, we also want to have the circuit's input and output nodes connected. This can be provided by reduction of the searched neigbourhood.
+Specifying different neighbourhood in EACirc is hard. However, the method lead us to a different idea. EACirc is heading two mutually exclusive problems. We would like to have circuit connected sparsely for easier interpretation of the final solution. However, we also want to have the circuit's input and output nodes connected. We can solve the problems by reduction of the searched neighbourhood.
 
-If we already have a successful solution, we can inspect only solutions with fewer connectors. In contrast, if the circuit is not connected (therefore the circuit's fitness is equal to zero), we can inspect only individual with more connectors.
+If we already have a successful solution, we can inspect only solutions with fewer connectors. In contrast, if the circuit is not connected (therefore the circuit's fitness is equal to zero), we can inspect only the individual with more connectors.
 
 \subsection{Simulated annealing}
 \label{subsec:opt-single-sol-sa}
 
-Remaining two single-solution metaheuristics are based on acceptance of non-improving neighbours. Short term acceptance of worse solution can lead to escape from local optima and finding global optima in whole computation.
+Remaining two single-solution metaheuristics can accept non-improving neighbours. Short term acceptance of worse solution can lead to escape from local optima and finding global optima in whole computation.
 
 Simulated annealing metaheuristic is inspired by the physical process of annealing in metallurgy. Annealing is an iterative process of heating the metal to increase the size of the crystals, which reduces the probability of a defect. During the process, the metal is heated to lower and lower temperatures.
 
-Simulated annealing uses variable temperature, which describes probability of acceptance of worse neighbour. This probability is decreasing during the computations, such that in the beginning, the likelihood of acceptance of worse solution is high, but at the end of the computation, only better solutions are accepted.
+Simulated annealing uses variable temperature, which describes the probability of acceptance of worse neighbour. This probability is decreasing during the computations, such that in the beginning, the likelihood of acceptance of worse solution is high, but at the end of the computation, only better solutions are accepted.
 
-This metaheuristic is widely used, which was the reason for implementing it as a testing scenario for metaheuristics as an representation of group of single solution metaheuristics that accepts non-improving solutions. Its implementation in EACirc do not require any changes, only specification of this method.
+This metaheuristic is widely used, which was the reason for implementing it as a testing scenario for metaheuristics as a representation of the group of single solution metaheuristics that accepts non-improving solutions. Its implementation in EACirc does not require complex changes, only the specification of this method.
 
-However, this method is not specified for the iterative approach with learning \textit{epochs}. Also the acceptance of non-improving solution can lead to discarding good solution.
+However, this method is not specified for the iterative approach with learning \textit{epochs}. Also, the acceptance of non-improving solution can lead to discarding a well-performing solution.
 
 \subsection{Tabu search}
 \label{subsec:opt-single-sol-tabu}
@@ -396,17 +401,17 @@ Application of Tabu search in EACirc has several issues. Firstly, how to store u
 \section{Multi-solutions metaheuristics}
 \label{sec:opt-multi-sol}
 
-Multi-solutions metaheuristics are usually inspired by biological processes of some population. The group of evolutionary algorithms is inspired by process of biological evolution, that process a population of species and forms better individuals. The ant colony optimization and swarm intelligence algorithms are based on motion behaivour of colony of selected species.
+Multi-solutions metaheuristics are usually inspired by biological processes of some population. The group of evolutionary algorithms is inspired by the process of biological evolution, that process a population of species and forms better individuals. The ant colony optimisation and swarm intelligence algorithms are based on motion behaviour of a colony of selected species.
 
 Multi-solutions metaheuristics are usually more complex than single-solution metaheuristics. The complexity shows on many layers.
 
 \begin{itemize}
-    \item The implementation usually requires many configurable parameters, therefore it is more prone to programming mistake.
+    \item The implementation usually requires many configurable parameters; therefore it is more prone to programming mistakes.
     \item The fine-tuning of these parameters can be sensitive to the selected problem.
     \item The algorithm needs more computational resources due to overhead with maintenance more complex method.
 \end{itemize}
 
-These disadvantages may be paid of. The population together may prevent the algorithm stucking in local optima, if the diversity of the population is maintained well. Another straightforward advantage is application in similar process, that is the metaheuristic inspired by.
+These disadvantages may be paid off. The population together may prevent the algorithm stuck in local optima, as long as the metaheuristic maintains well the diversity of the population. Another straightforward advantage is an application in similar process, which inspired the metaheuristic.
 
 \subsection{Evolutionary algorithms}
 \label{subsec:opt-multi-sol-ea}
@@ -416,48 +421,48 @@ These disadvantages may be paid of. The population together may prevent the algo
 \subsection{Ant colony optimization}
 \label{subsec:opt-multi-sol-aco}
 
-The ant colony optimization is an instance of swarm intelligence metaheuristics. This metaheuristic imitates the cooperative behaviour of ants. Every ant has simple goal of collecting food and the shared goal is to find shorted path between the food and the nest. The motion of the ants is coordinated by smell and a pheromone.
+The ant colony optimisation is an instance of swarm intelligence metaheuristics. This metaheuristic imitates the cooperative behaviour of ants. Every ant has a simple goal of collecting food, and the common goal is to find shorted path between the food and the nest. The motion of the ants is coordinated by their smell and a pheromone.
 
 \begin{itemize}
     \item Every ant spreads pheromone on its trail.
-    \item Ant prefer to take path with more pheromone.
+    \item Ant prefers to take a path with more pheromone.
     \item The pheromone evaporates over time.
 \end{itemize}
 
-The common application of ant colony optimization is in shortest path algorithms. Literature states many applications in traveling salesman problem~\cite{dorigo1997ant, dorigo1997ant}. However, the metaheuristic can be applied also in combinatorial problems, as the problem representation can be encoded to the graph structure and the shorted path algorithm may solve them. An example of such application can be formula satisfiability problem (SAT)~\cite{moritz2010solving}.
+The common application of ant colony optimisation is on shortest path algorithms. The literature states many applications in travelling salesman problem~\cite{dorigo1997ant, dorigo1997ant}. However, the metaheuristic can also be applied to combinatorial problems, as the problem representation can be encoded to the graph structure and the shorted path algorithm may solve them. An example of such application can be formula satisfiability problem (SAT)~\cite{moritz2010solving}.
 
-The problems solvable by ant colony optimisation are usually problems, where the solution is constructed from \textit{building blocks}. The pheromone can be associated to the block and it can describe probability of using the block in final solution. Such problem instances are used in EACirc's polynomial representation.
+The problems solvable by ant colony optimisation are usually problems, where the solution is constructed from \textit{building blocks}. The pheromone can be associated with the block and it can describe the probability of using the block in the final solution. Such problem instances are used in EACirc's polynomial representation.
 
-We wanted to use ant colony optimisation on polynomials, however, we did not find suitable library for \texttt{Python} or \texttt{C++}, such that would allow evaluation of whole constructed individual. Libraries like \texttt{ACO-Pants}~\cite{acoPants} are specialized for path finding, where every edge have to be weighted, while we would need to evaluate the whole path.
+We wanted to use ant colony optimisation on polynomials, however, we did not find a suitable library for \texttt{Python} or \texttt{C++}, such that would allow evaluation of whole constructed individual. Libraries like \texttt{ACO-Pants}~\cite{acoPants} specialise for pathfinding, where every edge have to be weighted, while we would need to evaluate the whole path.
 
 \subsection{Scatter search}
 \label{subsec:opt-multi-sol-scatter}
-% multi solution variation of tabu search?
+% multi-solution variation of tabu search?
 % main idea:
 %   1. hold diverse population (use tabu search for help)
 %   2. get the best individuals in such population
-%   3. split the population in smaller sets
+%   3. split the population into smaller sets
 %   4. combine the shared qualities of the individuals within the set, to get the ultimate individual with the core functionality
-% population = reference set 10-20 candidates, subsets can be for example of size 2-4
+% population = reference set 10-20 candidates; subsets can be for example of size 2-4
 % merge new candidates to the reference set and iteratively continue with the main steps
 % the algorithm may stop by number of iterations or by leaving the reference set unchanged
 % application in EACirc: we do not know, how to merge solutions
 
-The scatter search method is highly utilizing the combination of the individuals. The algorithm holds population of the best so far inspected individuals called \textit{reference set}. Like every population based metaheuristic, the diversity of the \textit{reference set} is crucial. Scatter search is an iterative algorithm, where one iteration consists of 4 steps.
+The scatter search method is highly utilising the combination of the individuals. The algorithm holds a population of the best so far inspected individuals called \textit{reference set}. Like every population-based metaheuristic, the diversity of the \textit{reference set} is crucial. Scatter search is an iterative algorithm, where one iteration consists of 4 steps.
 
 \begin{enumerate}
-    \item The \textit{reference set} is split to subset of size 2 to 4 individuals.
+    \item The \textit{reference set} is split to a subset of size 2 to 4 individuals.
     \item We combine the individuals of the subsets to create new candidate individuals.
-    \item We utilize a single-solution metaheuristic to improve the candidate individuals.
-    \item The candidate individuals are merged to the \textit{reference set} based on fitness.
+    \item We run a single-solution metaheuristic to improve the candidate individuals.
+    \item The \textit{reference set} incorporates the candidate individuals based on fitness.
 \end{enumerate}
 
-The main problem of application is the second step, where are solutions combined. We would have to develop a function, that combines multiple solutions and takes their shared properties. But there is no guarantee, that various advanced individuals share the same property. Also, the approach is similar to evolutionary algorithms, therefore we did not test it.
+The main problem of application is the second step, where are solutions combined. We would have to develop a function, which combines multiple solutions and takes their shared properties. However, there is no guarantee that various advanced individuals share the same property. Also, the approach is similar to evolutionary algorithms. Therefore we did not test it.
 
 \subsection{Other swarm intelligence methods}
 \label{subsec:opt-multi-sol-si}
 
-The swarm intelligence metaheuristics are based on collective behaviour of decentralized and self-organised systems. Similarly as ant colony optimisation, the behaviour of the swarm can be used to solve optimisation problems. Usually, the best application is in problems that are close to the origin of the behaviour of the swarm. Therefore, the main application is in decentralised control of robots, droids and other artificial individuals.
+The swarm intelligence metaheuristics adopt a collective behaviour of decentralised and self-organized systems. Similarly to ant colony optimisation, the behaviour of the swarm can be used to solve optimisation problems. Usually, the best application is in problems that are close to the origin of the behaviour of the swarm. Therefore, the main application is in decentralised control of robots, droids and other artificial individuals.
 
 The application issues for our problem are similar as for ant colony optimisation.
 
@@ -466,9 +471,9 @@ The application issues for our problem are similar as for ant colony optimisatio
 
 There are various optimisation methods, which are not classified as single or multi solutions metaheuristics. However, those models or algorithms are still capable of learning of classification.
 
-The classification is important in machine learning area. Therefore, the following models have developed advanced methods not only to the process of learning, but also interpretation of the results, detection of outliers, learning on low amount of data or non-complete data. Because of these advantages, we would like to experiment with them.
+The classification is important in machine learning area. Therefore, the following models have developed advanced methods not only to the process of learning but also the interpretation of the results, detection of outliers, learning on a low amount of data or non-complete data. Because of these advantages, we decided to experiment with them.
 
-These models and algorithms can be used for various goals. Two main are feature selection and classification. Our main goal is the classification, while we expect, that the model itself will select the features. The model has to adapt to the data, therefore we cannot do manual feature selection.
+These models and algorithms can be used for various goals. Two main are feature selection and classification. Our principal aim is the classification, while we expect, that the model itself will select the features. The model has to adapt to the data. Therefore we cannot make manual feature selection.
 
 % what ML problem specification heads-to?
 % ML is well studied, but the main problem is selection of the method, fine-tuning the parameters and setting up the features
@@ -477,7 +482,7 @@ These models and algorithms can be used for various goals. Two main are feature 
 \label{subsec:opt-other-ann}
 
 % Introduce the idea - look for some thesis using btw. ANN
-%   inspired by hebbian learning
+%   inspired by Hebbian learning
 %   backpropagation: Werbos 1975
 %      gradient descent (optimisation method for backpropagation)
 % Cite usage - find commonly cited papers, go trough them quickly
@@ -488,23 +493,23 @@ These models and algorithms can be used for various goals. Two main are feature 
 %   feature selection is not straightforward, as it is specific to analysed data and we would have to learn even the process of feature selection.
 %       EACirc: the circuit can be viewed as a feature selector, where the features are used afterwards for statistical testing (in the $\chi^{2}$ test)
 
-The artificial neural networks (ANN) are classification optimisation method inspired by process of learning of brain and neural system. The initial idea was inspired by research of Donald Hebb~\cite{hebb49learning}, who described the neurons and the process of learning of living beings. Trivial nonsupervised learning methods were based on Hebbian learning. Further development came with invention of backpropagation algorithm by Paul Werbos~\cite{werbos75beyondThesis}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of algorithm and its application on GPUs, which allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks.
+The artificial neural networks (ANN) are classification optimisation method inspired by the process of learning of brain and neural system. The initial idea was inspired by the research of Donald Hebb~\cite{hebb49learning}, who described the neurones and the process of learning of living beings neural systems. The Hebbian learning arose several trivial nonsupervised learning methods. Further development came with the invention of backpropagation algorithm by Paul Werbos~\cite{werbos75beyondThesis}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of algorithm and its application on GPUs, which allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks.
 % deeper introduction to ANN can be found in book http://www.deeplearningbook.org
 
-The artificial neural network consists of purpose specialised layers. The first layer is called visible layer and its input is the data for classification. Then there may be many hidden layers, that sequentially process output of previous layers. The final is output layer, which decides the classification of the data. Each layer consists of neurons. Each neuron take as input the output from all neurons of previous layers, and these outputs are multiplied by weight for each connection. The output is process by an activation function, which ensures normalisation of the output. There are many types of activation function, and each layer can use different activation function. The most used activation function is sigmoid function, with input from real number and output is usually from the interval $(0, 1)$.
+The artificial neural network consists of purpose specialised layers. The first layer is called visible layer, and its input is the data for classification. Then there may be many hidden layers, which sequentially process the output of previous layers. The data proceed to the last -- output layer, which decides the classification. Each layer consists of neurones. Each neurone takes as input the output from all neurones of previous layers, and weight for each connection multiplies these outputs. The output is processed by an activation function, which ensures normalisation of the output. There are many types of activation function, and each layer can use different activation function. The most used activation function is a sigmoid function, with input from real number and output is usually from the interval $(-1, 1)$ or $(0, 1)$.
 
 %\todo{citations: }
-The artificial neural networks were used to solve various problems in classification and pattern recognition. The most common are application in image processing, signal processing, text data processing and in robotics and system control.
+The artificial neural networks were used to solve various problems in classification and pattern recognition. The most common are applications in image processing, signal processing, text data processing and in robotics and system control.
 
 In cryptography, we have seen fewer applications of ANN. The main area of application of ANN in cryptography is authentication~\cite{li2001remote}, as it is a classification problem, where learning methods can bring speed-up traded off by approximation that allows errors.
 
-Application in encryption is even more rarer. For example researches from Google Brain showed experiment where they let neural network develop their own encryption for communication, while another neural network was intercepting the communication and attempting to decrypt it~\cite{abadi2016learning}. Predecessing works~\cite{shihab2006backpropagation, volna2012cryptography} did not get such attention as Google's work, but they had similar objective with simpler assumptions. However, all these works are far from application in cryptography. The only inspiration from them to this work is normalisation of binary data to floats, that was done by encoding 0 as $-0.5$ and 1 as $+0.5$. We have found no further relevant application of ANN in classification of binary data.
+Application in encryption is even rarer. For example, researchers from Google Brain showed an experiment where they let neural network develop encryption function for communication, while another neural network was intercepting the communication and attempting to decrypt it~\cite{abadi2016learning}. Preceding works~\cite{shihab2006backpropagation, volna2012cryptography} did not get such attention as Google's work, but they had a similar objective with simpler assumptions. However, all these works are far from application in cryptography. The only inspiration from them to our project is normalisation of binary data to floats, that was done by encoding zero as $-0.5$ and one as $+0.5$. We have found no further relevant application of ANN in the classification of binary data.
 
-We would like to utilize the developed approach of learning in classification by ANN. However, the application of ANN in our scope is not straightforward. We do not know in advance, what are the features in the data. Therefore the network has to have the whole ciphertext as an input. We encode the binary input to floats (0 as $-0.5$ and 1 as $+0.5$) based on intuition supported by other works~\cite{abadi2016learning,shihab2006backpropagation}. We tried both fully connected network (where every node is connected to every node of previous layer or every input bit), and convolution network, where the first layer has only limited local interval of inputs. 
+We would like to utilise the developed approach of learning in classification by ANN. However, the application of ANN in our scope is not straightforward. We do not know in advance, what are the features in the data. Therefore the network has to have the whole ciphertext as an input. We encode the binary input to floats (0 as $-0.5$ and 1 as $+0.5$) based on intuition supported by other works~\cite{abadi2016learning,shihab2006backpropagation}. We tried both fully connected network (where every node is connected to every node of previous layer or every input bit), and convolution network, where the first layer has only a limited local interval of inputs. 
 
 % shihab2006backpropagation http://docsdrive.com/pdfs/sciencepublications/jcssp/2006/710-715.pdf
-%   ANN developes decryption of basic boolean blocks of permutation and 'doping'
-%   backprop, 3 layers (12-16-12), bits as -0.5, +0,5, linear activation
+%   ANN develops decryption of basic Boolean blocks of permutation and 'doping.'
+%   backpropagation, three layers (12-16-12), bits as -0.5, +0,5, linear activation
 %   they claim better security than DES (due to large state space), but it is a bullshit
 
 % li2001remote http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=963786
@@ -513,18 +518,18 @@ We would like to utilize the developed approach of learning in classification by
 % volna2012cryptography https://pdfs.semanticscholar.org/0860/8a61506de48da7e93320a5844b081801374a.pdf
 %   ANN creates encryption algorithm (same as Google's paper), 6 bits blocks
 %   network 6-6-6, sigmoid, nothing about bits representation
-%   they are not cryptographers!!! Security by obscurity (key is the weight of connectors in the network), again bullshit (OMG, they even do not meet semantics security!)
+%   they are not cryptographers! Security by obscurity (the key is the weight of connectors in the network), again bullshit (OMG, they even do not meet semantics security!)
 
 \subsection{Other statistical classification methods}
 %https://en.wikipedia.org/wiki/Statistical_classification
 
 % SVM
 % kNN
-% Decition trees (C4.5 algorithm https://en.wikipedia.org/wiki/C4.5_algorithm)
-% Bayesian netowrks
+% Decision trees (C4.5 algorithm https://en.wikipedia.org/wiki/C4.5_algorithm)
+% Bayesian networks
 % ...
 
-There are several other models or algorithms of statistical classification. Those are for example support vector machine (SVM), decision tree with C4.5 algorithm, $k$-nearest neighbours algorithm ($k$-NN), Bayes classifier and many others. Those methods usually relies on good feature selection, which we do not perform in our scenario. Therefore, the application of those models was rejected within this work, but can be an interesing question for further works.
+There are several other models or algorithms of statistical classification. Those are for example support vector machine (SVM), decision tree with a C4.5 algorithm, $k$-nearest neighbours algorithm ($k$-NN), Bayes classifier and many others. Those methods usually rely on good feature selection, which we do not perform in our scenario. Therefore, the application of those models was not examined within this work, but they might be an interesting question for further works.
 
 \chapter{Experiment methodology}
 \label{chap:method}
@@ -847,7 +852,7 @@ The variable neighbourhood search is performing better than iterative local sear
 \subsubsection{Analysis of the output circuits}
 \label{subsubsec:res-ss-vns-circ-anal}
 
-Same as in \cref{subsubsec:res-ss-gls-circ-anal}, we inspected the density of the circuits. Again, the circuits were sparser than circuits from iterated local search, however, they were significantly denser than circuits from guided local search runs. This may also support the hypothesis that limiting the neigbourhood is too strict, and disallow valuable changes in the learning process.
+Same as in \cref{subsubsec:res-ss-gls-circ-anal}, we inspected the density of the circuits. Again, the circuits were sparser than circuits from iterated local search, however, they were significantly denser than circuits from guided local search runs. This may also support the hypothesis that limiting the neighbourhood is too strict, and disallow valuable changes in the learning process.
 
 \subsection{Overfitting analysis}
 \label{subsec:res-ss-overfitting}
@@ -862,6 +867,171 @@ Same as in \cref{subsubsec:res-ss-gls-circ-anal}, we inspected the density of th
 \section{ANN}
 \label{sec:res-ann}
 
+We tested neural networks on the same dataset. The algorithm takes two binary files as an input -- tested data and referential random data. The first step is encoding the data to \texttt{NumPy} array of \texttt{floats}. This Then we form 2 mutually exclusive datasets, learning and testing dataset. Both contains randomly chosen test vectors from either of the input files, together with the label of the data source.
+
+The implementation of the neural network is written in Keras~\cite{chollet2015keras}, which is a high-level API for TensorFlow library~\cite{abadi2016tensorflow}. Keras allows simple prototyping of network layout, while TensorFlow is highly  effective implementation of linear algebra for neural networks capable of computation on CPU and GPU.
+
+The network layout is showed in \cref{fig:ann-layout}. We tested many layouts and all available activation functions in Keras. The observations are: the network with 2 hidden layers perform the best, as it is capable of all the obtained results and it is learning significantly faster even in number of \textit{epochs}, so in the computational time. The best activation functions are \textit{sigmoid} and its approximations \textit{tanh} and \textit{softsign}. The activation functions corresponds to the bit encoding, probably different encoding of the test vectors would need different activation function. The last important parameter is the amount of learning data for each \textit{epoch}. It was surprising, but the neural network prefers small amount of test vectors in more iterations. This differs from EACirc observations. Therefore, the best setup consumed only 25 test vectors per epoch, while the whole computation consisted of 100 epochs, and the total computational time was below 30 seconds on four cores CPU.
+
+\begin{figure}[H]
+\begin{changemargin}{-\lmar}{-\rmar}
+\centering{}
+
+% Declare layers
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+\scalebox{0.77}{
+\begin{tikzpicture}[scale=.8,cap=round]
+    % positions
+    \def \firstLayer {10}
+    \def \secondLayer {8}
+    \def \thirdLayer {6}
+    \def \fourthLayer {4}
+
+    % brackets
+    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
+(-0.2,\firstLayer - 0.8) -- (-0.2,\firstLayer + 0.8) node [black,midway,xshift=-1.2cm] 
+{\footnotesize \textit{Input layer}};
+
+    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
+(-0.2,\thirdLayer - 0.5) -- (-0.2,\secondLayer + 0.5) node [black,midway,xshift=-1.4cm] 
+{\footnotesize \textit{Hidden layers}};
+
+    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
+(-0.2,\fourthLayer - 0.8) -- (-0.2,\fourthLayer + 0.8) node [black,midway,xshift=-1.3cm] 
+{\footnotesize \textit{Output node}};
+
+    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
+(0,\firstLayer + 1) -- (3,\firstLayer + 1) node [black,midway,yshift=0.6cm] 
+{\footnotesize \textit{8 bits}};
+
+    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
+(14,\firstLayer + 1) -- (17,\firstLayer + 1) node [black,midway,yshift=0.6cm] 
+{\footnotesize \textit{8 bits}};
+
+    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
+(8.64,\fourthLayer - 1) -- (0,\fourthLayer - 1) node [black,midway,yshift=-0.6cm] 
+{\footnotesize \textit{ANN}};
+
+    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
+(17,\fourthLayer - 1) -- (8.64,\fourthLayer - 1) node [black,midway,yshift=-0.6cm] 
+{\footnotesize \textit{CNN}};
+
+    % layers
+    \def \y {\firstLayer}
+    \foreach \x in {0, 4, 10, 14} {
+        \filldraw[fill=white] (\x,\y) circle (0.1);
+        \filldraw[fill=white] (1+\x,\y) circle (0.1);
+        \node at (2 + \x, \y) {$\dots$};
+        \filldraw[fill=white] (3+\x,\y) circle (0.1);
+    }
+
+    
+    \node at (8.5, \y) {$\dots$};
+    
+    \def \y {\secondLayer}
+    \foreach \x in {1.5, 5.5, 11.5, 15.5} {
+        \filldraw[fill=white] (\x,\y) circle (0.1);
+    }
+
+    \def \y {\thirdLayer}
+    \foreach \x in {1.5, 5.5, 11.5, 15.5} {
+        \filldraw[fill=white] (\x,\y) circle (0.1);
+    }
+    
+    \filldraw[fill=white] (8.5,\fourthLayer) circle (0.1);
+
+
+    %% The lines connecting the nodes are drawn in the background layer.
+    %% This way we can hide the lines behind the nodes and don't worry
+    %% about the width of each node.    
+    \begin{pgfonlayer}{background}
+        
+        % ANN full furst layer
+        \foreach \xa in {0, 4}
+            \foreach \xb in {1.5, 5.5} {
+                \draw[thin, -latex] (\xa,\firstLayer) -- (\xb,\secondLayer);
+                \draw[thin, -latex] (\xa+1,\firstLayer) -- (\xb,\secondLayer);
+                \draw[thin, -latex] (\xa+3,\firstLayer) -- (\xb,\secondLayer);
+        }
+        
+        \foreach \xa in {10}
+            \foreach \xb in {11.5} {
+                \draw[thin, -latex] (\xa,\firstLayer) -- (\xb,\secondLayer);
+                \draw[thin, -latex] (\xa+1,\firstLayer) -- (\xb,\secondLayer);
+                \draw[thin, -latex] (\xa+3,\firstLayer) -- (\xb,\secondLayer);
+            }
+        \foreach \xa in {14}
+            \foreach \xb in {15.5} {
+                \draw[thin, -latex] (\xa,\firstLayer) -- (\xb,\secondLayer);
+                \draw[thin, -latex] (\xa+1,\firstLayer) -- (\xb,\secondLayer);
+                \draw[thin, -latex] (\xa+3,\firstLayer) -- (\xb,\secondLayer);
+            }
+        \foreach \xa in {1.5, 5.5, 11.5, 15.5}
+            \foreach \xb in {1.5, 5.5, 11.5, 15.5} {
+                \draw[thin, -latex] (\xa,\secondLayer) -- (\xb,\thirdLayer);
+        }
+        \foreach \xa in {1.5, 5.5, 11.5, 15.5}
+            \foreach \xb in {8.5} {
+                \draw[thin, -latex] (\xa,\thirdLayer) -- (\xb,\fourthLayer);
+        }
+        
+        \draw[densely dotted] (8.5,\firstLayer+1) -- (8.5,\fourthLayer-1);
+    \end{pgfonlayer}
+\end{tikzpicture}
+}
+\end{changemargin}
+\caption{The layout of neural network used for data classification. The left part is traditional neural network (\textit{ANN}) with fully connected first layer to the input, on the right is one dimensionally convoluted neural network (\textit{CNN}), where is the first layer connected only to one particular byte of the input.}
+\label{fig:ann-layout}
+\end{figure}
+
+As the \cref{fig:ann-layout} shows, we experimented with basic neural network and with a convoluted variant. The convoluted neural networks works great for image processing and signal processing, as the convoluted layer detects local patterns. However, cryptographic functions should met strict avalanche criterion that should suppress any data locality. Usage of CNN can be taken as specific test for locality specific patterns. If the reduced cryptographic function meets the strict avalanche criterion, the result of CNN should be worse, as the first layer of CNN has lower capabilities than fully connected layer of ANN.
+
+We also implemented specific strict avalanche criterion for 2D CNN into the generator. We start with random plaintext and we generate all plaintext with hamming weight 1 from the original plaintext. Those encrypted plaintextx can share two dimensional patterns.
+
+Overall, the CNN resulted in worse results, than ANN. The problems was slower learning (probably due to \textit{dropout}, that is suggested to use with CNN), but sometimes the distinguisher was not found even during more epochs. The best results of ANN are summarized in the \cref{table:res-usable-ann}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{l|l l l l}
+Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
+rnd\_rnd         & \fn{}0.511 & --       & --         & --         \\\\
+AES$_{3}$        & \fd{}1.0   & \fn{}0.494 & \fn{}0.482 & \fn{}0.489 \\
+BLAKE$_{1}$      & \fd{}1.0   & \fn{}0.492 & \fn{}0.495 & \fn{}0.500 \\
+Grain$_{2}$      & \fd{}0.999 & \fd{}1.0   & \fn{}0.492 & \fn{}0.500 \\
+Grostl$_{2}$     & \fn{}0.507 & \fn{}0.504 & \fn{}0.499 & \fn{}0.506 \\
+HC-128$_{0}$     & \fd{}--    & \fn{}0.014 & \fn{}0.016 & \fn{}--    \\
+JH$_{6}$         & \fd{}0.999 & \fd{}1.0   & \fn{}0.512 & \fn{}0.504 \\
+Keccak$_{3}$     & \fd{}0.996 & \fn{}0.504 & \fn{}0.490 & \fn{}0.498 \\
+MD6$_{8}$        & \fd{}0.812 & \fd{}0.533 & \fn{}0.484 & \fn{}0.506 \\
+Rabbit$_{0}$     & \fd{}--    & \fn{}0.019 & \fn{}0.007 & \fn{}--    \\
+RC4$_{no~rounds}$& --         & \fn{}0.511 & --         & --         \\
+Salsa20$_{2}$    & \fd{}0.694 & \fd{}0.663 & \fn{}0.492 & \fn{}0.508 \\
+SINGLE-DES$_{4}$ & \fd{}0.512 & \fn{}0.494 & \fn{}0.492 & \fn{}0.512 \\
+Skein$_{3}$      & \fd{}1.0   & \fd{}1.0   & \fn{}0.014 & \fn{}0.01  \\
+SOSEMANUK$_{0}$  & \fd{}--    & \fn{}0.011 & \fn{}0.013 & \fn{}--    \\
+TEA$_{3}$        & \fd{}0.980 & \fd{}0.548 & \fn{}0.500 & \fn{}0.495 \\
+TRIPLE-DES$_{2}$ & \fd{}0.997 & \fd{}0.522 & \fn{}0.493 & \fn{}0.507
+\end{tabular}
+\caption{The best obtained results of ANN on usable testbed. The values are corresponding to \textit{acceptance rate}, where value $0.5$ is the reference value.}
+\label{table:res-usable-ann}
+\end{table}
+
+The learning process of ANN can be analysed by two variables. The first is acceptance rate, that is equal to ratio of $\frac{\#_{\textnormal{correct quesses}}}{\#_{\textnormal{total quesses}}}$. The second is result of crossentropy loss function, which describes how fast can the network learn (similar to temperature of simulated annealing). Those values are shown for AES in 1 to 3 rounds with both ANN and CNN for comparison.
+
+\begin{figure}[H]
+
+\centering{}
+
+TODO
+
+\caption{Learning process of ANN (left) and CNN (right) on AES reduced to one to three rounds.}
+\label{fig:ann-learning}
+\end{figure}
+
+We contacted pattern recognition team from University Ca’ Foscari Venice. We presented them our approach and results, they suggested us using CNN and they tried their own methods on the data, we provided them from the \textit{generator}. The results of this cooperation are still open. \todo{is this true before submition?}
+
 % Implementation
 %   preprocessing of input data
 %       usage - learning data, testing data are separated
@@ -875,19 +1045,20 @@ Same as in \cref{subsubsec:res-ss-gls-circ-anal}, we inspected the density of th
 % cooperation with Italy
 % future work: learn on AES r2, re-learn on aes r3
 
-\section{Optimisation by grain fine-tuning selected metaheuristic}
-\label{sec:res-finetuning}
 
-% needs revision
-Trying multiple metaheuristic is broad approach. However, as stated in no free lunch theorem, there is a tendency, than no single metaheuristic guarantee better results, while dedicated human work on analysing and fine-tuning the method can bring better results.
+%\section{Optimisation by grain fine-tuning selected metaheuristic}
+%\label{sec:res-finetuning}
 
-In~\cite{kubicek2016new}, we analysed deeply one single function -- Tiny Encryption Algorithm (\textit{TEA}). The aim of this analysis was finding best setup specific to tested function, so we can directly compare EACirc to other teams that were using genetics algorithm for testing randomness of TEA ciphertext.
+%% needs revision
+%Trying multiple metaheuristic is broad approach. However, as stated in no free lunch theorem, there is a tendency, than no single metaheuristic guarantee better results, while dedicated human work on analysing and fine-tuning the method can bring better results.
 
-Instead of broad analysis, we tried multiple settings mainly of the tested data. The best distinguishers were found for testing strict avalanche criterion. We also tested many other constants that specify the computation.
+%In~\cite{kubicek2016new}, we analysed deeply one single function -- Tiny Encryption Algorithm (\textit{TEA}). The aim of this analysis was finding best setup specific to tested function, so we can directly compare EACirc to other teams that were using genetics algorithm for testing randomness of TEA ciphertext.
 
-Intiialy, we observed worse results along all metaheuristics for TEA than are stated in the paper. Therefore, we analysed the the source of different behaviour. Due to this analysis, we found an implementation bug in EACirc 4 \todo{cite commit} that actively decreased the used size of the circuit by two layers. \todo{Updated results, other results were intouched?}.
+%Instead of broad analysis, we tried multiple settings mainly of the tested data. The best distinguishers were found for testing strict avalanche criterion. We also tested many other constants that specify the computation.
 
-This unintentional analysis showed that fine-tuning the dimensions of the circuit is crucial for observing the best performance. % TODO: false!
+%Intiialy, we observed worse results along all metaheuristics for TEA than are stated in the paper. Therefore, we analysed the the source of different behaviour. Due to this analysis, we found an implementation bug in EACirc 4 \todo{cite commit} that actively decreased the used size of the circuit by two layers. \todo{Updated results, other results were intouched?}.
+
+%This unintentional analysis showed that fine-tuning the dimensions of the circuit is crucial for observing the best performance. % TODO: false!
 
 \section{Inter-approach comparison}
 \label{sec:res-comp}
