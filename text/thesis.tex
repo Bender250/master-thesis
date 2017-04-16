@@ -136,6 +136,8 @@
 % make captions italic
 \usepackage[format=plain,
             font=it]{caption}
+% rotate figures
+\usepackage{rotating}
 
 % Lubo's hack for margins
 \newcommand{\lmar}{3cm}
@@ -538,12 +540,12 @@ There are several other models or algorithms of statistical classification. Thos
 
 The primary testing goal of EACirc is to assess randomness of ciphertext of cryptographic functions. As most of the cryptographic functions are in a scope of automated analysis semantic secure, EACirc can identify non-randomness only for reduced functions. The functions can be reduced in a number of rounds, by processing selected plaintexts, and by selecting only specific bits of the output. As the analysis of reduced versions of cryptographic functions is the main goal of the EACirc project, it is also selected as the testing scenario for comparison of analysed metaheuristics.
 
-The approach for evaluation is \todo{briefly?} described in \cref{subsec:eacirc}. The tested data were produced from 16 different cryptographic functions and pseudo-random data generator PCG~\cite{pcgGen} as reference data \todo{why is this better?}. These functions are reduced to the edge of distinguishing capability of EACirc, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually we test also $i-1$ and $i+2$ rounds, for broader comparison of the results with state of the art of cryptoanalysis.
+The approach for evaluation is \todo{briefly?} described in \cref{subsec:eacirc}. The tested data were produced from 16 different cryptographic functions and pseudo-random data generator PCG~\cite{pcgGen} as reference data\footnote{We use fast and computationally strong PRNG instead of truly random data from e.g. quantum services (QRNG). There are mainly 2 reasons for that: firstly we do not need to distribute QRNG with EACirc binary for computation. Secondly we had encountered malfunction QRNG, and multiple user mistakes with handling the QRNG files, so build-in PRNG is a more secure and convenient option.}. These functions are reduced to the edge of distinguishing capability of EACirc, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually we test also $i-1$ and $i+2$ rounds, for broader comparison of the results with state of the art of cryptoanalysis.
 
 \section{Used data}
 \label{sec:method-data}
 
-Previous works on EACirc analysed candidates of cryptoprimitives competitions~\cite{estreamMgrThesis,sha3Thesis,ukropMgrThesis}. These works extended EACirc by many functions sharing the same interface. This approach was effective for broad analysis of the competition candidates, but it does not test well known cryptographic functions like AES and DES.
+Previous works on EACirc analysed candidates of cryptoprimitives competitions~\cite{estreamMgrThesis,sha3Thesis,ukropMgrThesis}. These works extended EACirc by many functions sharing the same interface. This approach was effective for broad analysis of the competition candidates, but it does not test well-known cryptographic functions like AES and DES.
 
 Therefore, for the comparison with other randomness testing tools and other research papers on semantics security, we decided select new test set of cryptographic functions. We chose the finalist of competitions SHA-3 (BLAKE, Grostl, JH, Keccak and Skein) and eSTREAM (HC-128, Rabbit, Salsa20, SOSEMANUK and Grain), and above that, we implemented other block (AES, DES, 3-DES and TEA) and stream (RC4) functions.
 
@@ -581,15 +583,27 @@ RC4 is also based on the educative repository~\cite{cryptoFunc}, but as RC4 has 
 
 All these functions together with the new interface of new block project and test vectors processing algorithm were released in minor version EACirc 4.1.
 
+\paragraph{Corrections and code review of SHA-3 and eSTREAM functions} was another part of streams update. Multiple cryptographic functions from previous implementation were incorrectly round-reduced.
+\label{par:method-data-funcs-bugs}
+
+\begin{itemize}
+    \item SHA-3 Skein, eSTREAM Rabbit, SOSEMANUK and F-FCSR were not round-reduced, but their implementation uses iterative approach, so we reduced them.
+    \item eSTREAM HC-128 stated in the project documentation and in header file, it can be round-reduced, but it had no effect in the core function at all.
+    \item eSTREAM Salsa20 used wrong implicit number of rounds for default settings.
+\end{itemize}
+
+These bugfixes together with fix of imporper configuration of eSTREAM project were one of two major reasons for releasing EACirc 4.2. \todo{ref after release.} All these fixes together with valid configurations are described in project documentation~\cite{EACirc-wiki-streams}.
 
 \subsection{Data generator tool}
 \label{subsec:method-data-generator}
 
 For direct comparison of the tested methods, we need to analyse the same data. EACirc has build in generation of test vectors, to feed the computation, as is described in \cref{sec:method-data}. Therefore, we implemented side project from EACirc for production of data. We call it \textit{Generator} and it shares the source code of functions with EACirc.
 
-The \textit{Generator} is fully configurable via \texttt{JSON} configuration file as EACirc. The structure of the file is reduced, as the configuration describes only generated data. So the \textit{Generator} inherits all the capabilities of streams, providing complex control on the data generation. For simplification and automation, we also prepared script, that generates configuration files for most common settings, which allows simple execution by command line arguments. For even simpler acces to testing data, we generated 160~MB file for each basic setup for each widely-known cryptographic function (described in \cref{subsec:method-data-funcs}) reduced to wide interval of rounds. This dataset is publicly accessible on \todo{add link}.
+The \textit{Generator} is fully configurable via \texttt{JSON} configuration file as EACirc. The structure of the file is reduced, as the configuration describes only generated data. So the \textit{Generator} inherits all the capabilities of streams, providing complex control on the data production. For simplification and automation, we also prepared script, that generates configuration files for most common settings, which allows simple execution by command line arguments. For even simpler acces to testing data, we generated 160~MB file for each basic setup for each widely-known cryptographic function (described in \cref{subsec:method-data-funcs}) reduced to wide interval of rounds. This dataset is publicly accessible on \todo{add link}.
 
 We have ongoing plan of publication, which will crucially utilize the \textit{Generator}. It will be paper on comparison of statistical testing tools on wide variety of cryptographic data. The \textit{Generator} will be used as it unifies many different cryptographic functions and it can reduce the functions in number of rounds, or selection of specified bits. The \textit{Generator} has already all the necessary features, so we can start with writing of the paper when we select the conference, we are aiming for.
+
+Important work for the generator was fixing the implementation bugs, described in previous~\cref{par:method-data-funcs-bugs}.
 
 
 \section{Methodology for specific optimisation methods}
@@ -672,10 +686,13 @@ The EACirc project formelly used tool Oneclick created by Lubomír Obrátil~\cit
 
 These scripts are expected to be modified by individual researchers for the needs of their experiments, so the scripts are stored in GitHub repository~\cite{eaUtils}, and users are supposed to fork them. The repository also contains \texttt{readme.md} file, with specifies the first steps with computations on MetaCentrum with these scripts. Every script then contains documentation in the code (concerning expected modifications for individual purposes), and when it is run without arguments, it prints out a help message.
 
-\todo{rotate to save space?}
-
 \begin{figure}[H]
-    \centering
+    \centering{}
+    
+\begin{changemargin}{-3cm}{-3cm}
+    \centering{}
+    \rotatebox{-90}{
+    \scalebox{0.9}{
     \tikzstyle{block} = [draw, rectangle, minimum height=3em, minimum width=3em]
     \tikzstyle{el} = [draw, ellipse, minimum height=3em, minimum width=3em]
     \tikzstyle{cl} = [cloud, cloud puffs=10,cloud puff arc=120, minimum height=3em, minimum width=3em]
@@ -695,6 +712,10 @@ These scripts are expected to be modified by individual researchers for the need
         \draw [->] (pos) -- node [right] {aggregates the results\\and computes the statistics} (gen);
         \draw [->] (gen) -- node [right] {generates human readable tables\\and dump the results} (res);
     \end{tikzpicture}
+    }
+    }
+\end{changemargin}
+    
     \caption{Execution of EACirc on MetaCentrum grid -- order and purpose of the scripts.}
     \label{fig:scripts}
 \end{figure}
@@ -757,9 +778,9 @@ To verify the implementation, we perform sanity experiment comparing random data
 
 Single solutions metaheuristics use evaluation described in \cref{subsubsec:method-spec-ss-stat}. As we use critical value $\alpha=1\,\%$, the random-random experiment should reject randomness hypothesis in average $1\,\%$ of the runs. As we would like to have better confidentiality in this sanity experiment, we perform not only 1\,000 runs for this settings, but 100\,000 runs. Confidentiality for such run can be computed from the binomial distribution and obtaining value $1.2\,\%$ has probability 4.787\,\% for 1\,000 runs, while it is lower than 0.001\,\% for 100\,000 runs.
 
-\Cref{table:res-usable-ils,table:res-usable-sa,table:res-usable-gls,table:res-usable-vns} summarise other results, where every row corresponds to one cryptographical function, and this function is reduced to rounds given by column of the table. A dash in the cell signalises that scenario was not tested, as we predicted the result based on other results. The number represents the ratio of runs where KS test rejected the randomness hypothesis within 1\,000 runs. For indistinguishable data, values around measured ratio from the random-random experiment are expected. Results twice this value can happen in less then 0.15\,\% measures for randomly looking data. Therefore results over double of this measured critical value are considered as nonrandom.
+\Cref{table:res-usable-ils,table:res-usable-sa,table:res-usable-gls,table:res-usable-vns} summarise other results, where every row corresponds to one cryptographical function and its \textit{edge} amount of rounds as name index. The columns of the table offset this \textit{edge} amount of rounds. A dash in the cell signalises that we did not test the scenario. The number represents the ratio of runs where KS test rejected the randomness hypothesis within 1\,000 runs. For indistinguishable data, values around measured ratio from the random-random experiment are expected. Results twice this value can happen in less then 0.15\,\% measures for randomly looking data. Therefore results over double of this measured critical value are considered as nonrandom.
 
-The colour highlights our evaluation of the result. Red highlight signs that EACirc detected nonrandomness. Green highlight signs that EACirc has not found anything and from the notion of hypothesis testing, we cannot say anything about the randomness of data (we cannot accept the randomness hypothesis).
+The colour highlights our evaluation of the result. Red highlight signs that EACirc detected nonrandomness. Green highlight signs that EACirc has not found anything and from the notion of hypothesis testing, we cannot say anything about the randomness of data (we cannot accept the randomness hypothesis). We highlighted untested scenarios (the dash in the cell) if the results can be estimated.
 
 \subsection{Iterated local search baseline}
 \label{subsec:res-ss-ils}
