@@ -22,11 +22,11 @@ import os
 # USE exactly the string from estream_fun_names_id or worry about ID's of funs!
 estream = {
     'Grain': [2, 3, 4],
-    'HC-128': [i for i in range(0, 2)],
+    'HC-128': [1],
 #    'MICKEY': [i for i in range(0, 10)],
-    'Rabbit': [i for i in range(0, 2)],
+    'Rabbit': [i for i in range(0, 5)],
     'Salsa20': [2, 3, 4],
-    'SOSEMANUK': [i for i in range(0, 2)]#,
+    'SOSEMANUK': [i for i in range(4, 7)]#,
 #    'Trivium': [i for i in range(0, 10)]
 }
 
@@ -134,6 +134,7 @@ if __name__ == "__main__":
             f.write('        \"init-frequency\" : \"only-once\",\n')
             f.write('        \"algorithm\" : \"' + fun + '\",\n')
             f.write('        \"round\" : ' + str(r) + ',\n')
+            f.write('        \"block-size\" : 16,\n')
             f.write("""        "plaintext-type" : {
             "type" : "counter"
         },\n""")
