@@ -34,7 +34,7 @@
 \label{res_usable}
 \begin{tabular}{l|l l l l}
 Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
-rnd\_rnd         & \fn{}0.01191 & --       & --         & --        \\\\
+rnd\_rnd$_{\textnormal{no rounds}}$ & \fn{}0.01191 & --       & --         & --        \\\\
 AES$_{3}$        & \fd{}1.0   & \fd{}0.164 & \fn{}0.017 & \fn{}--   \\
 BLAKE$_{1}$      & \fd{}1.0   & \fd{}0.26  & \fn{}0.017 & \fn{}0.013\\
 Grain$_{2}$      & \fd{}--    & \fd{}1.0   & \fn{}0.011 & \fn{}0.009\\
@@ -44,10 +44,11 @@ JH$_{6}$         & \fd{}--    & \fd{}1.0   & \fn{}0.01  & \fn{}0.01 \\
 Keccak$_{3}$     & \fd{}1.0   & \fn{}0.017 & \fn{}0.013 & \fn{}--   \\
 MD6$_{8}$        & \fd{}--    & \fd{}0.995 & \fn{}0.013 & \fn{}0.016\\
 Rabbit$_{0}$     & \fd{}--    & \fn{}0.007 & \fn{}0.003 & \fn{}0.013\\
-RC4$_{no~rounds}$& --         & \fn{}0.008 & --         & --        \\
+RC4$_{\textnormal{no rounds}}$& -- & \fn{}0.008 & --         & --        \\
 Salsa20$_{2}$    & \fd{}--    & \fd{}1.0   & \fn{}0.016 & \fn{}0.012\\
 SINGLE-DES$_{4}$ & \fd{}1.0   & \fd{}0.496 & \fn{}0.011 & \fn{}0.013\\
 Skein$_{3}$      & \fd{}1.0   & \fd{}1.0   & \fn{}0.012 & \fn{}0.006\\
+SOSEMANUK$_{4}$  & \fd{}--    & \fd{}1.0   & \fn{}0.015 & \fn{}0.009\\
 TEA$_{4}$        & \fd{}1.0   & \fd{}0.729 & \fn{}0.015 & \fn{}0.006\\
 TRIPLE-DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.012 & \fn{}0.007
 \end{tabular}
