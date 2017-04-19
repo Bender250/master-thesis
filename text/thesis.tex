@@ -629,9 +629,9 @@ The fitness of an individual is a $p$-value of two sample $\chi^{2}$ test, which
 
 As the $p$-values are uniformly distributed for random guess, getting high $p$-value can imply two cases. Either the $\chi^{2}$ test rejected the hypothesis and scored high confidential output, or the tested data, or in case of random guess, we were lucky and obtained high value from uniform ditribution on interval $(0, 1)$. Therefore, we avoid interpretation of a single $p$-value, we collect an $p$-value per every \textit{epoch}, and we process these $p$-values to Kolmogorov-Smirnov test. It analyses the uniformity of usually 300 $p$-values. This test is using critical value $\alpha = 1\,\%$, therefore it rejects the null hypothesis that tested data seems nonrandom in 1\,\% of runs. To avoid such case, we run the experiment with the same settings 1\,000 times and we analyse the rejection rate given as the amount of failed KS tests over 1000. If it is around 1\,\%, the data seem to be random, while in it is much higher, the experiment rejected randomness hypothesis of tested data.
 
-This approach is vastly increasing the amount of data needed for the computation, as well as the overall run-time. This method is a trade-off for the success rate of EACirc, as different evaluators do not need statistical evaluation. Hence they need much fewer data; however, such evaluators are slightly worse based on results from~\cite{svenda2013towards}.
+This approach is vastly increasing the amount of data needed for the computation, as well as the overall run-time. This method is a trade-off for the success rate of EACirc, as different evaluators do not need statistical evaluation. Hence they need much fewer data; however, such evaluators are slightly worse based on the results from~\cite{svenda2013towards}.
 
-When we consider basic setup for single-solution metaheuristics, EACirc consumes 2.4\,GB of ciphertext of tested function \cref{fig:dataUsage}. The runtime of the experiment on MetaCentrum varies from 4 to 20 hours on a single core.
+When we consider basic setup for single-solution metaheuristics, EACirc consumes 4.8\,GB of ciphertext of tested function (\cref{fig:dataUsage}). The runtime of the experiment on MetaCentrum varies from 4 to 20 hours on a single core.
 
 %http://tex.stackexchange.com/questions/57732/placing-figures-inside-a-two-column-document 3rd answer
 \begin{figure*}[t]
@@ -642,21 +642,22 @@ When we consider basic setup for single-solution metaheuristics, EACirc consumes
                   {\textnormal{experiment}}
              \cdot
              \left(
-             \frac{30\,000 \frac{\textnormal{generations}}{\textnormal{run}}}
-                  {100 \; \frac{\textnormal{generations}}{\textnormal{test set}}}
+             300 \;
+             \frac{\textnormal{epochs}}
+                  {\textnormal{run}}
              \cdot
              1\,000 \;
              \frac{\textnormal{vectors}}
-                  {\textnormal{test set}}
+                  {\textnormal{epoch}}
              \cdot
-             8 \;
+             16 \;
              \frac{\textnormal{bytes}}
                   {\textnormal{vector}}
              \right) \approx\\
-             \approx 2,4 \textnormal{\,GiB per experiment}
+             \approx 4.8 \textnormal{\,GiB per experiment}
         \end{aligned}
     \end{equation*}
-    \caption{The amount of data analyzed by EACirc for a single configuration of randomness testing experiment.}
+    \caption{The amount of tested data analysed by EACirc for a single configuration of randomness testing experiment. A single run also evaluates randomness of the data, however the capability of EACirc decreases in such mode, and single result is prone to incorrect evaluation due to statistical error.}
     \label{fig:dataUsage}
 \end{figure*}
 
@@ -681,7 +682,7 @@ The EACirc project formelly used tool Oneclick created by Lubomír Obrátil~\cit
     \item they are single purpose, easier to modify one without affecting other,
     \item they are written in bash (running scripts for MetaCentrum scheduler) and Python (processing), so they do not need to be compiled,
     \item they maintained up-to-date for the newest EACirc,
-    \item they are faster, as MetaCentrum computation do not require previously used redundancy procedures.
+    \item they are faster, as MetaCentrum computation do not require formerly used redundancy procedures.
 \end{itemize}
 
 These scripts are expected to be modified by individual researchers for the needs of their experiments, so the scripts are stored in GitHub repository~\cite{eaUtils}, and users are supposed to fork them. The repository also contains \texttt{readme.md} file, with specifies the first steps with computations on MetaCentrum with these scripts. Every script then contains documentation in the code (concerning expected modifications for individual purposes), and when it is run without arguments, it prints out a help message.
@@ -700,10 +701,10 @@ These scripts are expected to be modified by individual researchers for the need
         \node [el] (e) [] {\bf{experiment idea}};
         \node [block] (pre) [below of = e,yshift=0.5cm] {\bf{preprocessor}};
         \node [block,text width=3.5cm] (run) [below of = pre,yshift=-0.5cm] {\vspace{0.1cm}{\bf runner scripts} \texttt{run\_experiment.sh} runs for every config file script \texttt{single\_job.sh}};
-        \node [block] (eac) [below of = run] {EACirc};
-        \node [block] (pos) [below of = eac,yshift=0.6cm] {postprocessor};
-        \node [block] (gen) [below of = pos,yshift=0.6cm] {table generator};
-        \node [el] (res) [below of = gen,yshift=0.6cm] {readable results};
+        \node [block] (eac) [below of = run] {\bf{EACirc}};
+        \node [block] (pos) [below of = eac,yshift=0.6cm] {\bf{postprocessor}};
+        \node [block] (gen) [below of = pos,yshift=0.6cm] {\bf{table generator}};
+        \node [el] (res) [below of = gen,yshift=0.6cm] {\bf{readable results}};
 
         \draw [->] (e) -- node [right] {researcher modifies\\general setting} (pre);
         \draw [->] (pre) -- node [right] {produces config for\\all combinations\\of function and round} (run);
@@ -761,8 +762,43 @@ The EACirc project is using adaptive learning. During the computation, the teste
 
 \subsection{Multi-solutions methodology}
 \label{subsec:method-spec-ms}
-\subsubsection{ANN methodology}
+
+\subsection{ANN methodology}
 \label{subsubsec:method-spec-ms-aco}
+
+% data
+% evaluation -> amount of data
+% scripts
+
+The neural netowrk also classifies test vectors into 2 datasets -- the tested set and the reference set. Therefore, the implementation of takes as input 2 binary files -- a tested file and reference file. We generate these files with the \textit{Generator}, so we ensure consistency and comparability of the results within approaches. The results are concretely for the published dataset \todo{ref to dataset}.
+
+The execution of neural network consist of training phase, where we iteratively provide different learning batches of data, and evaluation phase, where we use fresh data for final evaluation of ratio of correctly classified test vectors. The whole computation needs significantly less input data than EACirc, as is shown in \cref{fig:ann-dataUsage}.
+
+\begin{figure*}[t]
+    \begin{equation*}
+        \begin{aligned}
+    \Sigma = 
+             100 \;
+             \frac{\textnormal{epochs}}
+                  {\textnormal{experiment}}
+             \cdot
+             25 \;
+             \frac{\textnormal{vectors}}
+                  {\textnormal{epoch}}
+             \cdot
+             16 \;
+             \frac{\textnormal{bytes}}
+                  {\textnormal{vector}}
+             %\approx\\
+             \approx {40 \textnormal{\,kB for learning +} \atop {40 \textnormal{\,kB for evaluation}}}
+        \end{aligned}
+    \end{equation*}
+    \caption{The amount of data analysed by neural network for a single configuration of randomness testing experiment.}
+    \label{fig:ann-dataUsage}
+\end{figure*}
+
+We prepared automation scripts for easier analysis of multiple files together. We have script for sequential execution of all the runs for all binary files in directory, which produces \texttt{JSON} results file. This file is afterwards proceed by script, which plots the learning progress and final correct classification ratio.
+
 
 \chapter{Experiment results}
 \label{chap:res}
@@ -791,7 +827,7 @@ As was stated in \cref{subsec:eacirc} \todo{delete me, when you check this}, EAC
 \centering
 \begin{tabular}{l|l l l l}
 Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
-rnd\_rnd         & \fn{}0.01128 & --       & --         & --        \\\\
+rnd\_rnd$_{\textnormal{no rounds}}$ & -- & \fn{}0.01128 & --         & --        \\\\
 AES$_{3}$        & \fd{}1.0   & \fd{}0.182 & \fn{}0.016 & \fn{}--   \\
 BLAKE$_{1}$      & \fd{}1.0   & \fd{}0.107 & \fn{}0.014 & \fn{}0.01 \\
 Grain$_{2}$      & \fd{}--    & \fd{}1.0   & \fn{}0.017 & \fn{}0.01 \\
@@ -801,7 +837,7 @@ JH$_{6}$         & \fd{}--    & \fd{}1.0   & \fn{}0.008 & \fn{}0.014\\
 Keccak$_{3}$     & \fd{}1.0   & \fn{}0.017 & \fn{}0.017 & \fn{}--   \\
 MD6$_{8}$        & \fd{}--    & \fd{}0.748 & \fn{}0.01  & \fn{}0.012\\
 Rabbit$_{0}$     & \fd{}--    & \fn{}0.019 & \fn{}0.007 & \fn{}--   \\
-RC4$_{no~rounds}$& --         & \fn{}0.009 & --         & --        \\
+RC4$_{\textnormal{no rounds}}$& --         & \fn{}0.009 & --         & --        \\
 Salsa20$_{2}$    & \fd{}--    & \fd{}1.0   & \fn{}0.01  & \fn{}0.013\\
 SINGLE-DES$_{4}$ & \fd{}1.0   & \fd{}0.193 & \fn{}0.01  & \fn{}0.008\\
 Skein$_{3}$      & \fd{}1.0   & \fd{}1.0   & \fn{}0.014 & \fn{}0.01 \\
@@ -945,7 +981,7 @@ The network layout is showed in \cref{fig:ann-layout}. We tested many layouts an
 \begin{itemize}
     \item The network with two hidden layers perform the best, as it is capable of all the obtained results and it is learning significantly faster even in the number of \textit{epochs}, so in the computational time.
     \item The best activation functions are \textit{sigmoid} and its approximations \textit{tanh} and \textit{softsign}. The activation functions correspond to the bit encoding, probably different encoding of the test vectors would need different activation function.
-    \item The amount of learning data for each \textit{epoch} is a very important parameter for fine-tuning. It was surprising, but the neural network prefers a few test vectors in more iterations. The size of dataset differs from EACirc behaviour. The best setup consumed only 25 test vectors per epoch, while the whole computation consisted of 100 epochs and the total computational time was below 30 seconds on four cores CPU.
+    \item The amount of learning data for each \textit{epoch} is a very important parameter for fine-tuning. It was surprising, but the neural network prefers a few test vectors in more iterations. The size of dataset differs from EACirc behaviour. The best setup consumed only 25 test vectors per epoch, while the whole computation consisted of 100 epochs and the total computational time was below 30 seconds on four cores CPU. It means that neural network can be a very naïve statistical test of randomness using only 40\,kB of analysed data.
 \end{itemize}
 
 \begin{figure}[H]
@@ -1071,7 +1107,7 @@ Overall, the CNN resulted in worse results, than ANN. The problems were slower l
 \centering
 \begin{tabular}{l|l l l l}
 Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
-rnd\_rnd         & \fn{}0.511 & --       & --         & --         \\\\
+rnd\_rnd$_{\textnormal{no rounds}}$& -- & \fn{}0.511 & --         & --         \\\\
 AES$_{3}$        & \fd{}1.0   & \fn{}0.494 & \fn{}0.482 & \fn{}0.489 \\
 BLAKE$_{1}$      & \fd{}1.0   & \fn{}0.492 & \fn{}0.495 & \fn{}0.500 \\
 Grain$_{2}$      & \fd{}0.999 & \fd{}1.0   & \fn{}0.492 & \fn{}0.500 \\
@@ -1081,7 +1117,7 @@ JH$_{6}$         & \fd{}0.999 & \fd{}1.0   & \fn{}0.512 & \fn{}0.504 \\
 Keccak$_{3}$     & \fd{}0.996 & \fn{}0.504 & \fn{}0.490 & \fn{}0.498 \\
 MD6$_{8}$        & \fd{}0.812 & \fd{}0.533 & \fn{}0.484 & \fn{}0.506 \\
 Rabbit$_{0}$     & \fd{}--    & \fn{}0.019 & \fn{}0.007 & \fn{}--    \\
-RC4$_{no~rounds}$& --         & \fn{}0.511 & --         & --         \\
+RC4$_{\textnormal{no rounds}}$& --         & \fn{}0.511 & --         & --         \\
 Salsa20$_{2}$    & \fd{}0.694 & \fd{}0.663 & \fn{}0.492 & \fn{}0.508 \\
 SINGLE-DES$_{4}$ & \fd{}0.512 & \fn{}0.494 & \fn{}0.492 & \fn{}0.512 \\
 Skein$_{3}$      & \fd{}1.0   & \fd{}1.0   & \fn{}0.014 & \fn{}0.01  \\
