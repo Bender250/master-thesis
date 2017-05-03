@@ -23,14 +23,14 @@ batch_size = 25
 
 model = Sequential()
 
+
 def evaluate(data, labels):
     # train the model, iterating on the data in batches of 32 samples
-    score = model.evaluate(data, labels, batch_size=batch_size*10)
+    score = model.evaluate(data, labels, batch_size=batch_size*100)
     print("Score = " + str(score))
 
 
 def train(data, labels):
-    
     model.add(Conv1D(input_dim = 8, # byte = 8 bits as "8 channels"
                     nb_filter=tv_size, # every byte has filter
                     filter_length=8, # length is byte
@@ -39,7 +39,7 @@ def train(data, labels):
                     activation='sigmoid'))
     model.add(Dropout(0.25))
     model.add(Flatten())
-    model.add(Dense(8, activation='sigmoid')) #input_dim=tv_size*8
+    #model.add(Dense(8, activation='sigmoid')) #input_dim=tv_size*8
     model.add(Dense(4, activation='sigmoid'))
     model.add(Dense(1, activation='sigmoid'))
     model.compile(optimizer='SGD',
@@ -103,5 +103,16 @@ if __name__ == '__main__':
         set.\
         """
     )
+    parser.add_argument(
+        '--tv_size',
+        type=int,
+        default=16,
+        help="""\
+        Number of examples to separate from the training data for the validation
+        set.\
+        """
+    )
     FLAGS, unparsed = parser.parse_known_args()
+    tv_size = FLAGS.tv_size
     process()
+
