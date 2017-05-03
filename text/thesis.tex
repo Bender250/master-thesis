@@ -204,10 +204,14 @@ Oracle, semantic security: even thou plaintext usually does not look like a rand
 \section{Statistical testing}
 \label{sec:stat-testing}
 
+% The introduction to statistical testing in cryptography is deeply discussed in~\cite[Section~5.4]{menezes1996handbook} and brief and readable introduction presented Emil Simion in~\cite{simion2015relevance}.
+
 Testing of randomness is a common area of statistics research. Thus statisticians have developed a rigorous theory of probability, and they also produced practical tools, that can test randomness. These tools are used even in cryptography to analyse function for properties from the previous section.
 
 \subsection{Statistical batteries}
 \label{subsec:stat-batt}
+
+% The full list of the statistical batteries and their brief description is in \cref{chap:relatwork}.
 
 The statistical battery is a set of simple tests, which are analysing simple properties of the binary stream. For example, a monobit test counts an amount of zeros and ones in the input data, which should be similar in the case of the uniform stream. The tests can analyse the stream for patterns, which should not be present in random data.
 
@@ -541,6 +545,8 @@ There are several other models or algorithms of statistical classification. Thos
 The primary testing goal of EACirc is to assess randomness of ciphertext of cryptographic functions. As most of the cryptographic functions are in a scope of automated analysis semantic secure, EACirc can identify non-randomness only for reduced functions. The functions can be reduced in a number of rounds, by processing selected plaintexts, and by selecting only specific bits of the output. As the analysis of reduced versions of cryptographic functions is the main goal of the EACirc project, it is also selected as the testing scenario for comparison of analysed metaheuristics.
 
 The approach for evaluation is \todo{briefly?} described in \cref{subsec:eacirc}. The tested data were produced from 16 different cryptographic functions and pseudo-random data generator PCG~\cite{pcgGen} as reference data\footnote{We use fast and computationally strong PRNG instead of truly random data from e.g. quantum services (QRNG). There are mainly 2 reasons for that: firstly we do not need to distribute QRNG with EACirc binary for computation. Secondly we had encountered malfunction QRNG, and multiple user mistakes with handling the QRNG files, so build-in PRNG is a more secure and convenient option.}. These functions are reduced to the edge of distinguishing capability of EACirc, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually we test also $i-1$ and $i+2$ rounds, for broader comparison of the results with state of the art of cryptoanalysis.
+
+\todo{enlarge the footnote, mention, that QRNG are getting malfunction, we experienced broken Quantis generator, while other have it working}
 
 \section{Used data}
 \label{sec:method-data}
@@ -1131,6 +1137,7 @@ TRIPLE-DES$_{2}$ & \fd{}0.997 & \fd{}0.522 & \fn{}0.493 & \fn{}0.507
 
 Inspection of two variables can analyse the learning process of ANN. The first is acceptance rate, which is equal to ratio of $\frac{\#_{\textnormal{correct quesses}}}{\#_{\textnormal{total quesses}}}$. The second is the result of a crossentropy loss function, which describes how fast can the network learn (similar to the temperature of simulated annealing). Those values are shown for AES in 1 to 3 rounds with both ANN and CNN for comparison.
 
+
 \begin{figure}[H]
 
 \centering{}
@@ -1174,24 +1181,168 @@ We contacted pattern recognition team from University Ca’ Foscari Venice. We p
 \section{Inter-approach comparison}
 \label{sec:res-comp}
 
-
 \chapter{Related work}
 \label{chap:relatwork}
+
+We presented our tools for randomness assessment, however this area is broad and multiple developed their own tools. Most commonly, the tools do not adapt to learning data, instead they test the data for  a set of statistical properties. These test are grouped to statistical test batteries. There are multiple batteries, we know about the following.
+
+%Assesment of randomness is necessary in other fields than just cryptography. Physicists use randomness assesment for .... Overal, all research areas need to evaluate their data by statisticaal tests. Therefore, statistical testing is well studied field with multiple standard tools. There are multiple statistical batteries. 
+
+\begin{description}
+    \item[NIST STS] is the golden standard of statistical testing in cryptography~\cite{rukhin2001statistical}. The battery was standardised by NIST as part of the test for certification FIPS\_140\_1 and more strict FIPS\_140\_2, and it was also used as one step of evaluation of AES candidates \cite{murphy2000power}. Rejection by NIST STS was on of the criteria considered for AES candidate selection, and for example the candidate HPC failed this criteria.
+
+    NIST STS was developed in nineties and the last revision is from 2010~\cite{rukhin2010niststs}. The revision deleted biased test \textit{Lempel-Ziv Complexity of Sequences}. Further analysis of the bias in the $p$-values produced by NIST STS shows that there are more test are dependent and therefore produce biased results. Overall NIST STS is only accepted as golden standard, however its test are extended in newer batteries. % third
+    \item[Diehard] was developed at Florida State University by George Marsaglia in 1995~\cite{marsaglia1996diehard}. It was published on CD together with three so called true random data sources and multiple PRNGs. %first
+    \item[Dieharder] was developed by Robert G. Brown at the Duke University in 2004~\cite{brown2013dieharder}. It corrects some flaws of Diehard battery, extends it by many additional tests and also contains full NIST STS battery. However, it suffer similar flaws as NIST STS, as was detected by \todo{Lubo and Syso}. % fourth
+    \item[TestU01] is the state of the art in statistical testing. It is a library, developed by Université de Montréal since 2007~\cite{l2007testu01}. The design of the test is innovative in comparison to previous batteries. It uses fewer tests, whose are parametrised to form more subtests. This approach outperforms all other statistical batteries. The TestU01 also implements multiple PRNG from different categories. % fifth
+    \item[PractRand] is another competitor to TestU01~\cite{dotypractically}. It suites well for testing big amount of data in comparison to other batteries.
+    \item[Donald Knuth's statistical tests] explains statistical testing in the second edition of The Art of Computer Programming~\cite{knuth1969vol}. He suggested some PRNG, and for analysis, he made his own statistical tests. The high quality of this source discourage further researcher from work in this area, until George Marsaglia came with Diehard battery. %zeroth
+    \item[RaBiGeTe] is user friendly battery for Windows users~\cite{rabigete}. It implements some of the NIST STS' tests and some of Donald Knuth's tests.
+    \item[Crypt-X suite] was a test battery for analysis of cryptoprimitives used in late nineties~\cite{cryptxs}. It was fully surpassed by NIST STS. % second
+\end{description}
+
+There are others statistical batteries: CryptoStat~\cite{kaminsky2013cryptostat}, YAARX~\cite{biryukov2014automatic}, ENT, SPRNG, gjrand and BSI test suite.
+
+% randomness is analysed in more research areas
+%   statistical batteries
+%       find use-cases
+%       papers on stat bat in crypto (paper of NIST STS for AES competition)
+% more papers on randomness analysis (in crypto) // take inspiration in TEA paper
 
 \section{Statistical batteries}
 \label{sec:relatwork-stat}
 
+% what they are
+% methodics
+
+We evaluated the dataset with NIST STS (our faster implementation~\cite{sys2016algorithm}), Dieharder and TestU01 battery. Those batteries were automated in project Randomness testing toolkit (RTT) as part of the master thesis of Lubomír Obrátil. RTT is online service, which allows user to upload binary data and the executes the batteries on them. It automatically detect the best possible setting of the batteries, as they are parametrised mainly by the size of the binary file. After the execution, RTT postprocess the results and outputs human readable interpretation of them. Same as the visualisation in this thesis, it uses colours to simplify the interpretation, where red stands for rejected test and green for passed test.
+
+Such interpretation is straightforward, however we show it may be incorrect in very specific situation due to statistical properties of the batteries. To show that, we need to explain the interpretation in statistical manner.
+
+A single test tests the data against null hypothesis that the data are random. The test may reject the hypothesis and therefore state the data seems nonrandom, or it may accept the hypothesis, where it means the test cannot find enough evidence for nonrandomness of the data. However, the test may fail with error of two types.
+
+\begin{description}
+    \item[Type I error] describes the likelihood of acceptance null hypothesis when it is false (false positive). The test incorrectly states that the data are not random. This error occurs with probability specified by critical value $\alpha$ for random data.
+    \item[Type II error] describes the likelihood of rejection null hypothesis when it is true (false negative). The test did not spot nonrandomness of the data. The probability of type II error is also dependent on $\alpha$, its calculation is denoted $\beta$.
+\end{description}
+
+The batteries consists of test of tests, that are parametrised up to hundreds of sub-tests. If the critical value $\alpha$ is for example $1\,\%$, then probability that 100 tests will correctly pass is $0.99^{100}=36.6\,\%$ (suppose the tests are independent, which however do not hold for sub-tests). Therefore, we have to expect type I errors. Their probability further increases if the test are dependent. Sýs et al.~\cite{sys2015interpretation} showed that some of the NISTS STS tests are dependent and they proposed the interpretation of the battery based on calculated proportion of failed tests. Same authors plan to revise also Dieharder battery, which contains similar ambiguity in interpretation. Part of these results are going to be published in \todo{cite unpublished yet Obratil thesis}. This approach in interpretation is used by RTT.
+
 \subsection{Results}
 \label{subsec:relatwork-stat-res}
+
+Visualisation of results of multiple batteries required simplification of the table. Rows of the table are functions from the methodology used for previous results. The column represents single statistical battery. The cell contains a pair of round and amount of failed sub-tests of total sub-tests. Round says, how least reduced function the battery found evidence of nonrandomness. The dash means, that battery was unable to detect nonrandomness in any reduced version of the cryptographic function.
+
+\todo{correct the table}
+
+\begin{table}[H]
+\centering{}
+\hspace*{-3cm}
+\begin{tabular}{l|p{1.8cm} p{1.8cm} p{1.8cm} p{1.8cm} p{1.8cm} p{1.8cm} p{1.8cm}}
+Function\textbackslash{}battery &
+              Dieharder & NIST STS  & TestU01 Alphabit  & TestU01 Block Alphabit    & TestU01 Crush & TestU01 Rabbit    & TestU01 Small Crush   \\ \hline
+AES         & 3, 50/110 & 3, 177/188& 3, 15/33          & 3, 114/198                & 3, 94/186     & 3, 16/58          & 3, 5/15               \\
+BLAKE       & 1, 17/110 & 0, 162/162& 1, 8/33           & 1, 74/198                 & 1, 86/166     & 1, 15/58          & 1, 5/15               \\
+Grain       & 2, 110/110& 2, 187/188& 2, 33/33          & 2, 198/198 *              & 6, 10/186     & 2, 54/57          & 2, 14/14              \\
+Grostl      & 2, 70/110 & 2, 182/188& 2, 27/33          & 2, 152/198                & 2, 134/186    & 2, 27/58          & 2, 9/15               \\
+HC-128      & --        & --        & --                & --                        & --            & --                & --                    \\
+JH          & 6, 110/110& 6, 161/162& 6, 33/33          & 6, 196/198                & 6, 153/169    & 6, 50/58          & 6, 15/15              \\
+Keccak      & 2, 106/110& 2, 187/188& 2, 33/33          & 3, 51/198                 & 3, 39/186     & 3, 9/58           & 2, 15/15              \\
+MD6         & 8, 59/110 & 8, 159/188& 8, 21/33          & 9, 11/198                 & 9, 13/186 *   & 9, 5/58           & 8, 6/16               \\
+Rabbit      & --        & --        & 2, 4/33           & 3, 11/198                 & 4, 12/186 *   & 3, 5/58 *         & --                    \\
+RC4         & --        & --        & --                & --                        & --            & --                & --                    \\
+Salsa20     & 2, 77/110 & 2, 162/188& 2, 27/33          & 2, 155/198                & 2, 147/186    & 2, 34/58          & 2, 13/15              \\
+SINGLE-DES  & 5, 38/110 & 4, 24/188 & 5, 5/33           & 5, 74/198                 & 5, 55/186     & 5, 13/58          & 4, 12/15              \\
+Skein       & 3, 96/110 & 3, 162/188& 4, 5/33           & 4, 50/198                 & 4, 18/186     & 4, 8/58           & 3, 15/15              \\
+SOSEMANUK   & 4, 110/110& 4, 162/162& 4, 33/33          & 4, 198/198                & 4, 163/168    & 4, 55/58          & 4, 15/15              \\
+TEA         & 4, 54/110 & 4, 51/188 & 4, 17/33          & 5, 27/198                 & 5, 8/186      & 4, 22/58          & 4, 7/15               \\
+TRIPLE-DES  & 3, 26/110 & 2, 162/188& 2, 32/33          & 3, 12/198                 & 3, 10/182     & 2, 52/58          & 2, 14/15              
+\end{tabular}
+\caption{Application of statistical batteries on cryptographic data. Cell contain pair of highest number of rounds, to which was the cryptographic function reduced and number of failed sub-test per total amount of sub-tests in the battery. Note that the total amount of test is changing, as the battery requires some assumptions on the tested data before running some tests. \todo{The results were computed by Randomness Testing Toolkit by Lubomír Obrátil. Complete results with detailed information about which tests are parring can be found on ...}}
+\label{table:res-batteries}
+\end{table}
+
+From those results, we have multiple observations.
+
+\begin{itemize}
+    \item EACirc performs similarly to NISTS STS, Dieharder and TestU01 Small Crush.
+    \item TestU01 Crush outperforms all other batteries, which is trade-of for computation time.
+    \item High amount of falled test indicates the data are wrong in multiple ways. Then all batteries perform same. However, when the battery detect something specific, only TestU01 detects it.
+    \item \textbf{TestU01 was able to detect deviances in full Rabbit cipher.} After analysis of this result, we found that there was report \textit{On a bias of Rabbit}~\cite{aumasson2007bias} during the eSTREAM competition. Even thou this bias was found, Rabbit cipher was selected as hardware profile finalist, stating that the bias do not allow any feasible attack due to complexity.
+    \item Similarly observation is bias of another hardware profile eSTREAM finalist Grain. TestU01 Crush can detect bias up to 6 rounds Grain, which is almost one half of the full function (13 rounds). The known \textit{dynamic cube attack} on the same version of Grain~\cite{dinur2011breaking} do not have explanation of the observed nonrandomness. Our round reduction is based on limitation of shuffle of the non-linear feedback shift registers, which may require more than 6 rounds to shuffle the data enough. 13 rounds are probably still enough security margin.
+    \item Note: MD6 reduced to 10 rounds is still probably weak for TestU01 Crush and Rabbit. The results in the table were omitted, as the interpretation method leaves them as passed test. However, the probability of those extreme results is below 1\,\%.{}
+    \item Rejection of randomness by the battery do not have to be taken as black-box (as we present here), but depending on the test, it may be more difficult than analysis of the output circuit from EACirc.
+\end{itemize}
 
 \section{Compression algorithms}
 \label{sec:relatwork-compress}
 
-\section{?Search for papers on same topic?}
+One of the definition of randomness is via Kolmogorov's complexity. Data are random, if they cannot be compressed. Our data from cryptographic function can be always compressed, but the computation would require to find the key used for encryption, therefore such compression is not feasible.
+
+We experimented with this approach, trying capabilities of compression programs. We have analysed following unix lossless data compression utilities.
+
+\begin{description}
+    \item[zip] is compression utility based on Deflate algorithm. Is combines LZ77 and Huffman coding algorithms.
+    \item[gzip] is GNU version of \textit{zip} utility.
+    \item[lzop] is compression utility using LZO algorithm. It should be faster, however less efficient than \textit{gzip}.
+    \item[bzip2] is compression algorithm based on Burrows–Wheeler transformation of reocurring sequences to strings of identical letters. Then it applies move-to-front transformation and Huffman coding. 
+    \item[NanoZip] in version 0.09a is the lastest version from year 2011 of experimental archiver software based on Burrows-Wheeler compression~\cite{nanozip}. Based on multiple data compression benchmarks, NanoZip has the highest compression capabilities. We used various parameters, however we did not obtain archive, which could be losslessly decompressed. Therefore we omit this algorithm.
+\end{description}
+
+All the utilities were executed with highest compression ratio with slowest speed.
+
+We denote the results in similar manner as results of the batteries. The rows are cryptographic functions, columns are compression utilities and cell is pair of round, that we executed the algorithm and compression ratio, which says how much data we safe. Compression of random data should safe 0\,\%, whatever higher means the data are nonrandom. We tested this evaluation experimentally on random data and the compressed file was never smaller than the original file for more than 10 samples. The dash means, that the compression algorithm was unable to detect nonrandomness compress the data from any reduced version of the cryptographic function.
+
+\begin{table}[H]
+\centering{}
+\begin{tabular}{l|p{1.8cm} p{1.8cm} p{1.8cm} p{1.8cm}}
+Function\textbackslash{}algorithm & 
+                bzip2   &   gz      &   lzop    &   zip     \\ \hline
+AES         & 2, 2\,\%  & 2, 15\,\% & 2, 25\,\% & 2, 15\,\% \\
+BLAKE       & 0, 0\,\%  & 0, 0\,\%  & 0, 1\,\%  & 0, 0\,\%  \\
+Grain       & 2, 3\,\%  & 2, 11\,\% & 2, 25\,\% & 2, 11\,\% \\
+Grostl      & 0, 0\,\%  & 0, 0\,\%  & 0, 1\,\%  & 0, 0\,\%  \\
+HC-128      & --        & --        & --        & --        \\
+JH          & 6, 57\,\% & 6, 59\,\% & 6, 68\,\% & 6, 59\,\% \\
+Keccak      & 1, 16\,\% & 2, 99\,\% & 1, 36\,\% & 2, 99\,\% \\
+MD6         & 7, 99\,\% & 7, 97\,\% & 6, 59\,\% & 7, 97\,\% \\
+Rabbit      & --        & --        & --        & --        \\
+RC4         & --        & --        & --        & --        \\
+Salsa20     & --        & 2, 99\,\% & --        & 2, 99\,\% \\
+SINGLE-DES  & 2, 71\,\% & 2, 79\,\% & 2, 84\,\% & 2, 78\,\% \\
+Skein       & 2, 93\,\% & 2, 79\,\% & 2, 93\,\% & 2, 80\,\% \\
+SOSEMANUK   & 4, 0\,\%  & 4, 0\,\%  & 4, 1\,\%  & 4, 0\,\%  \\
+TEA         & 2, 97\,\% & 3, 99\,\% & 2, 93\,\% & 3, 99\,\% \\
+TRIPLE-DES  & 2, 99\,\% & 2, 98\,\% & 2, 99\,\% & 2, 98\,\% 
+
+\end{tabular}
+\caption{Capabilities of compression algorithms on cryptographic data. Cell contain pair of highest number of rounds, to which was the cryptographic function reduced and saved space ration of the compression.}
+\label{table:res-compression}
+\end{table}
+
+Observation from the results are following.
+
+\begin{itemize}
+    \item The efficiency of newer \textit{bzip2} is not higher than efficiency of \textit{gzip} and \textit{zip}.
+    \item The low round-reduction is probably cased by character orientation of the compression algorithms.
+    \item Still the compression algorithms state similarly to results of neural networks. From these results, we can assume that neural networks detected only disproportion of zeroes and ones or simple patterns.
+\end{itemize}
+
+% Kolmogorov's information (definition of randomness)
+% Specialised for detection of byte-level patterns
+%   quite good for this - already long developed
+% List of algorithms with links
+% Results
+
+\section{Metaheuristcs for randomness testing}
 \label{sec:relatwork-paper}
 
-\section{EACirc previous work}
-\label{sec:relatwork-eac}
+Besides statistical batteries, numerous other works did the cryptoanalysis based on testing some of the statistical properties. We have encountered several works using genetics for statistical analysis of cryptoprimitives. Most of them analysed Tiny Encryption Algorithm (TEA), which is a simple block cipher designed by D. Wheeler and R. Needham in 1995~\cite{TEA}. It was used as a benchmark due to its simplicity and as well known vulnerabilities~\cite{TEAAttack}. The application of genetics programming started in 2002 by J. Hernández et al.~\cite{twoRoundsTea}, whose found statistical deviance in two rounds TEA. Further improvements from the team were presented in 2004 finding the non-randomness in three and four rounds TEA as well~\cite{fourRoundsTea}. So far the best results using genetic programming were found by W. Hu~\cite{fiveRoundsTea}, who detected non-random properties for 5 rounds TEA. We compared EACirc with these results in~\cite{2016-infocommunications-kubicek}.
+
+The genetic programming was used also for analysis of four rounds DES~\cite{song2007cryptanalysis}. DES was also analysed using particle swarm metaheuristic in~\cite{shahzad2009cryptanalysis}, and Simplified DES was analysed by Simulated annealing, and Tabu search in~\cite{nalini2005cryptanalysis}. The best so far metaheuristic cryptoanalysis on DES were on eight rounds DES using genetic programming by Husein et al.~\cite{husein2007genetic}. In general, these methods are worse than statistical batteries in number of rounds, but they can provide additional information to the cryptanalyst that batteries do not.
+
+% Take papers from TEA paper
+% Compare with EAC and show the results and CITE our paper
 
 \chapter{Conclusion}
 \label{chap:conclusion}
