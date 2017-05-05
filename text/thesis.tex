@@ -231,10 +231,10 @@ Best known statistical batteries are (chronologically by time of development) NI
 \subsection{Individual representation}
 \label{subsec:eac-indiv-repres}
 
-\subsubsection{Circuit}
+\subsubsection{\textbf{Circuit}}
 \label{subsubsec:eac-indiv-repres-circuit}
 
-\subsubsection{Polynomials}
+\subsubsection{\textbf{Polynomials}}
 \label{subsubsec:eac-indiv-repres-poly}
 
 \subsection{Speed-up of computation}
@@ -628,7 +628,7 @@ All single solution metaheuristics were implemented into EACirc, therefore they 
 The main advantage of single-solution metaheuristics is their simplicity and straightforward interpretation. However, the overall interpretation of EACirc results became complex, as we work with randomness that needs to be evaluated statistically. The complex approach also leads to significantly better results. The statistical evaluation as well as distributed computation automation is described below.
 
 
-\subsubsection{Statistical evaluation}
+\subsubsection{\textbf{Statistical evaluation}}
 \label{subsubsec:method-spec-ss-stat}
 
 The fitness of an individual is a $p$-value of two sample $\chi^{2}$ test, which tests, if the output bytes per source have same distribution. For a well-working individual on a weak source of data, the fitness is close to 1. As the quality of the individual decreases, the fitness decreases as well. However, completely random guess like coin tossing has the $p$-value uniformly distributed on the interval (0, 1).
@@ -668,7 +668,7 @@ When we consider basic setup for single-solution metaheuristics, EACirc consumes
 \end{figure*}
 
 
-\subsubsection{Computation automisation}
+\subsubsection{\textbf{Computation automisation}}
 \label{subsubsec:method-spec-ss-auto}
 
 As EACirc needs repeated computation on MetaCentrum grid infrastructure, the automation for binary deployment, computation distribution, aggregation of the results and their postprocessing are required.
@@ -751,7 +751,7 @@ The output of the postprocessor is \texttt{JSON} dump of the results, whose are 
 
 The generator takes as an input the \texttt{JSON} dump of the results from the postprocessor. Currently, it only generates a \LaTeX table with highlighted results, but it can be extended for more complex manipulation with the results.
 
-\subsubsection{Goal specification}
+\subsubsection{\textbf{Goal specification}}
 \label{subsubsec:method-spec-ss-goal}
 
 \todo{Petr's comments are not corrected}
@@ -895,7 +895,7 @@ In contrast, solutions with fitness higher than 0.9 are penalised, if they have 
 
 The penalisation for increasing connectivity can be referred as \textit{space exploration}, while the penalisation for reducing connectivity corresponds to \textit{solution exploitation}, concepts well known from machine learning.
 
-\subsubsection{Analysis of the output circuits}
+\subsubsection{\textbf{Analysis of the output circuits}}
 \label{subsubsec:res-ss-gls-circ-anal}
 
 EACirc in this setup outperforms all other tested methods. However, we had also set a secondary goal of this approach, which is a simplification of the output circuit.
@@ -947,7 +947,7 @@ Pruning works only for individuals that are good distinguishers. If the tested d
 \label{fig:gls-circuits}
 \end{figure}
 
-\subsubsection{Unrelated fitness functions}
+\subsubsection{\textbf{Unrelated fitness functions}}
 
 We have also analysed the original idea of Guided local search, such that we should change between unrelated fitnesses to help the metaheuristic to find a better solution. We implemented another fitness method called \textit{weight evaluator}, which do not use on $\chi^{2}$ test. The output of the circuit is evaluated bit-by-bit as a guess about the source of the tested vector. These guesses are sum per all random test vectors and all test vectors from the tested function. For 1\,000 test vectors per each dataset and one output byte, this means 8\,000 guesses per dataset. Random guesses should have a similar amount of zeroes and ones. The ratio is described by binomial distribution with same probability $p = 0.5$ for zero and one and $N = 8\,000$. We know this expected distribution of the guesses; therefore we can compute the $p$-value of the measured data. Our analysis of this separate fitness function showed it is performing slightly worse than $\chi^{2}$ test, as it tests only one criterion of the output, while $\chi^{2}$ test can also detect other statistical sources of nonrandomness.
 
@@ -963,17 +963,17 @@ If we have an unconnected circuit, we try up to ten times addition of new connec
 
 The variable neighbourhood search is performing better than iterative local search. However, it performs slightly worse in all cases than guided local search. Probably the limitation of the neighbourhood does not allow exploration of a significantly better solution in case of well-working solutions. Fine-tuning of the criteria, when we examine only sparser solutions can lead to better results.
 
-\subsubsection{Analysis of the output circuits}
+\subsubsection{\textbf{Analysis of the output circuits}}
 \label{subsubsec:res-ss-vns-circ-anal}
 
 Same as in \cref{subsubsec:res-ss-gls-circ-anal}, we inspected the density of the circuits. Again, the circuits were sparser than circuits from iterated local search. However, they were significantly denser than circuits from guided local search runs. The observation may also support the hypothesis that limiting the neighbourhood is too strict, and disallow valuable changes in the learning process.
 
-\section{Multi-solutions metaheuristics}
-\label{sec:res-ms}
-\subsection{Bruteforce baseline}
-\label{subsec:res-ms-bruteforce}
-\subsection{Evolutionary algorithms}
-\label{subsec:res-ms-aco}
+%\section{Multi-solutions metaheuristics}
+%\label{sec:res-ms}
+%\subsection{Bruteforce baseline}
+%\label{subsec:res-ms-bruteforce}
+%\subsection{Evolutionary algorithms}
+%\label{subsec:res-ms-aco}
 
 \section{Artificial neural networks}
 \label{sec:res-ann}
@@ -1270,9 +1270,12 @@ From those results, we have multiple observations.
     \item High amount of failed test indicates the data are wrong in multiple ways. Then all batteries perform same. However, when some battery detects nonrandomness, only TestU01 detects it.
     \item \textbf{TestU01 was able to detect deviances in full Rabbit cipher.} After analysis of this result, we found that there was a report \textit{On a bias of Rabbit}~\cite{aumasson2007bias} during the eSTREAM competition, which discovered the same property. Even thou this bias was found, Rabbit cipher was selected as hardware profile finalist, stating that the bias does not allow any feasible attack due to complexity.
     \item Similarly observation is the bias of another hardware profile eSTREAM finalist Grain. TestU01 Crush can detect bias up to six rounds Grain, which is almost one-half of the full function (13 rounds). The known \textit{dynamic cube attack} on the same version of Grain~\cite{dinur2011breaking} do not explain the observed bias. Our round reduction is based on a limitation of the shuffle of the non-linear feedback shift registers, which may require more than six rounds to shuffle the data enough. 13 rounds of full Grain cipher are probably still enough security margin.
-    \item Note: MD6 reduced to 10 rounds is still probably weak for TestU01 Crush and Rabbit. The results in the table were omitted, as the interpretation method leaves them as passed test. However, the probability of those extreme results is below 1\,\%.{}
-    \item Rejection of randomness by the battery do not have to be taken as black-box (as we present here), but depending on the test, it may be more difficult than analysis of the output circuit from EACirc.
     \item The interpretation based on the probability of fail of $n$ sub-tests would not detect the nonrandomness property of Grain reduced to five rounds. The rejection approach is strict, however manual observation that the failed sub-tests are the same as failed subtests of four and six rounds Grain provide necessary trust to our interpretation that the data are biased. \todo{link}
+    \item Note: MD6 reduced to 10 rounds is still probably weak for TestU01 Crush and Rabbit. The results in the table were omitted, as the interpretation method leaves them as passed test. However, the probability of those extreme results is below 1\,\%.
+    \item Rejection of randomness by the battery do not have to be taken as black-box (as we present here), but we can analyse, which test failed. However, depending on the test, it may be more difficult than analysis of the output circuit from EACirc.
+
+    EACirc may also provide concrete proof of the bias. If there is a dependency between specifics bytes, it would always be present in the circuit for strong distinguishers. The statistical battery would fail in such case only the \textit{dependency test}.
+    \item Another advantage of EACirc is the simplicity of already learned distinguisher. Using learned distinguisher needs much less data, only low kilobytes and it may even state the guess for a single test vector. The test of statistical battery always requires fixed amount of data.
 \end{itemize}
 
 \section{Compression algorithms}
@@ -1292,7 +1295,7 @@ We experimented with this approach, trying capabilities of compression programs.
 
 All the utilities were executed with highest compression ratio with the slowest speed.
 
-We denote the results in a similar manner as results of the batteries. The rows are labelled by cryptographic functions, columns are compression utilities. The cell is a pair of the round count that we executed the algorithm, and compression ratio, which says how much data we safe. Compression of random data should safe 0\,\%, whatever higher means the data are nonrandom. We tested this evaluation experimentally on random data, and the compressed file was never smaller than the original file for more than ten samples. The dash means that the compression algorithm was unable to detect nonrandomness compress the data from any reduced version of the cryptographic function.
+We denote the results in a similar manner as results of the batteries. The rows are labelled by cryptographic functions, columns are compression utilities. The cell is a pair of the round count that we executed the algorithm, and compression ratio, which says how much data we safe. Compression of random data should not safe anything, marked with dash, whatever higher means the data are nonrandom. We tested this evaluation experimentally on random data, and the compressed file was never smaller than the original file for more than ten samples. The dash means that the compression algorithm was unable to detect nonrandomness compress the data from any reduced version of the cryptographic function.
 
 \begin{table}[H]
 \centering{}
@@ -1370,6 +1373,36 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
 
 \chapter*{Appendix}
 \label{chap:app}
+
+\section{Glossary}
+\label{sec:app-glos}
+
+\todo{Sort it lexicographically}
+
+\begin{description}
+    \item[Term] explanation
+    \item[Generator] explanation
+    \item[Connection bug] explanation
+    \item[Ciritcal value $\alpha$] explanation
+    \item[Benchmarking functions] explanation
+    \item[Pruning] explanation
+    \item[Weight evaluator] explanation
+    \item[Epoch] explanation
+    \item[Space exploration] explanation
+    \item[Solution exploitation] explanation
+    \item[Activation function] explanation
+    \begin{description}
+        \item[Sigmoid] explanation
+        \item[Softsign] explanation
+    \end{description}
+    \item[Artifitial neural network (ANN)] explanation
+    \item[Convoluted neural netowrk (CNN)] explanation
+    \item[Strict avalanche criterion (SAC)] explanation
+    \item[PRNG] explanation
+    \item[TRNG] explanation
+    \item[QRNG] explanation
+    \item[Randomness testing toolkit (RTT)] explanation
+\end{description}
 
 \section{Single-solution metaheuristics results}
 \label{sec:app-ss-res}
