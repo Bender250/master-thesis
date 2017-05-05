@@ -1189,6 +1189,13 @@ We contacted pattern recognition team from University Ca’ Foscari Venice. We p
 \section{Inter-approach comparison}
 \label{sec:res-comp}
 
+\begin{itemize}
+    \item GLS is always more successful than ITS and other methods (SA has worse reference value due to connection bug).
+    \item ANN can be bit-oriented, but we have not seen any advantage of it, even thou it is crucial capability for crypto data
+    \item Advantage of these single-solution metaheuristis (ANN is also using just one solution in parallel) has much simpler interpretation, as we do not care about dependency of the statistic result
+    \item 
+\end{itemize}
+
 \chapter{Related work}
 \label{chap:relatwork}
 
@@ -1359,12 +1366,25 @@ The Genetic programming was also used for analysis of four rounds DES~\cite{song
 \chapter{Conclusion}
 \label{chap:conclusion}
 
-\section{Methodology}
-\label{sec:conclusion-method}
-\section{Results}
-\label{sec:conclusion-results}
+\begin{itemize}
+    \item GLS is always more successful than ITS
+    \item GLS produces simpler circuit, with addition of pruning, this decreases significantly complexity of cryptoanalysis
+    \item ANN/CNN can be used only as very lightweight tests, with very low data requirements and low success rate
+    \item TestU01 is far better than EACirc
+    \item No free lunch theorem
+    \item We found suprisingly errors in full round Rabbit
+\end{itemize}
+
 \section{Future work}
 \label{sec:conclusion-future}
+
+\begin{itemize}
+    \item EA/ANN/swarm intelligence on polynomials + publication plan
+    \item RC4 and HC-128 cannot be round-reduced, but we can modify them in different manner to obtain biased result. We can either apply postprocessing streams to select only specific bits of the output, or we can turn of parts the cipher. The second option was analysed in thesis of Radka Cieslarová~\cite{cieslarovaBcThesis}.
+    \item ANN with Italy
+    \item It would be useful to extend the benchmarking set by more tunable function, with slowly increasing entropy
+    \item Generator publication plan
+\end{itemize}
 
 \chapter*{Acknowledgment}
 \label{chap:ack}
