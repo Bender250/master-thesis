@@ -17,5 +17,5 @@ read: pdf
 	evince ${filename}.pdf &
 
 once:
-	pdflatex -output-directory=build ${filename}.tex
+	pdflatex -shell-escape -output-directory=build ${filename}.tex
 	cp build/${filename}.pdf .

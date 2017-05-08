@@ -59,11 +59,22 @@
     keywords      = {randomness testing, cryptoanalysis, block functions, stream functions, hash functions, problem optimization, metaheuristics},
     TeXkeywords   = {randomness testing, cryptoanalysis, block functions, stream functions, hash functions, problem optimization, metaheuristics},
 }
-\thesislong{abstract}{
-    TODO
+\thesislong{abstract}{%
+Statistical testing of randomness is one of the automated ways of cryptoanalysis of cryptoprimitives. While traditional statistical batteries use fixed tests, research tool EACirc developed at Faculty of Informatics, Masaryk University design the tests dynamically to the analysed data. Its goal is to distinguish tested data from random data. The tool internally utilises simple heuristic based on hill climbing. This thesis researches other metaheuristics and their potential application in EACirc tool, as well as application of classification models as artificial neural networks.\\\\%
+%
+The thesis has following contributions:
+\begin{itemize}
+    \item Development of a testbed of 16 well-known cryptographic functions with necessary tools for direct comparison of various tools tested on same data. The tool as the dataset are published, and we tested all related work on the data.
+    \item Extension of EACirc tool with three new metaheuristics. One of them outperforms all others with success rate, and it also provides a further advantage of more practical cryptanalysis.
+    \item Proof of concept implementation of an artificial neural network for binary data together with a literature review of this area. However, the performance of the neural network is unsatisfactory, being able to detect only very strongly biased data.
+\end{itemize}
 }
-\thesislong{thanks}{
-    TODO: crocs colleagues, friends, Marta, Petr, family)
+\thesislong{thanks}{%todo: metacentrum?
+I would like to thank members of Centre for Research on Cryptography and Security for a friendly environment with productive seasons and joyful procrastination topics. From those, I thank EACirc team members, who consulted and criticised the topics presented in this thesis. Especially I thank Petr for supervising me with his never-ending enthusiasm for science at all.
+
+I apologise to my friends, who deserved more of my presence, but they still kept me at least a bit social. I am very grateful to my girlfriend Marta, who never left me being normal and bored by the work, as well as having any unused free time.
+
+Most of all, I thank my parents, who always stand behind me. They always sensed the moments, when I need them and they surprised me with nice support. I am proud of having them.
 }
 %% The following section sets up the bibliography.
 \usepackage{csquotes}
@@ -424,7 +435,46 @@ These disadvantages may be paid off. The population together may prevent the alg
 \subsection{Evolutionary algorithms}
 \label{subsec:opt-multi-sol-ea}
 
+Evolutionary algorithms are a group of multi-solution metaheuristics inspired by the natural selection in the evolution of the species. They are the most spread and studied population-based metaheuristic, in computer science since the 1980s. Evolutionary algorithms can be used to solve both continuous and discrete problems, and they are also used for both single- and multi-objective problems.
 
+The computation is an iterative loop of three main steps, together denoted as a generation. The evolution starts with a random population of initial solutions.
+
+\begin{description}
+    \item[Selection of parents] from the population. Usually based on the fitness function with some randomization technique.
+    \item[Reproduction to new offsprings] using mutation and crossover -- an algorithm for recombination of two parents. 
+    \item[Population replacement] by offsprings. Here can be again used the evaluation by fitness. 
+\end{description}
+
+This iterative approach can by usage of well-selected fitness, mutation and crossover increase the quality of the individual. The algorithm can be stopped by the number of generations or by achieving target fitness.
+
+During the 40 years, many variants of evolutionary algorithms emerged.
+
+\begin{description}
+    \item[Genetic algorithms] traditionally use bit representation of the individuals. It applies both mutation and crossover to create new individuals. The selection of new population from the offsprings is stochastic.
+    \item[Evolutions strategies] are used in continuous optimisation, so the individuals are represented by real values. The main way of creation new offsprings is the mutation; the crossover is rarely used. They apply elitist selection to form a new population.
+    \item[Evolutionary programming] is used in series prediction problems and continuous optimisation. It emphasises mutation and does not use recombination. The population is selected stochastically.
+    \item[Genetic programming] evolves programs as solutions. They are usually expressed as a tree (like abstract syntax tree). Both mutation and crossover are applied. Even thou genetic programming is the least studied approach of evolutionary algorithms, and it is computationally expensive, it is used in classification problems.
+\end{description}
+
+Randomness testing is a discrete optimisation problem; therefore we may apply genetic algorithms and genetic programming. Genetic algorithms were used in multiple works for analysis of bias in ciphertext from round reduced TEA and DES functions~\cite{twoRoundsTea,fourRoundsTea,fiveRoundsTea,song2007cryptanalysis,husein2007genetic}. On the other side, we found no successful work on the same topic using genetic programming.
+
+The most important decisions for the well-working genetic algorithm are the individual representation and evaluation. The works on TEA~~\cite{twoRoundsTea,fourRoundsTea,fiveRoundsTea} represented the individual as a binary mask, which was applied to the plaintext and key to produce biased ciphertexts The bias was statistically evaluated, so it was used as the fitness. EACirc also formerly used genetic algorithms, and it represents the individual as simulated electric circuit (this may be close to the definition of genetic programming). The fitness corresponds to the deviation between analysed and reference data.
+
+Other possible implementation using genetic algorithms may be for polynomial encoded tool BoolTest~\cite{sys2017detecting}, which is still in submission phase. The representation by a binary polynomial in algebraic form fits the proposed idea of genetic algorithms. Mutation can be a simple flip of a variable; the crossover can take some of the terms of each individual.
+
+% the most studied spread multi-solution metaheuristic
+% application in descrete and continuous problems. And also single objective and multiobjective
+% inspired by natural selection and evolution of species
+% multiple variations - explain the vocabulary (genetic algorithms, evolutions strategies, evolutionary programming, genetic programming)
+% the main idea of genetic algorithms
+    % selection of parents
+    % reproduction
+        % evaluation
+    % replacement of the population by offsprings
+    % repeat
+% difficulties with management of the diversity
+
+% intentionally skip the genotype and phenotype
 
 \subsection{Ant colony optimization}
 \label{subsec:opt-multi-sol-aco}
@@ -544,9 +594,16 @@ There are several other models or algorithms of statistical classification. Thos
 
 The primary testing goal of EACirc is to assess randomness of ciphertext of cryptographic functions. As most of the cryptographic functions are in a scope of automated analysis semantic secure, EACirc can identify non-randomness only for reduced functions. The functions can be reduced in a number of rounds, by processing selected plaintexts, and by selecting only specific bits of the output. As the analysis of reduced versions of cryptographic functions is the main goal of the EACirc project, it is also selected as the testing scenario for comparison of analysed metaheuristics.
 
-The approach for evaluation is \todo{briefly?} described in \cref{subsec:eacirc}. The tested data were produced from 16 different cryptographic functions and pseudo-random data generator PCG~\cite{pcgGen} as reference data\footnote{We use fast and computationally strong PRNG instead of truly random data from e.g. quantum services (QRNG). There are mainly 2 reasons for that: firstly we do not need to distribute QRNG with EACirc binary for computation. Secondly we had encountered malfunction QRNG, and multiple user mistakes with handling the QRNG files, so build-in PRNG is a more secure and convenient option.}. These functions are reduced to the edge of distinguishing capability of EACirc, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually we test also $i-1$ and $i+2$ rounds, for broader comparison of the results with state of the art of cryptoanalysis.
+The approach for evaluation is \todo{briefly?} described in \cref{subsec:eacirc}. The tested data were produced from 16 different cryptographic functions. These functions are reduced by the number of rounds. We selected intervals of rounds based on EACirc reference capabilities, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually we test also $i-1$ and $i+2$ rounds, for broader comparison of the results with state of the art of cryptoanalysis.
 
-\todo{enlarge the footnote, mention, that QRNG are getting malfunction, we experienced broken Quantis generator, while other have it working}
+EACirc works as distinguisher between tested dataset (produced by the cryptographic function) and reference random data. Formerly we used quantum random number generator (QRNG) services as the source of this reference data. This have following disadvantages:
+
+\begin{itemize}
+    \item Need of having QRNG data for the computation.
+    \item Potential of an error due to bad data. QRNG are not error less, for example, Quantis device we tested in our laboratory produced \href{http://rtt.ics.muni.cz/ViewResults/Experiment/1732/}{biased data}. Detection of such biases is common use-case of randomness testing.
+\end{itemize}
+
+Therefore we switched from QRNG to pseudo random number generator (PRNG) PCG32~\cite{pcgGen} as reference data. PCG32 is fast and computationally strong PRNG. We did experiment of comparison PCG32 with QRNG and we found no bias, as well as we retested old results using QRNG newly with PRNG and the results are the same. Hence, we believe build-in PRNG is a more secure and convenient option.
 
 \section{Used data}
 \label{sec:method-data}
@@ -598,14 +655,14 @@ All these functions together with the new interface of new block project and tes
     \item eSTREAM Salsa20 used wrong implicit number of rounds for default settings.
 \end{itemize}
 
-These bugfixes together with fix of imporper configuration of eSTREAM project were one of two major reasons for releasing EACirc 4.2. \todo{ref after release.} All these fixes together with valid configurations are described in project documentation~\cite{EACirc-wiki-streams}.
+These bugfixes together with fix of improper configuration of eSTREAM project were one of two major reasons for releasing EACirc 4.2. All these fixes together with valid configurations are described in project documentation~\cite{EACirc-wiki-streams}.
 
 \subsection{Data generator tool}
 \label{subsec:method-data-generator}
 
 For direct comparison of the tested methods, we need to analyse the same data. EACirc has build in generation of test vectors, to feed the computation, as is described in \cref{sec:method-data}. Therefore, we implemented side project from EACirc for production of data. We call it \textit{Generator} and it shares the source code of functions with EACirc.
 
-The \textit{Generator} is fully configurable via \texttt{JSON} configuration file as EACirc. The structure of the file is reduced, as the configuration describes only generated data. So the \textit{Generator} inherits all the capabilities of streams, providing complex control on the data production. For simplification and automation, we also prepared script, that generates configuration files for most common settings, which allows simple execution by command line arguments. For even simpler acces to testing data, we generated 160~MB file for each basic setup for each widely-known cryptographic function (described in \cref{subsec:method-data-funcs}) reduced to wide interval of rounds. This dataset is publicly accessible on \todo{add link}.
+The \textit{Generator} is fully configurable via \texttt{JSON} configuration file as EACirc. The structure of the file is reduced, as the configuration describes only generated data. So the \textit{Generator} inherits all the capabilities of streams, providing complex control on the data production. For simplification and automation, we also prepared script, that generates configuration files for most common settings, which allows simple execution by command line arguments. For even simpler acces to testing data, we generated 160~MB file for each basic setup for each widely-known cryptographic function (described in \cref{subsec:method-data-funcs}) reduced to wide interval of rounds. This dataset is publicly accessible \href{https://drive.google.com/drive/folders/0B5Z1zst5NzwXQmFKaXgxREJWNk0?usp=sharing}{online}.
 
 We have ongoing plan of publication, which will crucially utilize the \textit{Generator}. It will be paper on comparison of statistical testing tools on wide variety of cryptographic data. The \textit{Generator} will be used as it unifies many different cryptographic functions and it can reduce the functions in number of rounds, or selection of specified bits. The \textit{Generator} has already all the necessary features, so we can start with writing of the paper when we select the conference, we are aiming for.
 
@@ -776,7 +833,7 @@ The EACirc project is using adaptive learning. During the computation, the teste
 % evaluation -> amount of data
 % scripts
 
-The neural netowrk also classifies test vectors into 2 datasets -- the tested set and the reference set. Therefore, the implementation of takes as input 2 binary files -- a tested file and reference file. We generate these files with the \textit{Generator}, so we ensure consistency and comparability of the results within approaches. The results are concretely for the published dataset \todo{ref to dataset}.
+The neural netowrk also classifies test vectors into 2 datasets -- the tested set and the reference set. Therefore, the implementation of takes as input 2 binary files -- a tested file and reference file. We generate these files with the \textit{Generator}, so we ensure consistency and comparability of the results within approaches. The results are concretely for the \href{https://drive.google.com/drive/folders/0B5Z1zst5NzwXQmFKaXgxREJWNk0?usp=sharing}{published dataset}.
 
 The execution of neural network consist of training phase, where we iteratively provide different learning batches of data, and evaluation phase, where we use fresh data for final evaluation of ratio of correctly classified test vectors. The whole computation needs significantly less input data than EACirc, as is shown in \cref{fig:ann-dataUsage}.
 
@@ -1190,10 +1247,12 @@ We contacted pattern recognition team from University Ca’ Foscari Venice. We p
 \label{sec:res-comp}
 
 \begin{itemize}
-    \item GLS is always more successful than ITS and other methods (SA has worse reference value due to connection bug).
-    \item ANN can be bit-oriented, but we have not seen any advantage of it, even thou it is crucial capability for crypto data
-    \item Advantage of these single-solution metaheuristis (ANN is also using just one solution in parallel) has much simpler interpretation, as we do not care about dependency of the statistic result
-    \item Computation time and data consumption
+    \item Guided local search is always more successful than iterated local search and other methods. The single better result of simulated annealing does not mean it is better than guided local search, due to worse reference value because of the \textit{connection bug}.
+    \item ANN can take advantage of bit-oriented evaluation, but we have not seen any benefits of it, even thou it is crucial capability for cryptographic data
+    \item Advantage of single-solution over multi-solution metaheuristics (ANN is also using just one solution in parallel) is much simpler interpretation, as we do not care about the dependency of the statistic result.
+    \item The runtime of simulated annealing and guided local search is same as runtime of iterated local search. The variable neighbourhood search can take up to five times longer. The data consumption of all metaheuristics in EACirc is the same, described in \cref{fig:dataUsage}.
+    
+    In comparison, the neural networks need significantly less data (as was shown in \cref{fig:ann-dataUsage}). One run of ANN takes about ten times shorter as one run of EACirc. However, due to varying capabilities, these numbers are not comparable. EACirc can find distinguisher for AES reduced to two rounds within less than ten epochs, compared to common 300. Interesting comparison of the efficiency of EACirc implementation is that \texttt{C++} EACirc consumes twelve times more data per second of computation than ANN implemented in \texttt{Python}.
 \end{itemize}
 
 \chapter{Related work}
@@ -1230,7 +1289,7 @@ There are also others statistical batteries: CryptoStat~\cite{kaminsky2013crypto
 % what they are
 % methodics
 
-We evaluated the dataset with NIST STS (our faster implementation~\cite{sys2016algorithm}), Dieharder and TestU01 battery. Those batteries were automated in the project Randomness testing toolkit (RTT) as part of the master thesis of Lubomír Obrátil. RTT is online service, which allows the user to upload binary data and the executes the batteries on them. It automatically detects the best possible setting of the batteries, as they are parametrised mainly by the size of the binary file. After the execution, RTT postprocess the results and outputs human readable interpretation of them. Same as the visualisation in this thesis, it uses colours to simplify the interpretation, where red stands for rejected test and green for passed test.
+We evaluated the dataset with NIST STS (our faster implementation~\cite{sys2016algorithm}), Dieharder and TestU01 battery. Those batteries were automated in the project Randomness testing toolkit (RTT)~\cite{rttgit} as part of the master thesis of Lubomír Obrátil~\cite{obratilMgrThesis}. RTT is online service, which allows the user to upload binary data and the executes the batteries on them. It automatically detects the best possible setting of the batteries, as they are parametrised mainly by the size of the binary file. After the execution, RTT postprocess the results and outputs human readable interpretation of them. Same as the visualisation in this thesis, it uses colours to simplify the interpretation, where red stands for rejected test and green for passed test.
 
 Such interpretation is straightforward. However, we show it may be incorrect in a very specific situation due to statistical properties of the batteries. To prove that, we need to explain the interpretation in a statistical manner.
 
@@ -1241,7 +1300,7 @@ A single test assesses the data against the null hypothesis that the data are ra
     \item[Type II error] describes the likelihood of rejection null hypothesis when it is true (false negative). The test did not spot nonrandomness of the data. The probability of type II error is also dependent on $\alpha$, and its calculation is denoted $\beta$.
 \end{description}
 
-The batteries consist of a set of tests, that are parametrised up to hundreds of sub-tests. If the critical value $\alpha$ is, for example, $1\,\%$, then the probability that 100 tests will correctly pass is $0.99^{100}=36.6\,\%$ (suppose the tests are independent, which however do not hold for sub-tests). Therefore, we have to expect type I errors. Their probability further increases if the tests are dependent. Sýs et al.~\cite{sys2015interpretation} showed that some of the NIST STS tests are dependent and they proposed the interpretation of the battery based on calculated proportion of failed tests. Same authors plan to revise also Dieharder battery, which contains similar ambiguity in interpretation. Part of these results are going to be published in \todo{cite unpublished yet Obratil thesis}. RTT uses this approach for the interpretation.
+The batteries consist of a set of tests, that are parametrised up to hundreds of sub-tests. If the critical value $\alpha$ is, for example, $1\,\%$, then the probability that 100 tests will correctly pass is $0.99^{100}=36.6\,\%$ (suppose the tests are independent, which however do not hold for sub-tests). Therefore, we have to expect type I errors. Their probability further increases if the tests are dependent. Sýs et al.~\cite{sys2015interpretation} showed that some of the NIST STS tests are dependent and they proposed the interpretation of the battery based on calculated proportion of failed tests. Same authors plan to revise also Dieharder battery, which contains similar ambiguity in interpretation. Part of these results are going to be published in thesis of Lubomír Obrátil~\cite{obratilMgrThesis}. RTT uses this approach for the interpretation.
 
 \subsection{Results}
 \label{subsec:relatwork-stat-res}
@@ -1273,7 +1332,7 @@ SOSEMANUK   & 4, 110/110& 4, 162/162& 4, 33/33          & 4, 198/198            
 TEA         & 4, 54/110 & 4, 51/188 & 4, 17/33          & 5, 27/198                 & 5, 8/186      & 4, 22/58          & 4, 7/15               \\
 TRIPLE-DES  & 3, 26/110 & 2, 162/188& 2, 32/33          & 3, 12/198                 & 3, 10/182     & 2, 52/58          & 2, 14/15              
 \end{tabular}
-\caption{Application of statistical batteries on cryptographic data. Cell contain a pair of the highest number of rounds, to which was the cryptographic function reduced and the number of failed sub-tests per total amount of sub-tests in the battery. Note that the total quantity of sub-tests is changing, as the battery requires some assumptions on the tested data before running some tests. \todo{The results were computed by Randomness Testing Toolkit by Lubomír Obrátil. Complete results with detailed information about which tests are passing can be found on ...}}
+\caption{Application of statistical batteries on cryptographic data. Cell contain a pair of the highest number of rounds, to which was the cryptographic function reduced and the number of failed sub-tests per total amount of sub-tests in the battery. Note that the total quantity of sub-tests is changing, as the battery requires some assumptions on the tested data before running some tests. The results were computed by Randomness Testing Toolkit. Complete results with detailed information about which tests are passing can be found on \href{http://rtt.ics.muni.cz/ViewResults/?created_from=2017-04-24+12\%3A00\%3A00&created_to=2017-04-29+00\%3A00\%3A00}{RTT page (as results from 2017-04-24 to 2017-04-28)}.}
 \label{table:res-batteries}
 \end{table}
 
@@ -1285,8 +1344,8 @@ From those results, we have multiple observations.
     \item High amount of failed test indicates the data are wrong in multiple ways. Then all batteries perform same. However, when some battery detects nonrandomness, only TestU01 detects it.
     \item \textbf{TestU01 was able to detect deviances in full Rabbit cipher.} After analysis of this result, we found that there was a report \textit{On a bias of Rabbit}~\cite{aumasson2007bias} during the eSTREAM competition, which discovered the same property. Even thou this bias was found, Rabbit cipher was selected as hardware profile finalist, stating that the bias does not allow any feasible attack due to complexity.
     \item Similarly observation is the bias of another hardware profile eSTREAM finalist Grain. TestU01 Crush can detect bias up to six rounds Grain, which is almost one-half of the full function (13 rounds). The known \textit{dynamic cube attack} on the same version of Grain~\cite{dinur2011breaking} do not explain the observed bias. Our round reduction is based on a limitation of the shuffle of the non-linear feedback shift registers, which may require more than six rounds to shuffle the data enough. 13 rounds of full Grain cipher are probably still enough security margin.
-    \item The interpretation based on the probability of fail of $n$ sub-tests would not detect the nonrandomness property of Grain reduced to five rounds. The rejection approach is strict, however manual observation that the failed sub-tests are the same as failed subtests of four and six rounds Grain provide necessary trust to our interpretation that the data are biased. \todo{link}
-    \item Note: MD6 reduced to 10 rounds is still probably weak for TestU01 Crush and Rabbit. The results in the table were omitted, as the interpretation method leaves them as passed test. However, the probability of those extreme results is below 1\,\%.
+    \item The interpretation based on the probability of fail of $n$ sub-tests would not detect the nonrandomness property of Grain reduced to five rounds. The rejection approach is strict (so it has hight probability of type II error), however manual observation that the failed sub-tests are the same as failed subtests of four and six rounds Grain provide necessary trust to our interpretation that the data are biased.
+    \item Note: MD6 reduced to 10 rounds is still probably weak for TestU01 Crush and Rabbit. The results in the table were omitted due to consistency, as the interpretation method leaves them as passed test. However, the probability of those extreme results is below 1\,\%.
     \item Rejection of randomness by the battery do not have to be taken as black-box (as we present here), but we can analyse, which test failed. However, depending on the test, it may be more difficult than analysis of the output circuit from EACirc.
 
     EACirc may also provide concrete proof of the bias. If there is a dependency between specifics bytes, it would always be present in the circuit for strong distinguishers. The statistical battery would fail in such case only the \textit{dependency test}.
@@ -1387,8 +1446,6 @@ The another project based on polynomials shows better results as it is bit-orien
 The testbed of well-known functions can be further extended by different means of reduction of the cryptographic functions RC4 and HC-128. For RC4, we can use bit selection capabilities of the generator. All functions can also take advance of currently in progress automatic customisation of functions introduced in the thesis of Radka Cieslarová~\cite{cieslarovaBcThesis}. We refer to this project as Heatmaps.
 
 The heatmaps are one of the development plans with the generator tool. Other plans extend the tool by already implemented CAESAR functions and new PRNG. Altogether with randomness testing toolkit is planned as a publication for \todo{...}.
-
-
 
 %\begin{itemize}
     %\item EA/ANN/swarm intelligence on polynomials + publication plan
