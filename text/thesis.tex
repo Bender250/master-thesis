@@ -865,11 +865,11 @@ The execution of neural network consist of training phase, where we iteratively 
 We prepared automation scripts for easier analysis of multiple files together. We have script for sequential execution of all the runs for all binary files in directory, which produces \texttt{JSON} results file. This file is afterwards proceed by script, which plots the learning progress and final correct classification ratio.
 
 
-\chapter{Experiment results}
+\chapter{Results}
 \label{chap:res}
 
 % TODO strange introduction, but we want this information somewhere
-To verify the implementation, we perform sanity experiment comparing random data to random data. Such test gives us measured expected output in case that selected approach can not distinguish two tested streams. Expected value of such experiment differs per methodology, and therefore we state it per every test scenario.
+To verify any implementation, we perform sanity experiment comparing random data to random data. Such a test gives us measured expected output in case that selected approach can not distinguish two tested streams. Expected value of such experiment differs per methodology, and therefore we state it per every test scenario.
 
 % SS methodology ref
 \section{Single-solution metaheuristics}
@@ -877,16 +877,16 @@ To verify the implementation, we perform sanity experiment comparing random data
 
 %http://stattrek.com/online-calculator/binomial.aspx
 
-Single solutions metaheuristics use evaluation described in \cref{subsubsec:method-spec-ss-stat}. As we use critical value $\alpha=1\,\%$, the random-random experiment should reject randomness hypothesis in average $1\,\%$ of the runs. As we would like to have better confidentiality in this sanity experiment, we perform not only 1\,000 runs for this settings, but 100\,000 runs. Confidentiality for such run can be computed from the binomial distribution and obtaining value $1.2\,\%$ has probability 4.787\,\% for 1\,000 runs, while it is lower than 0.001\,\% for 100\,000 runs.
+Single solutions metaheuristics use evaluation described in \cref{subsubsec:method-spec-ss-stat}. Briefly it means, we execute EACirc 1\,000 times independently with same setting and we evaluate, how many of the runs rejected randomness hypothesis. Number of rejections divided by number of runs is called \textit{rejection ratio}. As we use significance level $\alpha=1\,\%$, the random-random experiment should reject randomness hypothesis on average in $1\,\%$ of the runs. As we would like to have better confidentiality in this sanity experiment, we perform not only 1\,000 runs for this settings, but 100\,000 runs. Confidentiality for such run can be computed from the binomial distribution. For example, \textit{rejection rate} higher or equal to $1.2\,\%$ for random-random experiment can occur with probability 4.787\,\% for 1\,000 runs, while the probability decreases to less than 0.001\,\% for 100\,000 runs. We include the measured rejection value to the first row of result tables. Further rows contain results of round-reduced cryptographical functions.
 
-\Cref{table:res-usable-ils,table:res-usable-sa,table:res-usable-gls,table:res-usable-vns} summarise other results, where every row corresponds to one cryptographical function and its \textit{edge} amount of rounds as name index. The columns of the table offset this \textit{edge} amount of rounds. A dash in the cell signalises that we did not test the scenario. The number represents the ratio of runs where KS test rejected the randomness hypothesis within 1\,000 runs. For indistinguishable data, values around measured ratio from the random-random experiment are expected. Results twice this value can happen in less then 0.15\,\% measures for randomly looking data. Therefore results over double of this measured critical value are considered as nonrandom.
+\Cref{table:res-usable-ils,table:res-usable-sa,table:res-usable-gls,table:res-usable-vns} summarise results of tested single-solution metaheuristics applied in EACirc. Every row of the table corresponds to one cryptographical function. The lower index after the name specifies EACirc default number of rounds, that we restrict the functions to. The columns with -1, 0, +1 and +2 denote offset to the number of rounds specified in the index. For example AES$_{3}$ was tested reduced to two rounds, three rounds as default and four rounds. Five rounds were not tested, which is denoted by a dash in the cell. The number in cell represents the \textit{rejection ratio}. For indistinguishable data, values around measured ratio from the random-random experiment are expected. Results higher than twice the reference value of random-random experiment can happen in less then 0.15\,\% measures for randomly looking data. Therefore results over double of this measured critical value are considered as nonrandom -- they contain some bias.
 
-The colour highlights our evaluation of the result. Red highlight signs that EACirc detected nonrandomness. Green highlight signs that EACirc has not found anything and from the notion of hypothesis testing, we cannot say anything about the randomness of data (we cannot accept the randomness hypothesis). We highlighted untested scenarios (the dash in the cell) if the results can be estimated.
+We use colours to simplify the evaluation. Red highlight signs that EACirc detected nonrandomness. Green highlight signs that EACirc has not found anything; therefore, we cannot say anything about the randomness of data (we cannot reject the randomness hypothesis). We highlighted untested scenarios (the dash in the cell) if the results can be estimated.
 
 \subsection{Iterated local search baseline}
 \label{subsec:res-ss-ils}
 
-As was stated in \cref{subsec:eacirc} \todo{delete me, when you check this}, EACirc used Iterative local search as the heuristics since version 4.0. Therefore measuring this heuristic serves as a baseline, which allows direct comparison of other metaheuristics and also can be used to estimate comparison to previous EACirc results, whose were in this work verified.
+As was stated in \cref{subsec:eacirc} \todo{delete me, when you check this}, EACirc used Iterative local search as the heuristics since version 4.0. Therefore measuring this heuristic serves as a baseline, which allows direct comparison of other metaheuristics. In addition, it can be used to estimate comparison to former EACirc results, whose were verified by this work.
 
 \begin{table}[H]
 \centering
@@ -914,18 +914,19 @@ TRIPLE-DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.017 & \fn{}0.008
 \label{table:res-usable-ils}
 \end{table}
 
-From these results, we can have some general notes to the usable testbed.
+From these results, we can can conclude following notes regarding the usable testbed.
 
 \begin{itemize}
-    \item The random-random experiment result is notably higher than 1\,\%. It is caused by known, but an unresolved bug, described in the documentation~\cite{EACirc-wiki-bug}. This bug is a consequence of unconnected input to output in the circuit, so we denote it \textit{connection bug}.
-    \item Three rounds AES, one round BLAKE, eight rounds MD6 and four rounds DES are in the interpretation described in \cref{subsec:method-spec-ss} rejected, however, the rejection rate is less than 1\,\%. Therefore we would not obtain a strong distinguisher. These functions take a role as \textit{benchmarking functions}, as the different metaheuristics directly affect them.
+    \item The random-random experiment result is notably higher than 1\,\%. It is caused by a known, but still an unresolved bug, described in the documentation~\cite{EACirc-wiki-bug}. This bug is a consequence of unconnected input to output in the circuit, so we denote it as \textit{connection bug}. We tried fixing the \textit{connection bug} using many techniques however, none of them were statistically sound and none have fixed the issue globally.
+    \item The randomness of three rounds AES, one round BLAKE, eight rounds MD6 and four rounds DES are in the interpretation described in \cref{subsec:method-spec-ss} rejected. However, the rejection rate is less than 100\,\%. Therefore, the probability of obtaining working distinguisher is lower than 100\,\%. We denote these results as \textit{benchmarking functions} results, as the quality of different metaheuristics directly affect them. Therefore these \textit{benchmarking functions} provide high sensitivity comparison of the metaheuristics.
 \end{itemize}
 
 We also performed other tests, which showed some additional information.
 
 \begin{itemize}
-    \item The creation of stronger distinguisher for e.g. three rounds AES, or sometimes even for one more round is possible. However, it needs manual fine-tuning to the data and more tested data. In the study of TEA~\cite{kubicek2016new}, we showed almost 100\,\% distinguisher for four rounds TEA. Obtaining such result required different shape of the circuit due to TEA block length and 100 times more test vectors.
-    \item The length of an epoch, which describes the number of iterations performed on the same dataset, was 100 for showed results. This setup seems to lead to overfitting, as Ukrop examined in~\cite[section~7.1]{ukropBcThesis}. We tried decreasing the epoch length to 20, which lead to increase of influence of the \textit{connection bug}, as the random-random experiment critical value raised to $0.03127$. Such setup did not increase the number of distinguished rounds for any function, but it increased rejection rate of all the \textit{benchmarking functions}. However, only three rounds AES increased significantly to $0.982$. Same behaviour appeared for shorter epochs of all metaheuristics.
+    \item It is possible to obtain higher (up to full 100\,\%) \textit{rejection rate} for \textit{benchmarking functions}, sometimes even create distinguishers for one more rounds, than shows the results. However, advancing the results require time-consuming manual fine-tuning to the tested data, or more computational time. In the study of TEA~\cite{kubicek2016new}, we showed almost 100\,\% distinguisher for four rounds TEA. Obtaining such result required different shape of the circuit due to TEA block length and 100 times more test vectors. On the other hand, increase of the \textit{rejection rate} by metaheuristics is general, and all results should benefits such improvements.
+    
+    \item The results showed in \cref{table:res-usable-ils} were tested with epoch length 100 generations. It means that the metaheuristic performed 100 generation on the same dataset. This setup seems to lead to overfitting, as Ukrop examined in~\cite[section~7.1]{ukropBcThesis}. We tried decreasing the epoch length to 20, which lead to increase of influence of the \textit{connection bug}, as the random-random experiment critical value raised to $0.03127$. Such setup did not increase the number of distinguished rounds for any function, but it increased rejection rate of all the \textit{benchmarking functions}. However, only three rounds AES increased significantly to $0.982$. Same behaviour appeared for shorter epochs of all metaheuristics.
 \end{itemize}
 
 
@@ -934,9 +935,9 @@ We also performed other tests, which showed some additional information.
 
 We tested the Simulated annealing as a representative of single solution metaheuristics that can accept a non-improving solution. The results are added to appendix in \cref{table:res-usable-sa}, as they are very similar to \cref{table:res-usable-ils} with Iterative local search results.
 
-The random-random experiment ended with reference value $0.01681$, which corresponds to a higher influence of \textit{connection bug} for metaheuristics, which accepts non-improving neighbour. It probably also influenced \textit{benchmarking functions} results, so the increased rejection rate 0.293 of three rounds AES is not such significant improvement.
+The random-random experiment ended with reference value $0.01681$, which corresponds to a higher influence of the \textit{connection bug} for metaheuristics that accepts non-improving neighbour. As the \textit{rejection rate} of the random-random experiment increases, all other \textit{rejection rates} increase as well. Therefore, the \textit{connection bug} probably influenced \textit{benchmarking functions} results, so the increased rejection rate of them may not imply a significant improvement.
 
-The \cref{table:res-usable-sa} is the final and the best result of nine tested configurations. The simulated annealing uses two configurable variables that influence the learning process. Those are the initial temperature and the cooling ratio. They both corresponds to the probability of accepting a non-improving solution. We analysed three different cooling scenarios, every on three different initial temperatures and cooling ratio. The cooling scenarios are illustrated in \cref{fig:sa-cooling-scenarios} and the difference is based on behaviour on changed learning data. The tested variables were $(\mathit{initial~temperature, cooling~ratio}) \in \{ (500, 0.9), (100, 0.98), (50, 0.995) \}$. The results in \cref{table:res-usable-sa} were obtained from blue temperature scheduling curve and setup $\mathit{initial~temperature} = 500$ and $\mathit{cooling~ratio} = 0.9$, as suggests~\cite{talbi2009metaheuristics}.
+The \cref{table:res-usable-sa} is the final and the best result of nine tested configurations. The simulated annealing uses two configurable variables that influence the learning process. Those are the initial temperature and the cooling ratio. They both corresponds to the probability of accepting a non-improving solution. We analysed three different cooling scenarios, every on three different initial temperatures and cooling ratio. The cooling scenarios are illustrated in \cref{fig:sa-cooling-scenarios} and the difference is based on the behaviour on changed learning data. The tested variables were $(\mathit{initial~temperature, cooling~ratio}) \in \{ (500, 0.9), (100, 0.98), (50, 0.995) \}$. The results in \cref{table:res-usable-sa} were obtained using the blue temperature scheduling curve with the $\mathit{initial~temperature} = 500$ and the $\mathit{cooling~ratio} = 0.9$, as suggests Talbi in~\cite{talbi2009metaheuristics}.
 
 \begin{figure}
 \centering
@@ -950,20 +951,26 @@ The \cref{table:res-usable-sa} is the final and the best result of nine tested c
 
 Guided local search can escape local optima by the change of the evaluation method. Our goal was set to escape not local optima, but unwanted solutions with fitness equal to 0, which we refer as \textit{connection bug}. We penalise \textit{unconnected} solutions by the number of connectors. The densely connected individuals have higher fitness than sparse individuals. This penalisation proved to lead to more connected solutions faster.
 
+\todo{Petr's comment: sem pridat ifno, ze je to bezna praxe - nejprev se optimalizuje na vykon, pak na usporu (se zachovanim vykonu)}
+
+\todo{move table:res-usable-gls here?}
+
 In contrast, solutions with fitness higher than 0.9 are penalised, if they have too many connectors. We expected that the circuit of strong distinguisher would be sparser, which was also verified by the experiments. The both penalization methods were tested independently, and they both have a similar role in the improvement of the results of \textit{benchmarking functions}. However, they are working especially well together, as they hold the circuits reasonable dense.
 
-The penalisation for increasing connectivity can be referred as \textit{space exploration}, while the penalisation for reducing connectivity corresponds to \textit{solution exploitation}, concepts well known from machine learning.
+The penalisation for increasing connectivity can be referred as \textit{space exploration}, while the penalisation for reducing connectivity corresponds to \textit{solution exploitation}, concepts well known from machine learning. For further explanation, please refer to Talbi~\cite[section 1.3.3, page 24]{talbi2009metaheuristics}.
 
-\subsubsection{\textbf{Analysis of the output circuits}}
+\subsubsection{\textbf{Analysis of resulting circuit}}
 \label{subsubsec:res-ss-gls-circ-anal}
 
 EACirc in this setup outperforms all other tested methods. However, we had also set a secondary goal of this approach, which is a simplification of the output circuit.
 
-For this analysis, we had to prepare visualisation of the output circuit. The EACirc dumps the final circuit to a file in \texttt{dot} language, which is transformed to image via Graphviz visualisation tool~\cite{ellson2001graphviz}. We also perform \textit{pruning} of the circuit, which is done by BFS traversal of the circuit from the output node. This way, we can remove all connectors and nodes, which are not affecting the output. The \textit{pruning} works better for sparse circuits, where it can reduce the number of connectors by more than 50\,\%. Dense circuits can sometimes be pruned by less than 10\,\%.
+For this analysis, we had to prepare visualisation of the output circuit. The EACirc dumps the final circuit to a file in \texttt{dot} language, which is transformed to image via Graphviz visualisation tool~\cite{ellson2001graphviz}.
 
-The output from a run using Guided local search created a significantly sparser circuit, usually already with less than 50\,\% of connectors of Iterative local search runs, as is shown in~\cref{fig:ils-circuits,fig:gls-circuits}. Pruning of such circuits ended with very sparse circuits in overall 20 runs. These simpler circuits are easier for analysis, and they reveal additional information about the tested function. Pruning is an important tool for manual cryptanalysis. The cryptanalysts can reveal potential weaknesses of the cryptographic function based on a simple circuit. The visualisation and pruning also help our team with understating of the EACirc computations.
+We also perform \textit{pruning} of the circuit, which removes unnecessary connectors and nodes. It is implemented BFS traversal of the circuit from the output node. This way, we can remove all connectors and nodes, which are not affecting the output. The \textit{pruning} works better for sparse circuits, where it can reduce the number of connectors by more than 50\,\%. Dense circuits can sometimes be pruned by less than 10\,\%.
 
-Pruning works only for individuals that are good distinguishers. If the tested data seem random, guided local search would not prune the circuit, and it will remain even more connected. The density of the circuit can also show, how successful it is.
+The output from a run using Guided local search created a significantly sparser circuit, usually already with less than 50\,\% of connectors of Iterative local search runs, as is shown in~\cref{fig:ils-circuits,fig:gls-circuits}. The \textit{pruning} of such circuits resulted in very sparse circuits in overall 20 runs. These simpler circuits are easier for analysis, and they reveal additional information about the tested function. The \textit{pruning} is an important tool for manual cryptanalysis. The cryptanalysts can reveal potential weaknesses of the cryptographic function based on a simple circuit. The visualisation and pruning also help our team with understating the EACirc computations.
+
+Pruning works only for individuals that are good distinguishers. If the tested data seem random, guided local search would not create sparse circuit -- it will remain even more connected. The density of the circuit can also show, how successful distinguisher it is.
 
 
 \begin{figure}
@@ -1008,7 +1015,7 @@ Pruning works only for individuals that are good distinguishers. If the tested d
 
 \subsubsection{\textbf{Unrelated fitness functions}}
 
-We have also analysed the original idea of Guided local search, such that we should change between unrelated fitnesses to help the metaheuristic to find a better solution. We implemented another fitness method called \textit{weight evaluator}, which do not use on $\chi^{2}$ test. The output of the circuit is evaluated bit-by-bit as a guess about the source of the tested vector. These guesses are sum per all random test vectors and all test vectors from the tested function. For 1\,000 test vectors per each dataset and one output byte, this means 8\,000 guesses per dataset. Random guesses should have a similar amount of zeroes and ones. The ratio is described by binomial distribution with same probability $p = 0.5$ for zero and one and $N = 8\,000$. We know this expected distribution of the guesses; therefore we can compute the $p$-value of the measured data. Our analysis of this separate fitness function showed it is performing slightly worse than $\chi^{2}$ test, as it tests only one criterion of the output, while $\chi^{2}$ test can also detect other statistical sources of nonrandomness.
+We have also analysed the original idea of Guided local search, such that we should change between unrelated fitnesses to help the metaheuristic to find a better solution. We implemented another fitness method called \textit{weight evaluator}, which do not use the $\chi^{2}$ test. The output of the circuit is evaluated bit-by-bit as a guess about the source of the tested vector. These guesses are sum per all random test vectors and all test vectors from the tested function. For 1\,000 test vectors per each dataset and one output byte, this means 8\,000 guesses per dataset. Random guesses should have a similar amount of zeroes and ones within datasets-to-dataset. The dataset-to-dataset difference in for example number of ones is described by binomial distribution with same probability $p = 0.5$ and $N = 8\,000$. We know this expected distribution of the guesses; therefore we can compute the $p$-value of the measured data, and the $p$-value is used as a fitness function. Our analysis of this separate fitness function showed it is performing slightly worse than the $\chi^{2}$ test, as it tests only one criterion of the output, while the $\chi^{2}$ test can also detect other statistical sources of nonrandomness.
 
 Concurrent usage of those both fitnesses resulted in significantly worse distinguishing capabilities than the first method described in this sub-section. For example, this approach was not able to distinguish three round AES.
 
@@ -1016,16 +1023,16 @@ Concurrent usage of those both fitnesses resulted in significantly worse disting
 \subsection{Variable neighbourhood search}
 \label{subsec:res-ss-vns}
 
-The goals and the approach of variable neighbourhood search are very similar to guided local search. The only difference is that guided local search changes density of the circuit trough changes of the fitness function, while variable neighbourhood search changes the density directly, as we inspect only neighbours, we would like to obtain.
+The goals of the variable neighbourhood search are very similar to guided local search. We would also like to increase density in case of unconnected circuits and decrease the density, if the circuit works as a good distinguisher. The guided local search ensure this trough changes of the fitness function, while variable neighbourhood search changes inspected individuals. If the circuit is not connected, it tries only denser circuits. If the circuit is working well, it considers only sparser circuits for the neighbours.
 
-If we have an unconnected circuit, we try up to ten times addition of new connector until we do not have connected graph. In the opposite case, when we have good working individual, we examine only solutions with fewer connectors.
+If we have an unconnected circuit, we try up to ten times addition of new connector until we do not have connected graph, which was intended to speed-up the circuit connecting process. In the opposite case, when we have a good working individual, we examine only solutions with fewer connectors.
 
-The variable neighbourhood search is performing better than iterative local search. However, it performs slightly worse in all cases than guided local search. Probably the limitation of the neighbourhood does not allow exploration of a significantly better solution in case of well-working solutions. Fine-tuning of the criteria, when we examine only sparser solutions can lead to better results.
+The variable neighbourhood search is performing better than the iterative local search. However, overall it performs slightly worse than guided local search, as can be seen in the end of this chapter in inter-approach comparison in \cref{table:ss-comparison}. It is probable that the limitation of the neighbourhood does not allow exploration of a significantly better solution in case of well-working solutions.
 
-\subsubsection{\textbf{Analysis of the output circuits}}
+\subsubsection{\textbf{Analysis of resulting circuit}}
 \label{subsubsec:res-ss-vns-circ-anal}
 
-Same as in \cref{subsubsec:res-ss-gls-circ-anal}, we inspected the density of the circuits. Again, the circuits were sparser than circuits from iterated local search. However, they were significantly denser than circuits from guided local search runs. The observation may also support the hypothesis that limiting the neighbourhood is too strict, and disallow valuable changes in the learning process.
+Same as in \cref{subsubsec:res-ss-gls-circ-anal}, we inspected the density of the output circuit. Again, the circuits were on average sparser than circuits from iterated local search. However, they were significantly denser than circuits from guided local search runs. The observation may also support the hypothesis that limiting the neighbourhood is too strict, and disallow valuable changes in the learning process.
 
 %\section{Multi-solutions metaheuristics}
 %\label{sec:res-ms}
@@ -1041,12 +1048,14 @@ We tested neural networks on the same dataset. The algorithm takes two binary fi
 
 We implemented the neural network in Python library Keras~\cite{chollet2015keras}, which is a high-level API for TensorFlow library~\cite{abadi2016tensorflow}. Keras allows simple prototyping of network layout, while TensorFlow is a highly effective implementation of linear algebra for neural networks capable of computation on CPU and GPU.
 
+\todo{cite the EANet.}
+
 The network layout is showed in \cref{fig:ann-layout}. We tested many layouts and all available activation functions in Keras. The observations are following.
 
 \begin{itemize}
-    \item The network with two hidden layers perform the best, as it is capable of all the obtained results and it is learning significantly faster even in the number of \textit{epochs}, so in the computational time.
+    \item The network with two hidden layers performs the best, as it is capable of all the obtained results, and it is learning significantly faster both in the number of \textit{epochs} and in the computational time.
     \item The best activation functions are \textit{sigmoid} and its approximations \textit{tanh} and \textit{softsign}. The activation functions correspond to the bit encoding, probably different encoding of the test vectors would need different activation function.
-    \item The amount of learning data for each \textit{epoch} is a very important parameter for fine-tuning. It was surprising, but the neural network prefers a few test vectors in more iterations. The size of dataset differs from EACirc behaviour. The best setup consumed only 25 test vectors per epoch, while the whole computation consisted of 100 epochs and the total computational time was below 30 seconds on four cores CPU. It means that neural network can be a very naïve statistical test of randomness using only 40\,kB of analysed data.
+    \item The amount of learning data for each \textit{epoch} is a very important parameter for fine-tuning. It was surprising, but the neural network prefers a few test vectors in more iterations. The size of the dataset differs from EACirc's behaviour. The best setup consumed only 25 test vectors per epoch, while the whole computation consisted of 100 epochs and the total computational time was below 30 seconds on four cores CPU. It means that the neural network can be a very naïve statistical test of randomness using only 40\,kB of analysed data. \todo{Petr: je opravdu prekvapive? Jak vypada zakladni literatura na toto tema? Answer: literature "the more data, the beter". We "the less data in one iteration, the better + increase number of epochs"}
 \end{itemize}
 
 \begin{figure}[H]
@@ -1162,11 +1171,11 @@ The network layout is showed in \cref{fig:ann-layout}. We tested many layouts an
 \label{fig:ann-layout}
 \end{figure}
 
-As the \cref{fig:ann-layout} shows, we experimented with basic neural network and with a convoluted variant. The convoluted neural network works excellent for image processing and signal processing, as the convoluted layer detects local patterns. However, cryptographic functions should meet strict avalanche criterion that should suppress any data locality. Usage of CNN can be taken as a specific test for locality-specific patterns. If the reduced cryptographic function meets the strict avalanche criterion, the result of CNN should be worse, as the first layer of CNN has lower capabilities than a fully connected layer of ANN.
+As the \cref{fig:ann-layout} shows, we experimented with a basic neural network and with a convoluted variant. The convoluted neural network works excellent for image and signal processing, as the convoluted layer detects local patterns. However, cryptographic functions should meet strict avalanche criterion that should suppress any data locality. A usage of CNN can be taken as a specific test for locality-specific patterns. If the reduced cryptographic function meets the strict avalanche criterion, the CNN sould perform worse, as the first layer of CNN has lower capabilities than a fully connected layer of ANN.
 
-We also implemented specific strict avalanche criterion for 2D CNN into the generator. We start with a random plaintext, and we generate all plaintext with the Hamming weight one from the original plaintext. These encrypted plaintexts can share two-dimensional patterns.
+We also implemented specific strict avalanche criterion for two dimensional CNN into the generator. We start with a random plaintext, and we generate all plaintext with the Hamming distance one from the original plaintext. These encrypted plaintexts may share two-dimensional patterns.
 
-Overall, the CNN resulted in worse results, than ANN. The problems were slower learning (probably due to \textit{dropout}, that is suggested to use with CNN), but sometimes the distinguisher was not found even during more epochs. The best results of ANN are summarised in the \cref{table:res-usable-ann}.
+Overall, the CNN performed worse than ANN. The problems were slower learning (probably due to \textit{dropout}, that is suggested to use with CNN), but sometimes the distinguisher was not found even during more epochs. The best results of ANN are summarised in the \cref{table:res-usable-ann}.
 
 \begin{table}[H]
 \centering
@@ -1194,7 +1203,14 @@ TRIPLE-DES$_{2}$ & \fd{}0.997 & \fd{}0.522 & \fn{}0.493 & \fn{}0.507
 \label{table:res-usable-ann}
 \end{table}
 
-Inspection of two variables can analyse the learning process of ANN. The first is acceptance rate, which is equal to ratio of $\frac{\#_{\textnormal{correct quesses}}}{\#_{\textnormal{total quesses}}}$. The second is the result of a crossentropy loss function, which describes how fast can the network learn (similar to the temperature of simulated annealing). Those values are shown for AES in 1 to 3 rounds with both ANN and CNN for comparison.
+An analysis of ANN learning can be evaluated by following two variables.
+
+\begin{description}
+    \item[Acceptance rate] is equal to ratio of $\frac{\#_{\textnormal{correct quesses}}}{\#_{\textnormal{total quesses}}}$. So it measures the quality of the ANN, similarly as fitness function was the metaheuristics' metric.
+    \item[Crossentropy loss] describes how big changes can the network do for learning itself (similar to the temperature of simulated annealing).
+\end{description}
+
+Those values are shown for AES in 1 to 3 rounds with both ANN and CNN for comparison in \cref{fig:ann-learning}.
 
 
 \begin{figure}[H]
@@ -1215,7 +1231,8 @@ Inspection of two variables can analyse the learning process of ANN. The first i
 \label{fig:ann-learning}
 \end{figure}
 
-We contacted pattern recognition team from University Ca’ Foscari Venice. We presented them our approach and results, they suggested us using CNN and they tried their own methods on the data, we provided them from the \textit{generator}. The results of this cooperation are still open. \todo{is this true before submition?}
+\todo{Petr: dal bych do separatni podkapitoly - je neco uplne jineho nez predchozi experimenty}
+We contacted pattern recognition team from University Ca’ Foscari Venice. We presented them our approach and results, and they suggested us using CNN. They also tried their own methods on the data, provided by the \textit{generator}. The results of this cooperation are still open. \todo{is this true before submition?}
 
 % Implementation
 %   preprocessing of input data
@@ -1248,9 +1265,9 @@ We contacted pattern recognition team from University Ca’ Foscari Venice. We p
 \section{Inter-approach comparison}
 \label{sec:res-comp}
 
-The interesting details about single-solution metaheuristics are abridged in \cref{fig:ss-comparison}. Both approaches of artificial neural networks are not able to distinguish data from function reduced to given number of rounds, except eight rounds MD6.
+The interesting details about single-solution metaheuristics are abridged in \cref{table:ss-comparison}. Both approaches of artificial neural networks are not able to distinguish data from function reduced to given number of rounds, except eight rounds MD6.
 
-\begin{figure}[H]
+\begin{table}
 \centering
 \begin{tabular}{l|l l l l l}
 Metaheuristic\textbackslash{}Function\_rounds   & AES$_3$ & BLAKE$_1$& MD6$_8$& DES$_5$& TEA$_4$\\ \hline
@@ -1260,17 +1277,19 @@ Guided local search                             & 0.164   & \textbf{0.260}    & 
 Variable neighbourhood search                   & 0.182   & 0.157    & 0.992  & 0.441  & \textbf{0.877}
 \end{tabular}
 \caption{Selected results of EACirc utilising different single-solution metaheuristics.}
-\label{fig:ss-comparison}
-\end{figure}
+\label{table:ss-comparison}
+\end{table}
 
 
 \begin{itemize}
-    \item Guided local search is always more successful than iterated local search, and it is almost always the best of other methods. The single better result of simulated annealing does not mean it is better than guided local search, due to worse reference value because of the \textit{connection bug}. Same for better result for four rounds TEA of variable neighbourhood search, which is paid of by longer computation time.
-    \item ANN can take advantage of bit-oriented evaluation, but we have not seen any benefits of it, even thou it is crucial capability for cryptographic data
-    \item Advantage of single-solution over multi-solution metaheuristics (ANN is also using just one solution in parallel) is much simpler interpretation, as we do not care about the dependency of the statistic result.
+    \item Guided local search is always more successful than iterated local search, and it is almost always the best among the methods. The single better result of simulated annealing does not mean it is better than guided local search, due to worse reference value because of the \textit{connection bug}. Same for better result for four rounds TEA of variable neighbourhood search, which is traded of for a longer computation time.
+    \item ANN can take advantage of bit-oriented evaluation, but we have not seen any benefits of it, even thou it is a crucial capability for cryptographic data
+    \item Advantage of single-solution over multi-solution metaheuristics is much simpler interpretation, as we do not care about the dependency of the statistic result.
     \item The runtime of simulated annealing and guided local search is same as runtime of iterated local search. The variable neighbourhood search can take up to five times longer. The data consumption of all metaheuristics in EACirc is the same, described in \cref{fig:dataUsage}.
     
     In comparison, the neural networks need significantly less data (as was shown in \cref{fig:ann-dataUsage}). One run of ANN takes about ten times shorter as one run of EACirc. However, due to varying capabilities, these numbers are not comparable. EACirc can find distinguisher for AES reduced to two rounds within less than ten epochs, compared to common 300. Interesting comparison of the efficiency of EACirc implementation is that \texttt{C++} EACirc consumes twelve times more data per second of computation than ANN implemented in \texttt{Python}.
+    
+    Still, the ANN is the only method, can can be used to classify a single test vector (like 16 bytes). The framework provides both its classification guess and the estimation of its certainty in the guess. No other method provides such application.
 \end{itemize}
 
 \chapter{Related work}
@@ -1514,6 +1533,7 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
     \end{description}
     \item[Artifitial neural network (ANN)] explanation
     \item[Convoluted neural netowrk (CNN)] explanation
+    \item[Crossentropy loss] explanation
     \item[Strict avalanche criterion (SAC)] explanation
     \item[PRNG] explanation
     \item[TRNG] explanation
