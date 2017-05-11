@@ -59,6 +59,7 @@
     keywords      = {randomness testing, cryptoanalysis, block functions, stream functions, hash functions, problem optimization, metaheuristics},
     TeXkeywords   = {randomness testing, cryptoanalysis, block functions, stream functions, hash functions, problem optimization, metaheuristics},
 }
+
 \thesislong{abstract}{%
 Statistical testing of randomness is one of the automated ways of cryptoanalysis of cryptoprimitives. While traditional statistical batteries use fixed tests, research tool EACirc developed at Faculty of Informatics, Masaryk University design the tests dynamically to the analysed data. Its goal is to distinguish tested data from random data. The tool internally utilises simple heuristic based on hill climbing. This thesis researches other metaheuristics and their potential application in EACirc tool, as well as application of classification models as artificial neural networks.\\\\%
 %
@@ -69,12 +70,13 @@ The thesis has following contributions:
     \item Proof of concept implementation of an artificial neural network for binary data together with a literature review of this area. However, the performance of the neural network is unsatisfactory, being able to detect only very strongly biased data.
 \end{itemize}
 }
+
 \thesislong{thanks}{%todo: metacentrum?
-I would like to thank members of Centre for Research on Cryptography and Security for a friendly environment with productive seasons and joyful procrastination topics. From those, I thank EACirc team members, who consulted and criticised the topics presented in this thesis. Especially I thank Petr for supervising me with his never-ending enthusiasm for science at all.
+I would like to thank members of CRoCS laboratory for a friendly environment with productive seasons and joyful fun and relaxation topics. From those, I thank EACirc team members, who consulted and criticised the topics presented in this thesis. Especially I thank Petr for supervising me with his never-ending enthusiasm for science at all.
 
 I apologise to my friends, who deserved more of my presence, but they still kept me at least a bit social. I am very grateful to my girlfriend Marta, who never left me being normal and bored by the work, as well as having any unused free time.
 
-Most of all, I thank my parents, who always stand behind me. They always sensed the moments, when I need them and they surprised me with nice support. I am proud of having them.
+Most of all I owe to my parents, who always stand behind me. You always sensed the moments, when I need you and you surprised me with nice support. I am proud of having you, thanks.
 }
 %% The following section sets up the bibliography.
 \usepackage{csquotes}
@@ -823,8 +825,8 @@ We can also analyse specific goals per metaheuristics. Both Variable neighbourho
 
 The EACirc project is using adaptive learning. During the computation, the tested data are changing. We analysed over-learning of the individuals during the learning process, and the over-learning can be analysed as well. Therefore, decrease over-learning can be another goal for metaheuristics.
 
-\subsection{Multi-solutions methodology}
-\label{subsec:method-spec-ms}
+%\subsection{Multi-solutions methodology}
+%\label{subsec:method-spec-ms}
 
 \subsection{ANN methodology}
 \label{subsubsec:method-spec-ms-aco}
@@ -1246,8 +1248,24 @@ We contacted pattern recognition team from University Ca’ Foscari Venice. We p
 \section{Inter-approach comparison}
 \label{sec:res-comp}
 
+The interesting details about single-solution metaheuristics are abridged in \cref{fig:ss-comparison}. Both approaches of artificial neural networks are not able to distinguish data from function reduced to given number of rounds, except eight rounds MD6.
+
+\begin{figure}[H]
+\centering
+\begin{tabular}{l|l l l l l}
+Metaheuristic\textbackslash{}Function\_rounds   & AES$_3$ & BLAKE$_1$& MD6$_8$& DES$_5$& TEA$_4$\\ \hline
+Iterative local search                          & 0.160   & 0.110    & 0.774  & 0.204  & 0.444  \\
+Simulated annealing                             & \textbf{0.305} & 0.051    & 0.419  & 0.093  & 0.244  \\
+Guided local search                             & 0.164   & \textbf{0.260}    & \textbf{0.995}  & \textbf{0.496}  & 0.729  \\
+Variable neighbourhood search                   & 0.182   & 0.157    & 0.992  & 0.441  & \textbf{0.877}
+\end{tabular}
+\caption{Selected results of EACirc utilising different single-solution metaheuristics.}
+\label{fig:ss-comparison}
+\end{figure}
+
+
 \begin{itemize}
-    \item Guided local search is always more successful than iterated local search and other methods. The single better result of simulated annealing does not mean it is better than guided local search, due to worse reference value because of the \textit{connection bug}.
+    \item Guided local search is always more successful than iterated local search, and it is almost always the best of other methods. The single better result of simulated annealing does not mean it is better than guided local search, due to worse reference value because of the \textit{connection bug}. Same for better result for four rounds TEA of variable neighbourhood search, which is paid of by longer computation time.
     \item ANN can take advantage of bit-oriented evaluation, but we have not seen any benefits of it, even thou it is crucial capability for cryptographic data
     \item Advantage of single-solution over multi-solution metaheuristics (ANN is also using just one solution in parallel) is much simpler interpretation, as we do not care about the dependency of the statistic result.
     \item The runtime of simulated annealing and guided local search is same as runtime of iterated local search. The variable neighbourhood search can take up to five times longer. The data consumption of all metaheuristics in EACirc is the same, described in \cref{fig:dataUsage}.
@@ -1345,7 +1363,7 @@ From those results, we have multiple observations.
     \item \textbf{TestU01 was able to detect deviances in full Rabbit cipher.} After analysis of this result, we found that there was a report \textit{On a bias of Rabbit}~\cite{aumasson2007bias} during the eSTREAM competition, which discovered the same property. Even thou this bias was found, Rabbit cipher was selected as hardware profile finalist, stating that the bias does not allow any feasible attack due to complexity.
     \item Similarly observation is the bias of another hardware profile eSTREAM finalist Grain. TestU01 Crush can detect bias up to six rounds Grain, which is almost one-half of the full function (13 rounds). The known \textit{dynamic cube attack} on the same version of Grain~\cite{dinur2011breaking} do not explain the observed bias. Our round reduction is based on a limitation of the shuffle of the non-linear feedback shift registers, which may require more than six rounds to shuffle the data enough. 13 rounds of full Grain cipher are probably still enough security margin.
     \item The interpretation based on the probability of fail of $n$ sub-tests would not detect the nonrandomness property of Grain reduced to five rounds. The rejection approach is strict (so it has hight probability of type II error), however manual observation that the failed sub-tests are the same as failed subtests of four and six rounds Grain provide necessary trust to our interpretation that the data are biased.
-    \item Note: MD6 reduced to 10 rounds is still probably weak for TestU01 Crush and Rabbit. The results in the table were omitted due to consistency, as the interpretation method leaves them as passed test. However, the probability of those extreme results is below 1\,\%.
+    \item Note: MD6 reduced to 10 rounds is still probably weak for TestU01 Crush and Rabbit. The results in the table were omitted due to consistency, as the interpretation method leaves them as passed test. However, the probability of those extreme results is below 1\,\%. The same behaviour was detected for RC4 by TestU01 Crush.
     \item Rejection of randomness by the battery do not have to be taken as black-box (as we present here), but we can analyse, which test failed. However, depending on the test, it may be more difficult than analysis of the output circuit from EACirc.
 
     EACirc may also provide concrete proof of the bias. If there is a dependency between specifics bytes, it would always be present in the circuit for strong distinguishers. The statistical battery would fail in such case only the \textit{dependency test}.
