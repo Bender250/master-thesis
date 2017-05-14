@@ -182,34 +182,34 @@ Most of all I owe to my parents, who always stand behind me. You always sensed t
 
 % cryptoprimitives
 
-Cryptoprimitives like block ciphers, stream ciphers and hash functions are necessary building blocks of cryptography and secure communication. Development of such primitives is complex, and vulnerabilities in these primitives can be used for long, as the primitives are supported for long time because of backward compatibility. Example of such occasion is biased stream function RC4, supported up to standard TLS 1.2 (including this version 1.2). \todo{cite}
+Cryptoprimitives like block ciphers, stream ciphers and hash functions are necessary building blocks of cryptography and secure communication. Development of such primitives is complex, and vulnerabilities in these primitives can be used for long, as the primitives are supported for an extended time because of backwards compatibility. An example of such occasion is biased stream function RC4, supported up to standard TLS 1.2 (including this version 1.2). \todo{cite}
 
-These cryptoprimitives are selected in contests like AES, eSTREAM, SHA-3 and CAESAR to name just few. \todo{cite}
-The contest consist of proposals submission, and their iterative cryptanalysis and selection, until a single or multiple finalists are selected as the winners. This thesis aims on the analysis part.
+These cryptoprimitives are selected in contests like AES, eSTREAM, SHA-3 and CAESAR to name just a few. \todo{cite}
+The contest consists of proposals submission, and their iterative cryptanalysis and selection until a single or multiple finalists are selected as the winners. This thesis aims at the analysis part.
 
-There are multiple types of cryptanalysis, classified by used knowledge, required computation and other criterion. We work on automated cryptanalysis tool, which works on ciphertext with no prior information of the data. Our goal is not to decipher the data, but to inspect some properties of the cryptoprimitives. The properties can be following.
+There are multiple types of cryptanalysis, classified by used knowledge, required computation and other criteria. We develop an automated cryptanalysis tool, which works on ciphertext with no prior information of the data. Our goal is not to decipher the data, but to inspect some properties of the cryptoprimitives. The properties can be following.
 
 \begin{description}
     \item[Irreversibility without the encryption key:] from given ciphertext, the attacker is not able to reconstruct any bit of plaintext with a probability higher than 50\,\%. If the probability were over 50\,\%, the ciphertext would reveal some information about the plaintext.
 
     \item[Strict avalanche criterion:] every bit flip of plaintext changes around 50\,\% of output bits. Not satisfying this would allow an attacker to start with plaintext of zeroes and continuously modify single bits to get closer to given ciphertext.
 
-    \item[Oracle, semantic security:] even though plaintext usually does not look like a random data, the ciphertext have to look so. If the output were distinguishable from random data, it would reveal information about the plaintext. This property is tested by statistical batteries and tool EACirc, whose extension is one of the goals of this thesis. The previous properties can be tested as well, yet not directly.
+    \item[Semantic security:] even though plaintext usually does not look like a random data, the ciphertext have to look so. If the output were distinguishable from random data, it would reveal information about the plaintext. This property is tested by statistical batteries and tool EACirc, whose extension is one of the goals of this thesis. The previous properties can be tested as well, yet not directly.
 \end{description}
 
 
 \section{Statistical testing}
 \label{sec:stat-testing}
 
-Assume we have encrypted many distinct, yet similar plaintexts. From the semantic security and strict avalanche properties, the ciphertext should look random and they should not reveal any information. To test it, we can use statistical batteries, consisting of many individual tests. These tests inspect statistical properties like the amount of ones and zeroes. Random stream has probability one half for bit to be one, so the total amount of ones should be similar to the amount of zeroes. This test is called monobit test.
+Assume we have encrypted many distinct, yet similar plaintexts. From the semantic security and strict avalanche properties, the ciphertext should look random, and they should not reveal any information. To examine it, we can use statistical batteries, consisting of many individual tests. These tests inspect statistical properties like an amount of ones and zeroes. A random stream has probability one half for a bit to be one, so the total amount of ones should be similar to the amount of zeroes. This test is called monobit test.
 
-Other tests may check different types of bias, like bits dependency, patterns checks and multiple transformation tests. A statistical battery is fixed set of such test. Over time, multiple statistical batteries were developed. To name a few, there are NIST STS, Dieharder and TestU01.
+Other tests may check different types of bias, like bits dependency, patterns checks and multiple transformation tests. A statistical battery is fixed set of such test. Over time, various statistical batteries were developed, such as NIST STS, Dieharder and TestU01.
 
-Statistical batteries are fixed set of tests. Therefore, the battery does not adapt to the tested data. The goal of the EACirc tool is to create statistical test directly based on the tested data. To adapt the tested data, EACirc utilises heuristic for problem optimisation. The goal of the problem optimisation is detesting most of the bias. The goal of this thesis is to analyse other optimisation techniques and implement some of them to advance the optimisation process.
+Statistical batteries are fixed set of tests. Therefore, the battery does not adapt to the tested data. The goal of the EACirc tool is to create statistical test directly based on the tested data. To adapt the tested data, EACirc utilises heuristic for problem optimisation. The goal of the problem optimisation is detecting most of the bias. The aim of this thesis is to analyse other optimisation techniques and implement some of them to advance the optimisation process.
 
-Following this introduction, in \cref{chap:eacirc} we explain the computation of EACirc. After that, in \cref{chap:optimisation} we present methods of problem optimisation and we inspect their potential for application in randomness testing. The \cref{chap:method} defines analysis methodology together mainly presenting the testing dataset. The results of the work are presented in \cref{chap:res}, followed by comparison with related work in \cref{chap:relatwork}. \Cref{chap:conclusion} concludes the thesis and proposes future direction in the area.
+Following this introduction, in the \cref{chap:eacirc} we explain the computation of EACirc. After that, in the \cref{chap:optimisation} we present methods of problem optimisation and we inspect their potential for application in randomness testing. The \cref{chap:method} defines analysis methodology and introduces the testing dataset. The results of the work are presented in \cref{chap:res}, followed by comparison with related work in \cref{chap:relatwork}. The \cref{chap:conclusion} concludes the thesis and proposes future direction in the area.
 
-Even thought the research of this work was performed mainly by myself, plural is sued in the text. EACirc and other randomness testing tools are researched by a team at the Centre for Research on Cryptography and Security, Masaryk University\footnote{The team of randomness testing involves following people: Radka Cieslarová, Michal Hajas, Dušan Klinec, Matúš Nemec, Jiří Novotný, Lubomír Obrátil, Marek Sýs, Petr Švenda, Martin Ukrop and others.}.
+Even thought the research of this work was performed mainly by myself, the plural is used in the text. EACirc and other randomness testing tools are researched by a team at the Centre for Research on Cryptography and Security, Masaryk University\footnote{The team of randomness testing involves following people: Radka Cieslarová, Michal Hajas, Dušan Klinec, Matúš Nemec, Jiří Novotný, Lubomír Obrátil, Marek Sýs, Petr Švenda, Martin Ukrop and others.}.
 
 %\section{Statistical testing}
 %\label{sec:stat-testing}
@@ -233,22 +233,22 @@ Even thought the research of this work was performed mainly by myself, plural is
 \chapter{EACirc}
 \label{chap:eacirc}
 
-EACirc is a randomness testing tool developed at the Centre for Research on Cryptography and Security, Masaryk University~\todo{cite}. The randomness is tested by an attempt to distinguish between the tested data and the reference truly random data. If there exist a distinguisher, that can classify these datasets with probability higher than random guess -- 0.5, then the tested data are nonrandom.
+EACirc is a randomness testing tool developed at the Centre for Research on Cryptography and Security, Masaryk University~\todo{cite}. The randomness is tested by an attempt to distinguish between the tested data and the reference truly random data. If there exist a distinguisher, that can classify these datasets with a probability higher than a random guess, then the tested data are nonrandom.
 
 \section{EACirc workflow}
 \label{sec:eac-comp}
 
-The distinguisher is encoded as a software-emulated electronic circuit, an example is shown in \todo{figure}. The circuit consists of connectors and nodes. The nodes are arranged to layers. The first is an input layer, that splits the test vector to bytes. These bytes are process by further layers, which modifies them by Boolean operations. The output is condensed to a single byte, upon which is based the classification.
+The distinguisher is encoded as a software-emulated electronic circuit; an example is shown in \todo{figure}. The circuit consists of connectors and nodes. The nodes are arranged in layers. The first is an input layer that splits the test vector to bytes. These bytes are processed by further layers, where nodes modify the data by Boolean operations. The output is reduced to a single byte, upon which the circuit bases the classification.
 
-The distinguisher is not able to classify a single test vector, as it is possible even a truly random test vector may look like the tested data. Therefore, EACirc process the output statistically. It proceed 1\,000 analysed data test vectors and 1\,000 reference random data vectors, and it accumulates the outputs per dataset to output distribution. These distributions for tested and reference datasets are compared using $\chi^{2}$ test. The result of the $\chi^{2}$ test is a $p$-value, which is transformed to the \textit{fitness} value as $1 - p$-value.
+The distinguisher is not able to classify a single test vector, as it is possible even a truly random test vector may look like the tested data. Therefore, EACirc process the output statistically. It proceeds 1\,000 analysed data test vectors and 1\,000 reference random data vectors, and it accumulates the outputs per dataset to output distribution. These distributions for tested and reference datasets are compared using a $\chi^{2}$ test. The result of the $\chi^{2}$ test is a $p$-value, which is transformed to the \textit{fitness} value as $1 - p$-value.
 
-There is a huge amount of potential circuits. Therefore the computation starts with randomly generated circuit, generally denoted as \textit{candidate solution}. To obtain intended solution, we performs modification, whose are addition or removal of a connector or change of the operation in the node. By these changes that we denote \textit{mutation}, we can create another \textit{candidate solution}.
+There is an enormous number of potential circuits. Therefore the computation starts with a randomly generated circuit, generally denoted as \textit{candidate solution}. To obtain intended solution, we perform modifications, whose are addition or removal of a connector or change of the operation in the node. By these changes that we denote \textit{mutation}, we can create another \textit{candidate solution}.
 
 Those two \textit{candidate solutions} are compared using the \textit{fitness}. We want to minimise the $p$-value, which means maximise the \textit{fitness}. Therefore we select the \textit{candidate solutions} with higher \textit{fitness}. We repeat the process 100 times, these iterations are called \textit{epoch}.
 
-At the end of the \textit{epoch}, there is likelihood that the circuit exploited some property of the tested data. To not \textit{overfit} to the data, we change the tested datasets and repeat the \textit{epoch}.
+At the end of the \textit{epoch}, there is a likelihood that the circuit exploited some property of the tested data. To not \textit{overfit} to the data, we change the tested datasets and repeat the \textit{epoch}.
 
-This whole process is in terms of optimisation methods called \textit{iterated local search}. It is a metaheuristic from list of single-solution metaheuristics. Metaheuristic is a generalised version of a heuristic algorithm.
+This whole process is in terms of optimisation methods called \textit{iterated local search}. It is a metaheuristic from a list of single-solution metaheuristics. Metaheuristic is a generalised version of a heuristic algorithm.
 
 % distinguisher between tested data and random data
 % circuit
