@@ -1125,7 +1125,7 @@ Those values are shown for AES in 1 to 3 rounds with both ANN and CNN for compar
 \section{Inter-approach comparison}
 \label{sec:res-comp}
 
-The interesting details about single-solution metaheuristics are abridged in \cref{table:ss-comparison}. Both approaches of artificial neural networks are not able to distinguish data from function reduced to given number of rounds, except eight rounds MD6.
+The interesting details about single-solution metaheuristics are abridged in \cref{table:ss-comparison}. Both artificial neural network models are omitted in the table. They are not able to detect non-randomness of functions reduced to the given number of rounds, except eight rounds MD6.
 
 \begin{table}
 \centering
@@ -1142,12 +1142,11 @@ Variable neighbourhood search                   & 0.182   & 0.157    & 0.992  & 
 
 
 \begin{itemize}
-    \item Guided local search is always more successful than iterated local search, and it is almost always the best among the methods. The single better result of simulated annealing does not mean it is better than guided local search, due to worse reference value because of the \textit{connection bug}. Same for better result for four rounds TEA of variable neighbourhood search, which is traded of for a longer computation time.
-    \item ANN can take advantage of bit-oriented evaluation, but we have not seen any benefits of it, even though it is a crucial capability for cryptographic data
-    \item Advantage of single-solution over population-based metaheuristics is much simpler interpretation, as we do not care about the dependency of the statistic result.
+    \item Guided local search is always more successful than the baseline iterated local search, and it is almost always the best among the methods. The single better result of simulated annealing does not mean it is better than guided local search, due to worse reference value because of the \textit{connection bug}. Same holds for better result for four rounds TEA of variable neighbourhood search, as it has longer computation time.
+    \item ANN can detect bit-level non-randomness, while EACirc cannot. However, this did not led to creation of ANN distinguisher for any function, that would EACirc not be able to distinguish.
     \item The runtime of simulated annealing and guided local search is same as runtime of iterated local search. The variable neighbourhood search can take up to five times longer. The data consumption of all metaheuristics in EACirc is the same, described in \cref{fig:dataUsage}.
     
-    In comparison, the neural networks need significantly less data (as was shown in \cref{fig:ann-dataUsage}). One run of ANN takes about ten times shorter as one run of EACirc. However, due to varying capabilities, these numbers are not comparable. EACirc can find distinguisher for AES reduced to two rounds within less than ten epochs, compared to common 300. Interesting comparison of the efficiency of EACirc implementation is that \texttt{C++} EACirc consumes twelve times more data per second of computation than ANN implemented in \texttt{Python}.
+    In comparison, the neural networks need significantly less data (as was shown in \cref{fig:ann-dataUsage}). One run of ANN takes about ten times faster than one run of EACirc. However, due to varying capabilities, these numbers are not comparable. EACirc can find distinguisher for AES reduced to two rounds within less than ten epochs, compared to common 300. Interesting comparison of the efficiency of EACirc implementation is that \texttt{C++} EACirc consumes twelve times more data per second of computation than ANN implemented in \texttt{Python}.
     
     Still, the ANN is the only method, can can be used to classify a single test vector (like 16 bytes). The framework provides both its classification guess and the estimation of its certainty in the guess. No other method provides such application.
 \end{itemize}
@@ -1320,22 +1319,20 @@ The Genetic programming was also used for analysis of four rounds DES~\cite{song
 
 This work analysed the application of metaheuristics in randomness testing tools, especially in EACirc. The possibility of implementation with the potential issues was discussed in the \cref{chap:metaheuristics}. We extended EACirc tool by three new metaheuristics that represented different single-solution metaheuristics types. Guided local search metaheuristic performs better than the former algorithm. In addition, we showed it significantly simplify output distinguisher, which reduces the complexity of further cryptanalysis. Therefore, guided local search will be incorporated into the following release of the EACirc tool as the default metaheuristic.
 
-Another tested method was using the artificial neural network. The results were unsatisfactory, proving No free lunch theorem. This area requires more work to achieve better results, and it may be necessary to significantly redesign the neural network algorithms. The artificial neural network works with floating points, and the discrete bit-level patterns do not fit the gradient descent algorithm with analysed data representation and activation functions. As we examined the literature within this area, we have found no mature theory. It is still an open question if the artificial neural network can achieve better results in the recognition of cryptographic data.
+Another tested method was using the artificial neural network. This area requires may require more theoretical knowledge of ANN to achieve better results. To do so, it may be necessary to significantly redesign the neural network algorithms. The artificial neural network works with floating points, and the discrete bit-level patterns do not fit the gradient descent algorithm for the selected data representation. As we examined the literature within this area, we have found no serious work on this problem. It is still an open question if the artificial neural networks can achieve better results in the recognition of cryptographic data.
 
-In comparison to state of the art in randomness testing, all our methods perform worse than the TestU01 statistical battery. In comparison with other statistical batteries, EACirc finally reached capabilities comparable with Dieharder. The only advantage of EACirc over TestU01 is the analysis of the developed distinguisher, which may need less statistical knowledge than understanding TestU01 test and can point concrete bytes dependencies. TestU01 Crush, the strongest battery setting, found bias of full Rabbit function, which showed to be a replication of already known results discovered during eSTREAM competition.
+In comparison to state of the art in randomness testing, all our methods perform worse than the TestU01 statistical battery. In comparison with other statistical batteries, EACirc finally reached capabilities comparable with Dieharder. The only advantage of EACirc over TestU01 is the analysis of the developed distinguisher circuit, which may reveal concrete bytes dependencies. TestU01 Crush, the strongest battery setting, found bias of full Rabbit function, which showed to be a replication of already known results discovered during eSTREAM competition.
 
 An important product of this work is the testbed of well-known cryptographic function, which is an extension and correction of previous testing sets. Besides, we presented generator tool for the direct generation of the tested data, which can be used by developers of others randomness testing tools as a benchmark. It can be used as well by cryptographers to generate specifically modified cryptography data, usually reduced in the number of rounds.
 
 \section{Future work}
 \label{sec:conclusion-future}
 
-The capabilities of EACirc increased to the level of Dieharder battery. I estimate that current approach using byte-oriented circuits is unable to compete directly with the TestU01 battery. EACirc can focus more on the analysis of the circuits, which offers an added value over the TestU01.
+The capabilities of EACirc increased to the level of Dieharder battery. My estimate is that the current approach using byte-oriented circuits is unable to compete directly with the TestU01 battery. EACirc can focus more on the analysis of the circuits, which offers an added value over the TestU01.
 
-The another project based on polynomials shows better results as it is bit-oriented. It does not utilise any metaheuristic, hence application of population-based metaheuristic, such as evolutionary algorithms or swarm intelligence, may increase its already promising capabilities. The work on the integration of those metaheuristics already started within this thesis.
+Our team develop a bit-oriented randomness testing project. It does not utilise any metaheuristic yet, which may increase its already promising capabilities. It fits well population-based metaheuristic, such as evolutionary algorithms or swarm intelligence. The work on the integration of those metaheuristics already started within this thesis.
 
-The testbed of well-known functions can be further extended by different means of reduction of the cryptographic functions RC4 and HC-128. For RC4, we can use bit selection capabilities of the generator. All functions can also take advantage of automatic customisation of functions introduced in the thesis of Radka Cieslarová~\cite{cieslarovaBcThesis}, which is still in progress. We refer to this project as Heatmaps.
-
-The heatmaps are one of the development plans with the generator tool. Other plans extend the tool by already implemented CAESAR functions and new PRNG. Altogether with randomness testing toolkit is planned as a publication for \todo{...}.
+The testbed of well-known functions can be further extended by different means of reduction of the cryptographic functions RC4 and HC-128. For RC4, we can use bit selection capabilities of the generator. Other plans are to extend the tool by already implemented CAESAR functions and new PRNG. Altogether with randomness testing toolkit is planned as a publication for \todo{...}.
 
 Regarding the artificial neural network, we began cooperation with pattern recognition team from University Ca’ Foscari Venice. The results of this cooperation are still open. \todo{is this true before submition?}
 
