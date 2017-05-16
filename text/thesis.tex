@@ -244,17 +244,10 @@ A computational problem is a task to find a solution for given question. An opti
 
 Metaheuristics are applicable for optimisation problems if a programmer can provide three crucial parts. First is an instance of candidate solution for the problem, it is the circuit in EACirc. Second is a function to vary the solution, in EACirc it is the mutation. Third and usually the most important is the fitness function, which measures the quality of the solution. Metaheuristic uses these parts to follow the landscape of the problem, and they try to find better solutions during the time.
 
-The main advantage of metaheuristics is that they are well known, compared together in many studies (see 849 references in \cite{talbi2009metaheuristics}) that also provided tips for the implementation.
+The main advantage of metaheuristics is that they are well-known and studied. Their overview, as well as implementation tips, are following book Metaheuristics from Talbi~\cite{talbi2009metaheuristics}. Please refer to this book for more examples of metaheuristic applications. Those that are described in the text are above of the scope of this book.
 
-The number of candidate solutions inspected simultaneously splits metaheuristics into two categories: single-solution based metaheuristics and population-based metaheuristics.
+The number of candidate solutions inspected simultaneously splits metaheuristics into two categories: single-solution metaheuristics are present in \cref{sec:opt-single-sol} and population-based metaheuristics in \cref{sec:opt-population}. \Cref{sec:opt-other} describes other methods. All the approaches are firstly described and then analysed for application in randomness testing. If the application is suitable, we describe more details about the possible implementation.
 
-%The main advantage of having multiple concurrent solutions is handling population diversity. Diversity can help avoid ending in local optima and together with other techniques can produce better individuals faster. However, maintaining the diversity of the population is difficult, if the fitness does not increase continuously. When an individual has a unique feature, which increases its fitness, it is going to be quickly spread in next generations, suppressing other promising, but not yet so well performing other individuals.
-
-%The initial version of EACirc tended to use the advantages of the genetic programming, which is a population-based metaheuristic. Encoding the candidate solutions as a simulated electronic circuit allowed operations for mutation and crossover. Together with fitness evaluation was the optimisation process specified and used on cryptographic data, it was capable of distinguishing weak sources from truly random data~\cite{svenda2013towards}.
-
-%However, this approach was very complex and not enough understood. The sexual crossover did not have a sound implementation for the circuits. Besides, the expectation about the diversity of the population was not analysed. Also the interpretation of the results difficult. The following solution proposed in \cite{sys2014constructing} simplified the interpretation by using the population of only one individual. This solution allowed statistical postprocessing of fitness values and together with categories evaluator surpassed the previous approach in all tests~\cite{sys2014constructing}. Althout the project still used genetics library, by usage of single individual, the used metaheuristic became iterated local search.
-
-%EACirc 4.0 simplified and optimised the computations by substituting GALib -- a genetic algorithm library by a custom implementation of the iterated local search. This work analyses the problem and tries other metaheuristics to answer the question if iterated local search is the best approach.
 
 \section{Single-solution metaheuristics}
 \label{sec:opt-single-sol}
@@ -294,8 +287,7 @@ The number of candidate solutions inspected simultaneously splits metaheuristics
 \subsection{Local search}
 \label{subsec:opt-single-sol-ls}
 
-Local search is the very basic approach in problem optimisation. The search begins with single candidate solution, and it applies changes to this solution, so it creates a neighbour candidate. Then the local search compares fitnesses of these two solutions and selects the better candidate to the next generation. The algorithm iterates this approach until 
-it finds a satisfactory solution, or it ran the limited amount of iterations.
+Local search is the very basic approach in problem optimisation. The search begins with a single candidate solution, and it applies changes to this solution forming neighbour candidate. Then the local search compares fitnesses of these two solutions and selects the better candidate to the next generation. The algorithm iterates this approach until it finds a satisfactory solution, or it ran the limited amount of iterations.
 
 The algorithm can also be referred as hill-climbing, as we with acceptance of an improving solution, we step up in the fitness space. Therefore local search often finds only the sub-optimal solution -- a local optimum.
 
@@ -308,9 +300,9 @@ As EACirc is using an iterated version of local search, the application of local
 
 Iterative local search is and extension of local search. After defined amounts of iteration of basic local search, the tested data are changed. The computation on one set of data is called an \textit{epoch}, and the amount of iteration is called \textit{epoch length}.
 
-During the epoch, the fitness progress is non-decreasing, however, after the end of each epoch, fitness is expected to drop. The final fitness has to be tested on a new dataset, which applies for every metaheuristic. Therefore, we distinguish between the learning dataset and the testing dataset.
+During the \textit{epoch}, the fitness progress is non-decreasing. However, after the end of each \textit{epoch}, the fitness is expected to drop. The final fitness has to be tested on a new dataset, which applies for every metaheuristic. Therefore, we distinguish between the learning dataset and the testing dataset.
 
-The \textit{epoch length} is the crucial parameter of this metaheuristic. A short epoch length can be computationally more demanding due to higher data consumption, and the solution may not be able to learn anything on the data. Too long \textit{epoch} leads to \textit{overfitting}, a situation when the individual is learning a specific pattern of the current dataset over general patterns of all datasets. Martin Ukrop examined the overfitting process in EACirc in~\cite[chapter~7]{ukropBcThesis}.
+The \textit{epoch length} is the crucial parameter of this metaheuristic. A short epoch length can be computationally more demanding due to higher data consumption, and the solution may not be able to learn anything on the data. Too long \textit{epoch} leads to \textit{overfitting}, a situation when the individual is learning a specific pattern of the current dataset over general patterns of all datasets. Martin Ukrop examined the overfitting process in EACirc in~\cite[Chapter~7]{ukropBcThesis}.
 
 The EACirc have used the iterated local search since~\cite{sys2014constructing}. Therefore it is used as a baseline for single solution metaheuristics tested in this work.
 
@@ -326,14 +318,14 @@ We abandoned this metaheuristic as we did not found any greedy algorithm for cir
 
 Multi-start local search is another approach how to surpass local optimum to find the global optimum. The metaheuristic starts the computation with $k$ randomly generated individuals that are concurrently optimised by local search.
 
-This parallelism could increase the usage of the testing data in EACirc. The disadvantage is a more difficult evaluation, as Ukrop stated in~\cite[chapter~5]{ukropBcThesis}. It is a question if we should evaluate the best, or the average, or random solution, or more solution simultaneously. Another possible advantage of multi-start local search can be parallelization of the computation. However, EACirc computation is already parallelized, neither on the level of single computation. Due to statistical interpretation, we have to repeat the computation process 1\,000 times.
+This parallelism could increase the usage of the testing data in EACirc. The disadvantage is a more difficult evaluation, as Ukrop stated in~\cite[Chapter~5]{ukropBcThesis}. It is a question if we should evaluate the best, the average, or a random solution, or more solution simultaneously. Another possible advantage of multi-start local search can be parallelization of the computation. However, EACirc computation is already parallelized, neither on the level of single computation. Due to statistical interpretation, we have to repeat the computation process 1\,000 times.
 
 We decided not to cover multi-start local search, as saving a small fraction of computation time for more complicated interpretation is a bad trade-off.
 
 \subsection{Guided local search}
 \label{subsec:opt-single-sol-gls}
 
-Guided local search is metaheuristic based on dynamic changing of the fitness function. If the metaheuristic got stuck in local optima, guided local search would change the fitness function so the individual can follow climbing.
+Guided local search is metaheuristic based on dynamic changing of the fitness function. If the metaheuristic got stuck in local optima, guided local search would change the fitness function so the individual can continue climbing.
 
 The EACirc computation can get trapped in a local optimum mainly in two cases:
 
@@ -349,7 +341,7 @@ We decided to implement guided local search in EACirc, as it also represents sin
 \subsection{Noisy method}
 \label{subsec:opt-single-sol-nois}
 
-The noisy method is another metaheuristic, which changes the fitness space to escape local optima. It is done by adding random noise to the input data, as Talbi described in~\cite[section 2.9.2]{talbi2009metaheuristics}. At the beginning of the computation, the noise is the strongest, and it disappears during the computation, so the final \textit{epochs} can be evaluated on the original data.
+The noisy method is another metaheuristic, which changes the fitness space to escape local optima. It is done by adding random noise to the input data, as Talbi described in~\cite[Section 2.9.2]{talbi2009metaheuristics}. At the beginning of the computation, the noise is the strongest, and it disappears during the computation, so the final \textit{epochs} can be evaluated on the original data.
 
 In EACirc, our research goal is already distinguishing pseudo-random data from truly random data. An additional random noise in the input would probably lead to an even more complicated learning process. For example, the noise could flip a bit on a position, which is necessary for distinguishing between the data sources. Therefore was this method abandoned.
 
@@ -358,12 +350,12 @@ In EACirc, our research goal is already distinguishing pseudo-random data from t
 
 Smoothing method is the another metaheuristic, which uses changes in fitness function to escape local optima. The method is based on smoothing the landscape of fitness function by computing a local average of all neighbours to given distance. If the fitness is overall increasing in one direction, but more zoomed observation shows small fluctuation, smoothing method smooths the fluctuation and allows locating the global optima.
 
-\textit{Neigbours} in EACirc are defined as solutions obtained by mutation of the circuit. Available mutations are connecting or disconnecting a connector, or change of the Boolean function in the node. The neighbourhood of an individual in EACirc is enormous (over $2^{25}$ neighbours in the distance one for basic EACirc setup), this method would not be possible due to computational requirements.
+\textit{Neigbours} in EACirc are defined as solutions obtained by mutation of the circuit. Available mutations are connecting or disconnecting a connector, or change of the Boolean function in the node. The neighbourhood of an individual in EACirc is enormous (over $2^{25}$ neighbours in the distance one for the basic EACirc setup), this method would not be possible due to computational requirements.
 
 \subsection{Variable neighbourhood search}
 \label{subsec:opt-single-sol-vns}
 
-Variable neighbourhood search also changes the landscape of the problem. However, it does not modify the fitness function or its interpretation, but it defines other methods for neighbour selection. If the computation stuck in local optima, the neighbourhood method is changed. Alternatively, the neighbourhood can be changed periodically. This method does not guarantee to escape from local optima, as all neighbourhoods can contain only worse solutions.
+Variable neighbourhood search also changes the landscape of the problem. However, it does not modify the fitness function or its interpretation, but it defines other methods for neighbour selection. If the computation gets trapped in local optima, the neighbourhood method is changed. Alternatively, the neighbourhood can be changed periodically. This method does not guarantee to escape from local optima, as all neighbourhoods can contain only worse solutions.
 
 Specifying different neighbourhood in EACirc is hard. However, the method lead us to a different idea. EACirc is heading two mutually exclusive problems. We would like to have circuit connected sparsely for easier interpretation of the final solution. However, we also want to have the circuit's input and output nodes connected. We can solve the problems by reduction of the searched neighbourhood.
 
@@ -374,27 +366,25 @@ If we already have a successful solution, we can inspect only solutions with few
 
 Remaining two single-solution metaheuristics can accept non-improving neighbours. Short term acceptance of worse solution can lead to escape from local optima and finding global optima in whole computation.
 
-Simulated annealing metaheuristic is inspired by the physical process of annealing in metallurgy. Annealing is an iterative process of heating the metal to increase the size of the crystals, which reduces the probability of a defect. During the process, the metal is heated to lower and lower temperatures.
+Simulated annealing metaheuristic is inspired by the physical process of annealing in metallurgy. The annealing is an iterative process of heating the metal to increase the size of the crystals, which reduces the probability of a defect. During the process, the metal is heated to lower and lower temperatures.
 
 Simulated annealing uses variable temperature, which describes the probability of acceptance of worse neighbour. This probability is decreasing during the computations, such that in the beginning, the likelihood of acceptance of worse solution is high, but at the end of the computation, only better solutions are accepted.
 
-This metaheuristic is widely used, which was the reason for implementing it as a testing scenario for metaheuristics as a representation of the group of single solution metaheuristics that accepts non-improving solutions. Its implementation in EACirc does not require complex changes, only the specification of this method.
-
-However, this method is not specified for the iterative approach with learning \textit{epochs}. Also, the acceptance of non-improving solution can lead to discarding a well-performing solution.
+This metaheuristic is widely used, which was the reason for implementing it as a testing scenario for metaheuristics. Besides, it serves as a represent of the group of single solution metaheuristics that accepts non-improving solutions. Its implementation in EACirc does not require complex changes, only the specification of this method. However, this method is not specified for the iterative approach with learning \textit{epochs}.
 
 \subsection{Tabu search}
 \label{subsec:opt-single-sol-tabu}
 
-Like simulated annealing, tabu search can also accept non-improving solutions to escape from local optima. However, the decision whether to accept a non-improving solution is not based on probability, but on knowledge, if considered solution was visited. Therefore, tabu search holds a memory of visited solutions, called \textit{tabu list}, and it would not use twice the same solution. This way, tabu search avoids cycles during the optimisation process.
+Similarly to simulated annealing, tabu search can also accept non-improving solutions to escape from local optima. However, the decision whether to accept a non-improving solution is not stochastic, but it is based on knowledge of already visited solutions. Therefore, tabu search holds a memory of visited solutions, called \textit{tabu list}, and it would not use twice the same solution. This way, tabu search avoids cycles during the optimisation process.
 
 Application of tabu search in EACirc has several issues. Firstly, how to store used individuals (memory usage may be a problem), which can be solved by storing only a hash of the solution. Secondly, the neighbourhood space of an individual is huge, as stated in \cref{subsec:opt-single-sol-smooth}. It is higher than the number of individuals tested during whole computation. Choosing twice the same solution is unlikely. Therefore we decided to try only simulated annealing and leave the decision of tabu search implementation on the result of simulated annealing.
 
 \section{Population-based metaheuristics}
 \label{sec:opt-population}
 
-Population-based metaheuristics are usually inspired by biological processes of some population. The group of evolutionary algorithms is inspired by the process of biological evolution, that process a population of species and forms better individuals. The ant colony optimisation and swarm intelligence algorithms are based on motion behaviour of a colony of selected species.
+Population-based metaheuristics are usually inspired by biological processes. The group of evolutionary algorithms is motivated by the process of biological evolution, which treats a population of species and forms better individuals. The ant colony optimisation and swarm intelligence algorithms are based on motion behaviour of a colony of selected species.
 
-Population-based metaheuristics are usually more complex than single-solution metaheuristics. The complexity shows on many layers.
+Population-based metaheuristics are usually more complex than single-solu\-tion metaheuristics. The complexity occurs on multiple levels.
 
 \begin{itemize}
     \item The implementation usually requires many configurable parameters; therefore it is more prone to programming mistakes.
@@ -402,7 +392,7 @@ Population-based metaheuristics are usually more complex than single-solution me
     \item The algorithm needs more computational resources due to overhead with maintenance more complex method.
 \end{itemize}
 
-These disadvantages may be paid off. The population together may prevent the algorithm stuck in local optima, as long as the metaheuristic maintains well the diversity of the population. Another straightforward advantage is an application in similar process, which inspired the metaheuristic.
+However, population-based metaheuristics bring significant advantage. The population together may prevent the algorithm from ending in local optima, as long as the metaheuristic maintains well the diversity of the population.
 
 \subsection{Evolutionary algorithms}
 \label{subsec:opt-popul-ea}
@@ -430,23 +420,6 @@ During the 40 years, many variants of evolutionary algorithms emerged.
 
 Randomness testing is a discrete optimisation problem; therefore we may apply genetic algorithms and genetic programming. Genetic algorithms were used in multiple works for analysis of bias in ciphertext from round reduced TEA and DES functions~\cite{twoRoundsTea,fourRoundsTea,fiveRoundsTea,song2007cryptanalysis,husein2007genetic}. On the other side, we found no successful work on the same topic using genetic programming.
 
-The most important decisions for the well-working genetic algorithm are the individual representation and evaluation. The works on TEA~~\cite{twoRoundsTea,fourRoundsTea,fiveRoundsTea} represented the individual as a binary mask, which was applied to the plaintext and key to produce biased ciphertexts The bias was statistically evaluated, so it was used as the fitness. EACirc also formerly used genetic algorithms, and it represents the individual as simulated electric circuit (this may be close to the definition of genetic programming). The fitness corresponds to the deviation between analysed and reference data.
-
-Other possible implementation using genetic algorithms may be for polynomial encoded tool BoolTest~\cite{sys2017detecting}, which is still in submission phase. The representation by a binary polynomial in algebraic form fits the proposed idea of genetic algorithms. Mutation can be a simple flip of a variable; the crossover can take some of the terms of each individual.
-
-% the most studied spread population-based metaheuristic
-% application in descrete and continuous problems. And also single objective and multiobjective
-% inspired by natural selection and evolution of species
-% multiple variations - explain the vocabulary (genetic algorithms, evolutions strategies, evolutionary programming, genetic programming)
-% the main idea of genetic algorithms
-    % selection of parents
-    % reproduction
-        % evaluation
-    % replacement of the population by offsprings
-    % repeat
-% difficulties with management of the diversity
-
-% intentionally skip the genotype and phenotype
 
 \subsection{Ant colony optimization}
 \label{subsec:opt-popul-aco}
@@ -459,24 +432,12 @@ The ant colony optimisation is an instance of swarm intelligence metaheuristics.
     \item The pheromone evaporates over time.
 \end{itemize}
 
-The common application of ant colony optimisation is on shortest path algorithms. The literature states many applications in travelling salesman problem~\cite{dorigo1997ant, dorigo1997ant}. However, the metaheuristic can also be applied to combinatorial problems, as the problem representation can be encoded to the graph structure and the shorted path algorithm may solve them. An example of such application can be formula satisfiability problem (SAT)~\cite{moritz2010solving}.
+The common application of ant colony optimisation is on shortest path algorithms. The literature states many applications in travelling salesman problem~\cite{dorigo1997ant}. However, the metaheuristic can also be applied to combinatorial problems, as the problem representation can be encoded to the graph structure and the shorted path algorithm may solve them. An example of such application can be formula satisfiability problem (SAT)~\cite{moritz2010solving}.
 
-The problems solvable by ant colony optimisation are usually problems, where the solution is constructed from \textit{building blocks}. The pheromone can be associated with the block and it can describe the probability of using the block in the final solution. Such problem instances are used in EACirc's polynomial representation.
-
-We wanted to use ant colony optimisation on polynomials, however, we did not find a suitable library for \texttt{Python} or \texttt{C++}, such that would allow evaluation of whole constructed individual. Libraries like \texttt{ACO-Pants}~\cite{acoPants} specialise for pathfinding, where every edge have to be weighted, while we would need to evaluate the whole path.
+The problems solvable by ant colony optimisation are usually problems, where the solution is constructed from building blocks. The pheromone can be associated with the block, and it can describe the probability of using the block in the final solution. However, EACirc's circuit cannot be decomposed into independent components, so we do not test this metaheuristic.
 
 \subsection{Scatter search}
 \label{subsec:opt-popul-scatter}
-% Population-based variation of tabu search?
-% main idea:
-%   1. hold diverse population (use tabu search for help)
-%   2. get the best individuals in such population
-%   3. split the population into smaller sets
-%   4. combine the shared qualities of the individuals within the set, to get the ultimate individual with the core functionality
-% population = reference set 10-20 candidates; subsets can be for example of size 2-4
-% merge new candidates to the reference set and iteratively continue with the main steps
-% the algorithm may stop by number of iterations or by leaving the reference set unchanged
-% application in EACirc: we do not know, how to merge solutions
 
 The scatter search method is highly utilising the combination of the individuals. The algorithm holds a population of the best so far inspected individuals called \textit{reference set}. Like every population-based metaheuristic, the diversity of the \textit{reference set} is crucial. Scatter search is an iterative algorithm, where one iteration consists of 4 steps.
 
@@ -1418,7 +1379,7 @@ The Genetic programming was also used for analysis of four rounds DES~\cite{song
 \section{Summary}
 \label{sec:conclusion-summary}
 
-This work analysed the application of metaheuristics in randomness testing tools, especially in EACirc tool. The possibility of implementation with the potential issues was discussed in the \cref{chap:metaheuristics}. We extended EACirc tool by three new metaheuristics that represented different single-solution metaheuristics types. Guided local search metaheuristic performs better than the former algorithm. In addition, we showed it significantly simplify output distinguisher, which reduces the complexity of further cryptanalysis. Therefore, guided local search will be incorporated into the following release of the EACirc tool as the default metaheuristic.
+This work analysed the application of metaheuristics in randomness testing tools, especially in EACirc. The possibility of implementation with the potential issues was discussed in the \cref{chap:metaheuristics}. We extended EACirc tool by three new metaheuristics that represented different single-solution metaheuristics types. Guided local search metaheuristic performs better than the former algorithm. In addition, we showed it significantly simplify output distinguisher, which reduces the complexity of further cryptanalysis. Therefore, guided local search will be incorporated into the following release of the EACirc tool as the default metaheuristic.
 
 Another tested method was using the artificial neural network. The results were unsatisfactory, proving No free lunch theorem. This area requires more work to achieve better results, and it may be necessary to significantly redesign the neural network algorithms. The artificial neural network works with floating points, and the discrete bit-level patterns do not fit the gradient descent algorithm with analysed data representation and activation functions. As we examined the literature within this area, we have found no mature theory. It is still an open question if the artificial neural network can achieve better results in the recognition of cryptographic data.
 
@@ -1503,6 +1464,9 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
     \item[Local optima] of the fitness landscape are local maxima. As hill-climbing methods get stuck on such solution, we other optimisation techniques were developed, usually with the goal evading the local optima.
     \item[Fitness function] is a method for comparison of individual quality. Fitness is in this work defined for maximization problem. Therefore fitness equal to zero is the worst, while fitness equal to one is the best.
     \item[Round reduced cryptographic function] is cryptographic function, where the iterative part like Fiestel network is reduced to given number of rounds. Zero rounds mean the iterative part is skipped at all. However, even zero rounds function can produce randomly looking data, as it may consist of strong pre-computation and post-computation. Some functions are irreducible.
+    \item[neighbour]
+    \item[neighbourhood]
+    \item[tabu list]
 \end{description}
 
 \section{Single-solution metaheuristics results}
