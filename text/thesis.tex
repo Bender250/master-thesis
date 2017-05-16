@@ -498,27 +498,8 @@ Application in encryption is even rarer. For example, researchers from Google Br
 
 We would like to utilise the developed approach of learning in classification by ANN. However, the application of ANN in our scope is not straightforward. We do not know in advance, what are the features in the data. Therefore the network has to have the whole ciphertext as an input. We encode the binary input to floats (0 as $-0.5$ and 1 as $+0.5$) based on intuition supported by other works~\cite{abadi2016learning,shihab2006backpropagation}. We tried both fully connected network (where every node is connected to every node of previous layer or every input bit), and convolution network, where the first layer has only a limited local interval of inputs. 
 
-% shihab2006backpropagation http://docsdrive.com/pdfs/sciencepublications/jcssp/2006/710-715.pdf
-%   ANN develops decryption of basic Boolean blocks of permutation and 'doping.'
-%   backpropagation, three layers (12-16-12), bits as -0.5, +0,5, linear activation
-%   they claim better security than DES (due to large state space), but it is a bullshit
-
-% li2001remote http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=963786
-%   multiserver multiuser authentication - users classified by ANN
-
-% volna2012cryptography https://pdfs.semanticscholar.org/0860/8a61506de48da7e93320a5844b081801374a.pdf
-%   ANN creates encryption algorithm (same as Google's paper), 6 bits blocks
-%   network 6-6-6, sigmoid, nothing about bits representation
-%   they are not cryptographers! Security by obscurity (the key is the weight of connectors in the network), again bullshit (OMG, they even do not meet semantics security!)
 
 \subsection{Other statistical classification methods}
-%https://en.wikipedia.org/wiki/Statistical_classification
-
-% SVM
-% kNN
-% Decision trees (C4.5 algorithm https://en.wikipedia.org/wiki/C4.5_algorithm)
-% Bayesian networks
-% ...
 
 There are several other models or algorithms of statistical classification. Those are for example support vector machine (SVM), decision tree with a C4.5 algorithm, $k$-nearest neighbours algorithm ($k$-NN), Bayes classifier and many others. Those methods usually rely on good feature selection, which we do not perform in our scenario. Therefore, the application of those models was not examined within this work, but they might be an interesting question for further works.
 
@@ -1028,7 +1009,6 @@ The network layout is showed in \cref{fig:ann-layout}. We tested many layouts an
         \filldraw[fill=white] (3+\x,\y) circle (0.1);
     }
 
-    
     \node at (8.5, \y) {$\dots$};
     
     \def \y {\secondLayer}
@@ -1042,13 +1022,8 @@ The network layout is showed in \cref{fig:ann-layout}. We tested many layouts an
     }
     
     \filldraw[fill=white] (8.5,\fourthLayer) circle (0.1);
-
-
-    %% The lines connecting the nodes are drawn in the background layer.
-    %% This way we can hide the lines behind the nodes and don't worry
-    %% about the width of each node.    
+  
     \begin{pgfonlayer}{background}
-        
         % ANN full furst layer
         \foreach \xa in {0, 4}
             \foreach \xb in {1.5, 5.5} {
@@ -1056,7 +1031,6 @@ The network layout is showed in \cref{fig:ann-layout}. We tested many layouts an
                 \draw[thin, -latex] (\xa+1,\firstLayer) -- (\xb,\secondLayer);
                 \draw[thin, -latex] (\xa+3,\firstLayer) -- (\xb,\secondLayer);
         }
-        
         \foreach \xa in {10}
             \foreach \xb in {11.5} {
                 \draw[thin, -latex] (\xa,\firstLayer) -- (\xb,\secondLayer);
@@ -1147,34 +1121,6 @@ Those values are shown for AES in 1 to 3 rounds with both ANN and CNN for compar
 \label{fig:ann-learning}
 \end{figure}
 
-
-% Implementation
-%   preprocessing of input data
-%       usage - learning data, testing data are separated
-%   Keras library
-% activation function
-% ANN
-% CNN
-% automation
-% intepretation
-% results
-% cooperation with Italy
-% future work: learn on AES r2, re-learn on aes r3
-
-
-%\section{Optimisation by grain fine-tuning selected metaheuristic}
-%\label{sec:res-finetuning}
-
-%% needs revision
-%Trying multiple metaheuristic is broad approach. However, as stated in no free lunch theorem, there is a tendency, than no single metaheuristic guarantee better results, while dedicated human work on analysing and fine-tuning the method can bring better results.
-
-%In~\cite{kubicek2016new}, we analysed deeply one single function -- Tiny Encryption Algorithm (\textit{TEA}). The aim of this analysis was finding best setup specific to tested function, so we can directly compare EACirc to other teams that were using genetics algorithm for testing randomness of TEA ciphertext.
-
-%Instead of broad analysis, we tried multiple settings mainly of the tested data. The best distinguishers were found for testing strict avalanche criterion. We also tested many other constants that specify the computation.
-
-%Intiialy, we observed worse results along all metaheuristics for TEA than are stated in the paper. Therefore, we analysed the the source of different behaviour. Due to this analysis, we found an implementation bug in EACirc 4 \todo{cite commit} that actively decreased the used size of the circuit by two layers. \todo{Updated results, other results were intouched?}.
-
-%This unintentional analysis showed that fine-tuning the dimensions of the circuit is crucial for observing the best performance. % TODO: false!
 
 \section{Inter-approach comparison}
 \label{sec:res-comp}
@@ -1357,11 +1303,6 @@ Observations from the results are following.
     \item Still the compression algorithms state similarly to results of neural networks. From these results, we can assume that neural networks detected only the disproportion of zeroes and ones or simple byte-level patterns.
 \end{itemize}
 
-% Kolmogorov's information (definition of randomness)
-% Specialised for detection of byte-level patterns
-%   quite good for this - already long developed
-% List of algorithms with links
-% Results
 
 \section{Metaheuristcs for randomness testing}
 \label{sec:relatwork-paper}
@@ -1370,8 +1311,6 @@ Besides statistical batteries, numerous other works did the cryptanalysis based 
 
 The Genetic programming was also used for analysis of four rounds DES~\cite{song2007cryptanalysis}. DES was also analysed using particle swarm metaheuristic in~\cite{shahzad2009cryptanalysis}, and Simplified DES was analysed by simulated annealing, and tabu search in~\cite{nalini2005cryptanalysis}. The best so far metaheuristic cryptanalysis on DES were on eight rounds DES using genetic programming by Husein et al.~\cite{husein2007genetic}. In general, these methods are worse than statistical batteries in the number of rounds, but they can provide additional information to the cryptanalyst that batteries do not.
 
-% Take papers from TEA paper
-% Compare with EAC and show the results and CITE our paper
 
 \chapter{Conclusion}
 \label{chap:conclusion}
@@ -1400,15 +1339,6 @@ The heatmaps are one of the development plans with the generator tool. Other pla
 
 Regarding the artificial neural network, we began cooperation with pattern recognition team from University Ca’ Foscari Venice. The results of this cooperation are still open. \todo{is this true before submition?}
 
-%We contacted pattern recognition team from University Ca’ Foscari Venice. We presented them the artificial neural network developed within this thesis and its results. They suggested us using CNN, which we already did. They also tried their own methods on the data, provided by the \textit{generator}. The results of this cooperation are still open. \todo{is this true before submition?}
-
-%\begin{itemize}
-    %\item EA/ANN/swarm intelligence on polynomials + publication plan
-    %\item RC4 and HC-128 cannot be round-reduced, but we can modify them in different manner to obtain biased result. We can either apply postprocessing streams to select only specific bits of the output, or we can turn of parts the cipher. The second option was analysed in thesis of Radka Cieslarová~\cite{cieslarovaBcThesis}.
-    %\item ANN with Italy
-    %\item It would be useful to extend the benchmarking set by more tunable function, with slowly increasing entropy
-    %\item Generator publication plan
-%\end{itemize}
 
 \chapter*{Acknowledgment}
 \label{chap:ack}
