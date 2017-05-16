@@ -54,19 +54,19 @@
     author        = Karel Kubíček,
     gender        = m,
     advisor       = {RNDr. Petr Švenda, Ph.D.},
-    title         = {Optimisation heuristics in randomness testing},
-    TeXtitle      = {Optimisation heuristics in randomness testing},
-    keywords      = {randomness testing, cryptoanalysis, block functions, stream functions, hash functions, problem optimization, metaheuristics},
-    TeXkeywords   = {randomness testing, cryptoanalysis, block functions, stream functions, hash functions, problem optimization, metaheuristics},
+    title         = {Optimisation heuristics in~randomness testing},
+    TeXtitle      = {Optimisation heuristics in~randomness testing},
+    keywords      = {randomness testing, cryptanalysis, block functions, stream functions, hash functions, problem optimization, metaheuristics},
+    TeXkeywords   = {randomness testing, cryptanalysis, block functions, stream functions, hash functions, problem optimization, metaheuristics},
 }
 
 \thesislong{abstract}{%
-Statistical testing of randomness is one of the automated ways of cryptoanalysis of cryptoprimitives. While traditional statistical batteries use fixed tests, research tool EACirc developed at Faculty of Informatics, Masaryk University design the tests dynamically to the analysed data. Its goal is to distinguish tested data from random data. The tool internally utilises simple heuristic based on hill climbing. This thesis researches other metaheuristics and their potential application in EACirc tool, as well as application of classification models as artificial neural networks.\\\\%
+Statistical testing of randomness is one of the automated ways of cryptanalysis of cryptoprimitives. While traditional statistical batteries use fixed tests, research tool EACirc developed at Faculty of Informatics, Masaryk University designs the tests dynamically to the analysed data. Its goal is to distinguish tested data from random data. The tool internally utilises simple heuristic based on hill climbing. Moreover, this thesis researches other metaheuristics and their potential application in EACirc tool, as well as applying classification models as artificial neural networks.\\\\%
 %
-The thesis has following contributions:
+The thesis has the following contributions:
 \begin{itemize}
-    \item Development of a testbed of 16 well-known cryptographic functions with necessary tools for direct comparison of various tools tested on same data. The tool as the dataset are published online, and our results are compared to randomness testing tools using these data.
-    \item Extension of EACirc tool with three new metaheuristics. One of them outperforms all others with success rate, and it also provides a further advantage of more practical cryptanalysis.
+    \item Development of a testbed of 16 well-known cryptographic functions with necessary tools for direct comparison of various research approaches tested on same data. The generator of the dataset as well as the data itself are published online, and our results are compared to randomness testing tools using these data.
+    \item Extension of EACirc by three new metaheuristics. One of them outperforms all the others in terms of its success rate, and it also provides a further advantage of more practical cryptanalysis.
     \item Proof of concept implementation of an artificial neural network for binary data together with a literature review of this area. However, the performance of the neural network is unsatisfactory, being able to detect only very strongly biased data.
 \end{itemize}
 }
@@ -102,7 +102,7 @@ Most of all I owe to my parents, who always stand behind me. You always sensed t
 
 % cref, has to be loaded after hyperref
 \usepackage{hyperref}
-\usepackage{cleveref}
+\usepackage[noabbrev,capitalise]{cleveref}
 % for long equation wrap
 \usepackage{wrapfig}
 % figure captions
@@ -182,51 +182,35 @@ Most of all I owe to my parents, who always stand behind me. You always sensed t
 
 % cryptoprimitives
 
-Cryptoprimitives like block ciphers, stream ciphers and hash functions are necessary building blocks of cryptography and secure communication. Development of such primitives is complex, and vulnerabilities in these primitives can be used for long, as the primitives are supported for an extended time because of backwards compatibility. An example of such occasion is biased stream function RC4, supported up to standard TLS 1.2 (including this version 1.2)~\cite{dierks2008transport}.
+Cryptoprimitives, such as block ciphers, stream ciphers and hash functions are necessary building blocks of cryptography and secure communication. Development of such primitives is complex; however, vulnerabilities in them can be exploited for a long time. This is because the primitives are supported for an extended time due to backwards compatibility. An example of such occasion is biased stream function RC4, supported up to standard TLS 1.2 (including this version 1.2)~\cite{dierks2008transport}.
 
-These cryptoprimitives are selected in contests like AES~\cite{aes-competition}, eSTREAM~\cite{estream-competition}, SHA-3~\cite{sha3-competition}, PHC~\cite{password-hashing-competition} and CAESAR~\cite{caesar-competition}. The contest consists of proposals submission, and their iterative cryptanalysis and selection until a single or multiple finalists are selected as the winners. This thesis aims at the analysis part.
+These cryptoprimitives are selected in contests like AES~\cite{aes-competition}, eSTREAM~\cite{estream-competition}, SHA-3~\cite{sha3-competition}, PHC~\cite{password-hashing-competition} and CAESAR~\cite{caesar-competition}. Each contest consists of proposals submission, their iterative cryptanalysis and selection, until a single or multiple finalists are selected as the winners. This thesis aims at the analysis part.
 
-There are multiple types of cryptanalysis, classified by used knowledge, required computation and other criteria. We develop an automated cryptanalysis tool, which works on ciphertext with no prior information of the data. Our goal is not to decipher the data, but to inspect some properties of the cryptoprimitives. The properties can be following.
+There are multiple types of cryptanalysis, classified by used knowledge, required computation, and other criteria. We develop an automated cryptanalysis tool, which works on ciphertext with no prior information of the data. Our goal is not to decipher the data, but to inspect selected properties of the cryptoprimitives. For example, the properties can be following.
 
 \begin{description}
-    \item[Irreversibility without the encryption key:] from given ciphertext, the attacker is not able to reconstruct any bit of plaintext with a probability higher than 50\,\%. If the probability were over 50\,\%, the ciphertext would reveal some information about the plaintext.
+    \item[Irreversibility without the encryption key:] from given ciphertext, the attacker is not able to reconstruct any bit of plaintext with a probability higher than 50\,\%. If the probability was over 50\,\%, the ciphertext would reveal some information about the plaintext.
 
-    \item[Strict avalanche criterion:] every bit flip of plaintext changes around 50\,\% of output bits. Not satisfying this would allow an attacker to start with plaintext of zeroes and continuously modify single bits to get closer to given ciphertext.
+    \item[Strict avalanche criterion:] every bit flip of plaintext changes around 50\,\% of output bits. Not satisfying this would allow an attacker to start with plaintext of zeroes and continuously modify bits one by one to approach given ciphertext.
 
-    \item[Semantic security:] even though plaintext usually does not look like a random data, the ciphertext have to look so. If the output were distinguishable from random data, it would reveal information about the plaintext. This property is tested by statistical batteries and tool EACirc, whose extension is one of the goals of this thesis. The previous properties can be tested as well, yet not directly.
+    \item[Semantic security:] even though plaintext usually does not look like random data, the ciphertext has to look so. If the output was distinguishable from random data, it would reveal information about the plaintext. This property is tested by statistical batteries and tool EACirc, whose extension is one of the goals of this thesis. The previous properties can be tested as well, yet not directly.
 \end{description}
 
 
 \section{Statistical testing}
 \label{sec:stat-testing}
 
-Assume we have encrypted many distinct, yet similar plaintexts. From the semantic security and strict avalanche properties, the ciphertext should look random, and they should not reveal any information. To examine it, we can use statistical batteries, consisting of many individual tests. These tests inspect statistical properties like an amount of ones and zeroes. A random stream has probability one half for a bit to be one, so the total amount of ones should be similar to the amount of zeroes.
+Assume encrypting many distinct, yet similar plaintexts. From the semantic security and strict avalanche properties, the ciphertext should look random, and it should not reveal any information. To examine it, we can use statistical batteries, consisting of many individual tests. These tests inspect statistical properties, such as the amount of ones and zeroes. A random stream has the probability of one half for a bit to be one, so the total amount of ones should be similar to the amount of zeroes.
 
-Other tests may check different types of bias, like bits dependency and patterns occurrences. A statistical battery consists of such tests. Over time, various statistical batteries were developed, such as NIST STS, Dieharder and TestU01.
+Other tests may check different types of bias, like bits dependency and patterns occurrences. A statistical battery consists of such tests. Over time, various statistical batteries were developed, such as NIST STS, Dieharder, and TestU01.
 
-Statistical batteries are fixed set of tests. Therefore, the battery does not adapt to the tested data. The goal of the EACirc tool is to create statistical test directly based on the tested data. To adapt to the tested data, EACirc utilises heuristic for problem optimisation. The goal of the problem optimisation is detecting most of the bias. The aim of this thesis is to analyse other optimisation techniques and implement some of them to advance the optimisation process.
+Statistical batteries are fixed set of tests. Therefore, the battery does not adapt to the tested data. The goal of the EACirc tool is to create a statistical test directly based on the tested data. To adapt to the tested data, EACirc utilises heuristic for problem optimisation. The goal of the problem optimisation is detecting most of the bias. The aim of this thesis is to analyse other optimisation techniques and implement some of them to advance the optimisation process.
 
-Following this introduction, in the \cref{chap:eacirc} we explain the computation of EACirc. After that, in the \cref{chap:metaheuristics} we present methods of problem optimisation and we inspect their potential for application in randomness testing. The \cref{chap:method} defines analysis methodology and introduces the testing dataset. The results of the work are presented in \cref{chap:res}, followed by comparison with related work in \cref{chap:relatwork}. The \cref{chap:conclusion} concludes the thesis and proposes future direction in the area.
+Following this introduction, in the \cref{chap:eacirc} we explain the computation of EACirc. After that, in the \cref{chap:metaheuristics} we present methods of problem optimisation and we inspect their potential for application in randomness testing. The \cref{chap:method} defines analysis methodology and introduces the testing dataset. The results of the work are presented in \cref{chap:res}, followed by comparison with related work in \cref{chap:relatwork}. The \cref{chap:conclusion} concludes the thesis and proposes future direction in the area. % TODO appendinx
 
-Even thought the research of this work was performed mainly by myself, the plural is used in the text. EACirc and other randomness testing tools are researched by a team at the Centre for Research on Cryptography and Security, Masaryk University\footnote{The team of randomness testing involves following people: Radka Cieslarová, Michal Hajas, Dušan Klinec, Matúš Nemec, Jiří Novotný, Lubomír Obrátil, Marek Sýs, Petr Švenda, Martin Ukrop and others.}.
+Even though the research of this work was performed mainly by myself, the plural is used in the text. EACirc and other randomness testing tools are researched by a team at the Centre for Research on Cryptography and Security, Masaryk University\footnote{The team of randomness testing involves following people: Radka Cieslarová, Michal Hajas, Dušan Klinec, Matúš Nemec, Jiří Novotný, Lubomír Obrátil, Marek Sýs, Petr Švenda, Martin Ukrop and others.}.
 
-%\section{Statistical testing}
-%\label{sec:stat-testing}
-
-%% The introduction to statistical testing in cryptography is deeply discussed in~\cite[Section~5.4]{menezes1996handbook} and brief and readable introduction presented Emil Simion in~\cite{simion2015relevance}.
-
-%Testing of randomness is a common area of statistics research. Thus statisticians have developed a rigorous theory of probability, and they also produced practical tools, that can test randomness. These tools are used even in cryptography to analyse function for properties from the previous section.
-
-%\subsection{Statistical batteries}
-%\label{subsec:stat-batt}
-
-%% The full list of the statistical batteries and their brief description is in \cref{chap:relatwork}.
-
-%The statistical battery is a set of simple tests, which are analysing simple properties of the binary stream. For example, a monobit test counts an amount of zeros and ones in the input data, which should be similar in the case of the uniform stream. The tests can analyse the stream for patterns, which should not be present in random data.
-
-%The design of the tests accords to some statistical property. As the theory behind the statistical test is complex, the development of the test is difficult. The test set is fixed, so they cannot adapt to the input. The main advantage of EACirc is an ability to adapt to tested data. The tool itself learns on given data, and after this learning process, the output is randomness test for this specific type of data.
-
-%Best known statistical batteries are (chronologically by time of development) NIST STS, Diehard and Dieharder and TestU01. While NIST STS is already completely surpassed by its successors, statisticians still consider it as a golden standard of statistical testing. The EACirc performs better than NIST STS, is comparable with Dieharder and currently perform worse than TestU01. The ultimate goal of implementation of metaheuristics would be surpassing Dieharder and compete with TestU01.
+%TODO: add link to crcs
 
 
 \chapter{EACirc}
@@ -307,7 +291,7 @@ The number of candidate solutions inspected simultaneously splits metaheuristics
         };
     \end{tikzpicture}
     }
-    \caption{Single-solution metaheuristics as specialized version of local search. The source:~\cite[figure~2.24, p.~125]{talbi2009metaheuristics}.}
+    \caption{Single-solution metaheuristics as specialized version of local search. The source:~\cite[Figure~2.24, p.~125]{talbi2009metaheuristics}.}
     \label{fig:opt-single-sol-overview}
 \end{figure}
 
@@ -586,7 +570,7 @@ There are several other models or algorithms of statistical classification. Thos
 
 The primary testing goal of EACirc is to assess randomness of ciphertext of cryptographic functions. As most of the cryptographic functions are in a scope of automated analysis semantic secure, EACirc can identify non-randomness only for reduced functions. The functions can be reduced in a number of rounds, by processing selected plaintexts, and by selecting only specific bits of the output. As the analysis of reduced versions of cryptographic functions is the main goal of the EACirc project, it is also selected as the testing scenario for comparison of analysed metaheuristics.
 
-The approach for evaluation is briefly described in \cref{chap:eacirc}. The tested data were produced from 16 different cryptographic functions. These functions are reduced by the number of rounds. We selected intervals of rounds based on EACirc reference capabilities, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually we test also $i-1$ and $i+2$ rounds, for broader comparison of the results with state of the art of cryptoanalysis.
+The approach for evaluation is briefly described in \cref{chap:eacirc}. The tested data were produced from 16 different cryptographic functions. These functions are reduced by the number of rounds. We selected intervals of rounds based on EACirc reference capabilities, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually we test also $i-1$ and $i+2$ rounds, for broader comparison of the results with state of the art of cryptanalysis.
 
 EACirc works as distinguisher between tested dataset (produced by the cryptographic function) and reference random data. Formerly we used quantum random number generator (QRNG) services as the source of this reference data. This have following disadvantages:
 
@@ -1427,7 +1411,7 @@ Observations from the results are following.
 
 Besides statistical batteries, numerous other works did the cryptanalysis based on testing some of the statistical properties. We have encountered several works using genetics for statistical analysis of cryptoprimitives. Most of them analysed Tiny Encryption Algorithm (TEA), which is a simple block cipher designed by D. Wheeler and R. Needham in 1995~\cite{TEA}. It was used as a benchmark due to its simplicity and well-known vulnerabilities~\cite{TEAAttack}. The application of genetics programming started in 2002 by J. Hernández et al.~\cite{twoRoundsTea}, whose found statistical deviance in two rounds TEA. Further improvements from the team were presented in 2004 finding the non-randomness in three and four rounds TEA as well~\cite{fourRoundsTea}. So far the best results using genetic programming were found by W. Hu~\cite{fiveRoundsTea}, who detected non-random properties for five rounds TEA. We compared EACirc with these results in~\cite{2016-infocommunications-kubicek}.
 
-The Genetic programming was also used for analysis of four rounds DES~\cite{song2007cryptanalysis}. DES was also analysed using particle swarm metaheuristic in~\cite{shahzad2009cryptanalysis}, and Simplified DES was analysed by simulated annealing, and tabu search in~\cite{nalini2005cryptanalysis}. The best so far metaheuristic cryptoanalysis on DES were on eight rounds DES using genetic programming by Husein et al.~\cite{husein2007genetic}. In general, these methods are worse than statistical batteries in the number of rounds, but they can provide additional information to the cryptanalyst that batteries do not.
+The Genetic programming was also used for analysis of four rounds DES~\cite{song2007cryptanalysis}. DES was also analysed using particle swarm metaheuristic in~\cite{shahzad2009cryptanalysis}, and Simplified DES was analysed by simulated annealing, and tabu search in~\cite{nalini2005cryptanalysis}. The best so far metaheuristic cryptanalysis on DES were on eight rounds DES using genetic programming by Husein et al.~\cite{husein2007genetic}. In general, these methods are worse than statistical batteries in the number of rounds, but they can provide additional information to the cryptanalyst that batteries do not.
 
 % Take papers from TEA paper
 % Compare with EAC and show the results and CITE our paper
@@ -1438,26 +1422,28 @@ The Genetic programming was also used for analysis of four rounds DES~\cite{song
 \section{Summary}
 \label{sec:conclusion-summary}
 
-This work analysed the application of metaheuristics in randomness testing tools, especially in EACirc tool. The possibility of implementation with the potential issues was discussed in the \cref{chap:metaheuristics}. We extended EACirc tool by three new metaheuristics that represented different single-solution metaheuristics types. Guided local search metaheuristic performs better than the former algorithm. In addition, it proved to significantly simplify output distinguisher, which reduces the complexity of further cryptanalysis. Therefore will be guided local search incorporated into the following release of the EACirc tool as default metaheuristic.
+This work analysed the application of metaheuristics in randomness testing tools, especially in EACirc tool. The possibility of implementation with the potential issues was discussed in the \cref{chap:metaheuristics}. We extended EACirc tool by three new metaheuristics that represented different single-solution metaheuristics types. Guided local search metaheuristic performs better than the former algorithm. In addition, we showed it significantly simplify output distinguisher, which reduces the complexity of further cryptanalysis. Therefore, guided local search will be incorporated into the following release of the EACirc tool as the default metaheuristic.
 
-Another tested method was using the artificial neural network. The results were unsatisfactory, proving no free lunch theorem. This area requires more work to achieve better results, and it may be necessary significantly redesign the neural network algorithms. The artificial neural network works with floating points, and the discrete bit-level patterns do not fit the gradient descent algorithm with analysed data representation and activation functions. As we examined the literature within this area, we have found no mature theory. It is still an open question if the artificial neural network can achieve better results in the recognition of cryptographic data. This area and tool developed in this work are continued by Italian researchers.
+Another tested method was using the artificial neural network. The results were unsatisfactory, proving No free lunch theorem. This area requires more work to achieve better results, and it may be necessary to significantly redesign the neural network algorithms. The artificial neural network works with floating points, and the discrete bit-level patterns do not fit the gradient descent algorithm with analysed data representation and activation functions. As we examined the literature within this area, we have found no mature theory. It is still an open question if the artificial neural network can achieve better results in the recognition of cryptographic data.
 
-In comparison to state of the art in randomness testing, all out methods perform worse than the TestU01 statistical battery. In comparison with other statistical batteries, EACirc finally reached their results. The only advantage of EACirc over TestU01 is the analysis of the developed distinguisher, which may need less statistical knowledge than understanding TestU01 test and can point concrete bytes dependencies. TestU01 Crush, the strongest battery setting, found bias of full Rabbit function, which showed to be a replication of already known results discovered during eSTREAM competition.
+In comparison to state of the art in randomness testing, all our methods perform worse than the TestU01 statistical battery. In comparison with other statistical batteries, EACirc finally reached capabilities comparable with Dieharder. The only advantage of EACirc over TestU01 is the analysis of the developed distinguisher, which may need less statistical knowledge than understanding TestU01 test and can point concrete bytes dependencies. TestU01 Crush, the strongest battery setting, found bias of full Rabbit function, which showed to be a replication of already known results discovered during eSTREAM competition.
 
-An important product of this work is the testbed of well-known cryptographical function, which is an extension and correction of previous testing sets. Besides, we presented generator tool for the direct generation of the tested data, which can be used by developers of others randomness testing tools as a benchmark. It can be used as well by cryptographers to generate specifically modified cryptography data, usually reduced in the number of rounds.
+An important product of this work is the testbed of well-known cryptographic function, which is an extension and correction of previous testing sets. Besides, we presented generator tool for the direct generation of the tested data, which can be used by developers of others randomness testing tools as a benchmark. It can be used as well by cryptographers to generate specifically modified cryptography data, usually reduced in the number of rounds.
 
 \section{Future work}
 \label{sec:conclusion-future}
 
-With many works on EACirc, the capabilities increased to the level of Dieharder battery. I would estimate that current approach using byte-oriented circuits is unable to compete directly with the TestU01 battery. EACirc can focus more on the analysis of the circuits, which offers an addition value over the TestU01.
+The capabilities of EACirc increased to the level of Dieharder battery. I estimate that current approach using byte-oriented circuits is unable to compete directly with the TestU01 battery. EACirc can focus more on the analysis of the circuits, which offers an added value over the TestU01.
 
-The another project based on polynomials shows better results as it is bit-oriented. It does not utilise any metaheuristic, hence application of population-based metaheuristic like evolutionary algorithms, or swarm intelligence may increase its already promising capabilities. The work on the integration of those metaheuristics already started within this thesis.
+The another project based on polynomials shows better results as it is bit-oriented. It does not utilise any metaheuristic, hence application of population-based metaheuristic, such as evolutionary algorithms or swarm intelligence, may increase its already promising capabilities. The work on the integration of those metaheuristics already started within this thesis.
 
-The testbed of well-known functions can be further extended by different means of reduction of the cryptographic functions RC4 and HC-128. For RC4, we can use bit selection capabilities of the generator. All functions can also take advance of currently in progress automatic customisation of functions introduced in the thesis of Radka Cieslarová~\cite{cieslarovaBcThesis}. We refer to this project as Heatmaps.
+The testbed of well-known functions can be further extended by different means of reduction of the cryptographic functions RC4 and HC-128. For RC4, we can use bit selection capabilities of the generator. All functions can also take advantage of automatic customisation of functions introduced in the thesis of Radka Cieslarová~\cite{cieslarovaBcThesis}, which is still in progress. We refer to this project as Heatmaps.
 
 The heatmaps are one of the development plans with the generator tool. Other plans extend the tool by already implemented CAESAR functions and new PRNG. Altogether with randomness testing toolkit is planned as a publication for \todo{...}.
 
-We contacted pattern recognition team from University Ca’ Foscari Venice. We presented them the artificial neural network developed within this thesis and its results. They suggested us using CNN, which we already did. They also tried their own methods on the data, provided by the \textit{generator}. The results of this cooperation are still open. \todo{is this true before submition?}
+Regarding the artificial neural network, we began cooperation with pattern recognition team from University Ca’ Foscari Venice. The results of this cooperation are still open. \todo{is this true before submition?}
+
+%We contacted pattern recognition team from University Ca’ Foscari Venice. We presented them the artificial neural network developed within this thesis and its results. They suggested us using CNN, which we already did. They also tried their own methods on the data, provided by the \textit{generator}. The results of this cooperation are still open. \todo{is this true before submition?}
 
 %\begin{itemize}
     %\item EA/ANN/swarm intelligence on polynomials + publication plan
