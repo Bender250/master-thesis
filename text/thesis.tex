@@ -933,131 +933,54 @@ As in \cref{subsec:res-circ-anal-gls}, we inspected the density of the output ci
 \section{Artificial neural networks}
 \label{sec:res-ann}
 
-We tested neural networks on the same dataset. The algorithm takes two binary files as an input -- tested data and referential random data. The first step is encoding the data to \texttt{NumPy} array of \texttt{floats}. Then we form two mutually exclusive datasets, learning and testing dataset. Both contains randomly chosen test vectors from either of the input files, together with the label of the data source.
+We analysed neural networks on the same dataset. The algorithm takes two binary files as an input -- the tested data and the referential random data. The first step is encoding the data to a \texttt{NumPy} array of \texttt{floats}. Then we form two mutually exclusive datasets -- the learning and the testing dataset. Both contain randomly chosen test vectors from either of the input files, together with the label of the data source.
 
-We implemented the neural network in Python library Keras~\cite{chollet2015keras}, which is a high-level API for TensorFlow library~\cite{abadi2016tensorflow}. Keras allows simple prototyping of network layout, while TensorFlow is a highly effective implementation of linear algebra for neural networks capable of computation on CPU and GPU. The code is published on GitHub~\cite{EANet}.
+We implemented the neural network in the Python library Keras~\cite{chollet2015keras}, which is a high-level API for TensorFlow~\cite{abadi2016tensorflow}. Keras allows simple prototyping of network layout, while TensorFlow is a highly effective implementation of linear algebra for neural networks capable of computation on CPU and GPU. The implementation is completely independent from the EACirc, and the code is published on GitHub~\cite{EANet}.
 
-The network layout is shown in \cref{fig:ann-layout}. We tested many layouts and all available activation functions in Keras. The observations are following.
+We initially designed the networks layout by intuition, trial and error and available tips for networks layout from best practises of image processing. We designed network with five layers layout. The input layer's width depends on test vector length, usually it is 128 bits, encoded as \texttt{floats}. Then follow three hidden layers with widths eight, four, and two neurons. The output layer consists of a single neuron.
+
+We analysed the performance of such prototype network and selected a benchmarking function for the comparison of the influence of network's parameters. We tested multiple layouts. The layout of the prototype network can be noted by a number of neurons in the hidden and output layers -- 8-4-2-1. We experimented with following layouts: 1, 16-1, 8-4-2-1, 8-8-8-1, and 16-8-4-2-1. The second tested parameter of the network was the number of test vectors evaluated in single iteration. Our preliminary results on the prototype network showed that smaller batches lead to better results. We analyse two properties of the execution: what was the final \textit{acceptance rate} of the network and how fast did the network learned the first statistically significant distinguisher. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$.
+
+\begin{table}[t]
+\centering
+\begin{tabular}{l|l l l l l l l}
+Layout\textbackslash{}batch size & 10 & 25 & 50 & 100 & 250 & 500 & 1000\\ \hline{}
+1          & 0.985 & 0.967 & 0.957 & 0.934 & 0.937 & 0.641 & 0.716 \\
+16-1       & 0.992 & 0.970 & 0.960 & 0.935 & 0.938 & 0.665 & 0.719 \\
+8-4-2-1    & 0.525 & 0.663 & 0.510 & 0.581 & 0.605 & 0.505 & 0.500 \\
+8-8-8-1    & 0.515 & 0.632 & 0.736 & 0.617 & 0.652 & 0.549 & 0.562 \\
+16-8-4-2-1 & 0.516 & 0.500 & 0.503 & 0.507 & 0.504 & 0.506 & 0.518  
+\end{tabular}
+\caption{The final \textit{acceptance rate} of artificial neural network on two-round Salsa20 for different parametrisation. Rows describe the used layout and columns represents the size of the batch.}
+\label{table:res-ann-acc}
+\end{table}
+
+\begin{table}[t]
+\centering
+\begin{tabular}{l|l l l l l l l}
+Layout\textbackslash{}batch size & 10 & 25 & 50 & 100 & 250 & 500 & 1000\\ \hline
+1          & 1 & 1 & 0 & 1 & 2 & 10 & 9 \\
+16-1       & 2 & 2 & 1 & 6 & 4 & 31 & 20 \\
+8-4-2-1    & -- & 53 & -- & -- & 96 & -- & -- \\ 
+8-8-8-1    & -- & 76 & 47 & 76 & 63 & -- & -- \\
+16-8-4-2-1 & -- & -- & -- & -- & -- & -- & --  
+
+\end{tabular}
+\caption{The analysis of parametrisation of the neural network on two-round Salsa20. The cell contains the iteration number when the \textit{acceptance rate} overcome 0.6. Rows describe the used layout and columns represents the size of the batch.}
+\label{table:res-ann-speed}
+\end{table}
+
+An interpretation of the observations from the \cref{table:res-ann-acc,table:res-ann-speed} are the following.
 
 \begin{itemize}
-    \item The network with two hidden layers performs the best, as it is capable of all the obtained results, and it is learning significantly faster both in the number of \textit{epochs} and in the computational time.
-    \item The best activation functions are \textit{sigmoid} and its approximations \textit{tanh} and \textit{softsign}. The activation functions correspond to the bit encoding, probably different encoding of the test vectors would need different activation function.
-    \item The amount of learning data for each \textit{epoch} is a very important parameter for fine-tuning. It was surprising, but the neural network prefers a few test vectors in more iterations. The size of the dataset differs from EACirc's behaviour. The best setup consumed only 25 test vectors per epoch, while the whole computation consisted of 100 epochs and the total computational time was below 30 seconds on four cores CPU. It means that the neural network can be a very naïve statistical test of randomness using only 40\,kB of analysed data. \todo{Petr: je opravdu prekvapive? Jak vypada zakladni literatura na toto tema? Answer: literature "the more data, the beter". We "the less data in one iteration, the better + increase number of epochs"}
+    \item An increasing batch size decreases the learning speed, as can be seen in \cref{table:res-ann-speed}. Our reasoning for this observation is that more testing vectors per one iteration overload the network with too much information. An ideal batch size can be from 10 up to 50 test vectors.
+    \item Complex networks learns slower than simple networks. Sometimes the complex networks are not able to learn on the data at all. Nevertheless, the network of a single neuron performs always the best over all the examined batch sizes. The single neuron can still observe if the test vector contains more ones than zeroes as well as simple patterns.
+    \item The learning capabilities of neural network in our implementation are limited. Based on these observations, we cannot expect neural network performing better than EACirc.
 \end{itemize}
 
-\begin{figure}[H]
-\begin{changemargin}{-\lmar}{-\rmar}
-\centering{}
+We evaluated one of the the best working parametrisation (single neuron and batch size 25) of the neural network on the well-known cryptographic functions dataset. The results are in the \cref{table:res-usable-ann} where rows and cells are same as in the previous results in the \cref{table:res-usable-ils} and in the cell is a final acceptance rate of the run. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$. It measures the quality of the ANN, similarly as a fitness function was the metaheuristics' metric. The colours have same meaning as before, the \textit{critical value} used for rejection of randomness was set to 0.554, as such results has probability lower than 1\,\%.
 
-% Declare layers
-\pgfdeclarelayer{background}
-\pgfsetlayers{background,main}
-
-\scalebox{0.77}{
-\begin{tikzpicture}[scale=.8,cap=round]
-    % positions
-    \def \firstLayer {10}
-    \def \secondLayer {8}
-    \def \thirdLayer {6}
-    \def \fourthLayer {4}
-
-    % brackets
-    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
-(-0.2,\firstLayer - 0.8) -- (-0.2,\firstLayer + 0.8) node [black,midway,xshift=-1.2cm] 
-{\footnotesize \textit{Input layer}};
-
-    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
-(-0.2,\thirdLayer - 0.5) -- (-0.2,\secondLayer + 0.5) node [black,midway,xshift=-1.4cm] 
-{\footnotesize \textit{Hidden layers}};
-
-    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
-(-0.2,\fourthLayer - 0.8) -- (-0.2,\fourthLayer + 0.8) node [black,midway,xshift=-1.3cm] 
-{\footnotesize \textit{Output node}};
-
-    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
-(0,\firstLayer + 1) -- (3,\firstLayer + 1) node [black,midway,yshift=0.6cm] 
-{\footnotesize \textit{8 bits}};
-
-    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
-(14,\firstLayer + 1) -- (17,\firstLayer + 1) node [black,midway,yshift=0.6cm] 
-{\footnotesize \textit{8 bits}};
-
-    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
-(8.64,\fourthLayer - 1) -- (0,\fourthLayer - 1) node [black,midway,yshift=-0.6cm] 
-{\footnotesize \textit{ANN}};
-
-    \draw [decorate,decoration={brace,amplitude=10pt},xshift=-4pt,yshift=0pt]
-(17,\fourthLayer - 1) -- (8.64,\fourthLayer - 1) node [black,midway,yshift=-0.6cm] 
-{\footnotesize \textit{CNN}};
-
-    % layers
-    \def \y {\firstLayer}
-    \foreach \x in {0, 4, 10, 14} {
-        \filldraw[fill=white] (\x,\y) circle (0.1);
-        \filldraw[fill=white] (1+\x,\y) circle (0.1);
-        \node at (2 + \x, \y) {$\dots$};
-        \filldraw[fill=white] (3+\x,\y) circle (0.1);
-    }
-
-    \node at (8.5, \y) {$\dots$};
-    
-    \def \y {\secondLayer}
-    \foreach \x in {1.5, 5.5, 11.5, 15.5} {
-        \filldraw[fill=white] (\x,\y) circle (0.1);
-    }
-
-    \def \y {\thirdLayer}
-    \foreach \x in {1.5, 5.5, 11.5, 15.5} {
-        \filldraw[fill=white] (\x,\y) circle (0.1);
-    }
-    
-    \filldraw[fill=white] (8.5,\fourthLayer) circle (0.1);
-  
-    \begin{pgfonlayer}{background}
-        % ANN full furst layer
-        \foreach \xa in {0, 4}
-            \foreach \xb in {1.5, 5.5} {
-                \draw[thin, -latex] (\xa,\firstLayer) -- (\xb,\secondLayer);
-                \draw[thin, -latex] (\xa+1,\firstLayer) -- (\xb,\secondLayer);
-                \draw[thin, -latex] (\xa+3,\firstLayer) -- (\xb,\secondLayer);
-        }
-        \foreach \xa in {10}
-            \foreach \xb in {11.5} {
-                \draw[thin, -latex] (\xa,\firstLayer) -- (\xb,\secondLayer);
-                \draw[thin, -latex] (\xa+1,\firstLayer) -- (\xb,\secondLayer);
-                \draw[thin, -latex] (\xa+3,\firstLayer) -- (\xb,\secondLayer);
-            }
-        \foreach \xa in {14}
-            \foreach \xb in {15.5} {
-                \draw[thin, -latex] (\xa,\firstLayer) -- (\xb,\secondLayer);
-                \draw[thin, -latex] (\xa+1,\firstLayer) -- (\xb,\secondLayer);
-                \draw[thin, -latex] (\xa+3,\firstLayer) -- (\xb,\secondLayer);
-            }
-        \foreach \xa in {1.5, 5.5, 11.5, 15.5}
-            \foreach \xb in {1.5, 5.5, 11.5, 15.5} {
-                \draw[thin, -latex] (\xa,\secondLayer) -- (\xb,\thirdLayer);
-        }
-        \foreach \xa in {1.5, 5.5, 11.5, 15.5}
-            \foreach \xb in {8.5} {
-                \draw[thin, -latex] (\xa,\thirdLayer) -- (\xb,\fourthLayer);
-        }
-        
-        \draw[densely dotted] (8.5,\firstLayer+1) -- (8.5,\fourthLayer-1);
-    \end{pgfonlayer}
-\end{tikzpicture}
-}
-\end{changemargin}
-\caption{The layout of neural network used for data classification. The left part is traditional neural network (\textit{ANN}) with fully connected first layer to the input, on the right is one dimensional convolution neural network (\textit{CNN}), where is the first layer connected only to one particular byte of the input.}
-\label{fig:ann-layout}
-\end{figure}
-
-As the \cref{fig:ann-layout} shows, we experimented with a basic neural network and with a convoluted variant. The convoluted neural network works excellent for image and signal processing, as the convoluted layer detects local patterns. However, cryptographic functions should meet strict avalanche criterion that should suppress any data locality. A usage of CNN can be taken as a specific test for locality-specific patterns. If the reduced cryptographic function meets the strict avalanche criterion, the CNN sould perform worse, as the first layer of CNN has lower capabilities than a fully connected layer of ANN.
-
-We also implemented specific strict avalanche criterion for two dimensional CNN into the generator. We start with a random plaintext, and we generate all plaintext with the Hamming distance one from the original plaintext. These encrypted plaintexts may share two-dimensional patterns.
-
-Overall, the CNN performed worse than ANN. The problems were slower learning (probably due to \textit{dropout}, that is suggested to use with CNN), but sometimes the distinguisher was not found even during more epochs. The best results of ANN are summarised in the \cref{table:res-usable-ann}.
-
-\begin{table}[H]
+\begin{table}[t]
 \centering
 \begin{tabular}{l|l l l l}
 Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
@@ -1069,53 +992,59 @@ Grostl$_{2}$     & \fn{}0.507 & \fn{}0.504 & \fn{}0.499 & \fn{}0.506 \\
 HC-128$_{\textnormal{no rounds}}$& --    & \fn{}0.498 & -- & --      \\
 JH$_{6}$         & \fd{}0.999 & \fd{}1.0   & \fn{}0.512 & \fn{}0.504 \\
 Keccak$_{3}$     & \fd{}0.996 & \fn{}0.504 & \fn{}0.490 & \fn{}0.498 \\
-MD6$_{8}$        & \fd{}0.812 & \fd{}0.533 & \fn{}0.484 & \fn{}0.506 \\
+MD6$_{8}$        & \fd{}0.812 & \fn{}0.533 & \fn{}0.484 & \fn{}0.506 \\
 Rabbit$_{0}$     &      --    & \fn{}0.456 & \fn{}0.504 & \fn{}0.512 \\
 RC4$_{\textnormal{no rounds}}$& --         & \fn{}0.511 & --         & --         \\
 Salsa20$_{2}$    & \fd{}0.694 & \fd{}0.663 & \fn{}0.492 & \fn{}0.508 \\
-SINGLE-DES$_{4}$ & \fd{}0.512 & \fn{}0.494 & \fn{}0.492 & \fn{}0.512 \\
+SINGLE-DES$_{4}$ & \fn{}0.512 & \fn{}0.494 & \fn{}0.492 & \fn{}0.512 \\
 Skein$_{3}$      & \fd{}1.0   & \fd{}0.632 & \fn{}0.480 & \fn{}0.464 \\
 SOSEMANUK$_{4}$  & \fd{}1.0   & \fn{}1.0   & \fn{}0.476 & \fn{}0.456 \\
-TEA$_{3}$        & \fd{}0.980 & \fd{}0.548 & \fn{}0.500 & \fn{}0.495 \\
-TRIPLE-DES$_{2}$ & \fd{}0.997 & \fd{}0.522 & \fn{}0.493 & \fn{}0.507
+TEA$_{4}$        & \fn{}0.548 & \fn{}0.500 & \fn{}0.495 & \fn{}0.511 \\
+TRIPLE-DES$_{2}$ & \fd{}0.997 & \fn{}0.522 & \fn{}0.493 & \fn{}0.507
 \end{tabular}
-\caption{The best obtained results of ANN on usable testbed. The values are corresponding to \textit{acceptance rate}, where value $0.5$ is the reference value.}
+\caption{The best obtained results of ANN on well-known cryptographic functions dataset. The values are corresponding to \textit{acceptance rate}, where value $0.5$ is expected for runs that cannot reject the randomness hypothesis of the tested data. The dash represents scenario that was not tested.}
 \label{table:res-usable-ann}
 \end{table}
 
-An analysis of ANN learning can be evaluated by following two variables.
+We also experimented with a convoluted neural networks. The convoluted neural network works excellent for image and signal processing, as the convoluted layer detects local patterns. However, cryptographic functions should meet the strict avalanche criterion suppressing any data locality. A usage of CNN can be taken as a specific test for locality-specific patterns. If the reduced cryptographic function meets the strict avalanche criterion, the CNN should perform worse, as the first layer of CNN has lower capabilities than a fully connected layer of ANN.
 
-\begin{description}
-    \item[Acceptance rate] is equal to ratio of $\frac{\#_{\textnormal{correct quesses}}}{\#_{\textnormal{total quesses}}}$. So it measures the quality of the ANN, similarly as fitness function was the metaheuristics' metric.
-    \item[Crossentropy loss] describes how big changes can the network do for learning itself (similar to the temperature of simulated annealing).
-\end{description}
+Overall, the CNN performed worse than ANN. The problems were slower learning, but sometimes the distinguisher was not found even during more epochs.
 
-Those values are shown for AES in 1 to 3 rounds with both ANN and CNN for comparison in \cref{fig:ann-learning}.
+%\subsection{Analysis of the neural network learning progress}
+%\label{subsec:res-ann-learn}
 
+%An analysis of ANN learning can be evaluated by following two variables.
 
-\begin{figure}[H]
-\begin{changemargin}{-3cm}{-3cm}
-\centering
-\begin{subfigure}{.6\textwidth}
-  \centering
-  \includegraphics[width=.98\textwidth]{./graphics/ann/ann}
-  \label{fig:ann-learning-ann}
-\end{subfigure}% % this comment has to be here
-\begin{subfigure}{.6\textwidth}
-  \centering
-  \includegraphics[width=.98\textwidth]{./graphics/ann/cnn}
-  \label{fig:ann-learning-cnn}
-\end{subfigure}
-\end{changemargin}
-\caption{Learning process of ANN (left) and CNN (right) on AES reduced to one to three rounds.}
-\label{fig:ann-learning}
-\end{figure}
+%\begin{description}
+    %\item[Acceptance rate] is equal to ratio of $\frac{\#_{\textnormal{correct quesses}}}{\#_{\textnormal{total quesses}}}$. So it measures the quality of the ANN, similarly as fitness function was the metaheuristics' metric.
+    %\item[Crossentropy loss] describes how big changes can the network do for learning itself (similar to the temperature of simulated annealing). %TODO cite
+%\end{description}
+
+%Those values are shown for AES in 1 to 3 rounds with both ANN and CNN for comparison in \cref{fig:ann-learning}.
+
+%\begin{figure}[H]
+%\begin{changemargin}{-3cm}{-3cm}
+%\centering
+%\begin{subfigure}{.6\textwidth}
+  %\centering
+  %\includegraphics[width=.98\textwidth]{./graphics/ann/ann}
+  %\label{fig:ann-learning-ann}
+%\end{subfigure}% % this comment has to be here
+%\begin{subfigure}{.6\textwidth}
+  %\centering
+  %\includegraphics[width=.98\textwidth]{./graphics/ann/cnn}
+  %\label{fig:ann-learning-cnn}
+%\end{subfigure}
+%\end{changemargin}
+%\caption{Learning process of ANN (left) and CNN (right) on AES reduced to one to three rounds.}
+%\label{fig:ann-learning}
+%\end{figure}
 
 
 \section{Inter-approach comparison}
 \label{sec:res-comp}
 
-The interesting details about single-solution metaheuristics are abridged in \cref{table:ss-comparison}. Both artificial neural network models are omitted in the table. They are not able to detect non-randomness of functions reduced to the given number of rounds, except eight rounds MD6.
+The interesting details about single-solution metaheuristics are summarized in \cref{table:ss-comparison}. Both artificial neural network models are omitted in the table. They are not able to detect non-randomness of functions reduced to the given number of rounds, except eight rounds MD6.
 
 \begin{table}
 \centering
@@ -1132,13 +1061,13 @@ Variable neighbourhood search                   & 0.182   & 0.157    & 0.992  & 
 
 
 \begin{itemize}
-    \item Guided local search is always more successful than the baseline iterated local search, and it is almost always the best among the methods. The single better result of simulated annealing does not mean it is better than guided local search, due to worse reference value because of the \textit{connection bug}. Same holds for better result for four rounds TEA of variable neighbourhood search, as it has longer computation time.
-    \item ANN can detect bit-level non-randomness, while EACirc cannot. However, this did not led to creation of ANN distinguisher for any function, that would EACirc not be able to distinguish.
-    \item The runtime of simulated annealing and guided local search is same as runtime of iterated local search. The variable neighbourhood search can take up to five times longer. The data consumption of all metaheuristics in EACirc is the same, described in \cref{fig:dataUsage}.
+    \item Guided local search is always more successful than the baseline iterated local search, and it is almost always the best among the tested methods. The single better result of simulated annealing does not mean it is better than guided local search, due to the worse reference value because of the \textit{connection bug}. The same holds for four-round TEA and variable neighbourhood search, as it has longer computation time.
+    \item The ANN can detect bit-level non-randomness, while EACirc cannot. The bit-oriented evaluation is expected to to be crucial for cryptanalysis. However, this did not led to creation of ANN distinguisher for any function, that would EACirc not be able to distinguish.
+    \item The runtime of the simulated annealing and the guided local search is the same as the runtime of the iterated local search. The variable neighbourhood search can take up to five times longer. The data consumption of all metaheuristics in EACirc is the same, as described in \cref{fig:dataUsage}.
     
-    In comparison, the neural networks need significantly less data (as was shown in \cref{fig:ann-dataUsage}). One run of ANN takes about ten times faster than one run of EACirc. However, due to varying capabilities, these numbers are not comparable. EACirc can find distinguisher for AES reduced to two rounds within less than ten epochs, compared to common 300. Interesting comparison of the efficiency of EACirc implementation is that \texttt{C++} EACirc consumes twelve times more data per second of computation than ANN implemented in \texttt{Python}.
+    In comparison, the neural networks need significantly less data (as was shown in \cref{fig:ann-dataUsage}). One run of ANN takes about ten times less time than one EACirc run. However, due to varying capabilities, these numbers are not comparable. EACirc can find distinguishers for the two-round AES within less than ten epochs, even though we set 300 \textit{epochs} as the default. Interesting comparison of the efficiency of EACirc implementation is that \texttt{C++} EACirc consumes twelve times more data per second of computation than ANN implemented in \texttt{Python}.
     
-    Still, the ANN is the only method, can can be used to classify a single test vector (like 16 bytes). The framework provides both its classification guess and the estimation of its certainty in the guess. No other method provides such application.
+    Still, the ANN is the only method, that can be used to classify a single test vector (16 bytes). The framework provides both its classification guess and the estimation of its certainty in the guess. No other method provides such application. EACirc is not able to classify a single vector in the current setting due to the statistical evaluation described in \cref{chap:eacirc}. Nevetherless, EACirc can be set to evaluate a single test vector, such settings was used by Ukrop in~\cite{ukropBcThesis}.
 \end{itemize}
 
 \chapter{Related work}
