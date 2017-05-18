@@ -933,25 +933,25 @@ As in \cref{subsec:res-circ-anal-gls}, we inspected the density of the output ci
 \section{Artificial neural networks}
 \label{sec:res-ann}
 
-We analysed neural networks on the same dataset. The algorithm takes two binary files as an input -- the tested data and the referential random data. The first step is encoding the data to a \texttt{NumPy} array of \texttt{floats}. Then we form two mutually exclusive datasets -- the learning and the testing dataset. Both contain randomly chosen test vectors from either of the input files, together with the label of the data source.
+We analysed artificial neural networks on the same dataset. The algorithm takes two binary files as an input -- the tested data and the referential random data. The first step is encoding the data to a \texttt{NumPy} array of \texttt{floats}. Then we form two mutually exclusive datasets -- the learning and the testing dataset. Both contain randomly chosen test vectors from either of the input files, together with the label of the data source.
 
-We implemented the neural network in the Python library Keras~\cite{chollet2015keras}, which is a high-level API for TensorFlow~\cite{abadi2016tensorflow}. Keras allows simple prototyping of network layout, while TensorFlow is a highly effective implementation of linear algebra for neural networks capable of computation on CPU and GPU. The implementation is completely independent from the EACirc, and the code is published on GitHub~\cite{EANet}.
+We implemented the neural network in the Python library Keras~\cite{chollet2015keras}, which is a high-level API for TensorFlow~\cite{abadi2016tensorflow}. Keras allows simple prototyping of network layout, while TensorFlow is a highly effective implementation of linear algebra for neural networks capable of computation on CPU and GPU. The implementation is entirely independent of the EACirc, and the code is published on GitHub~\cite{EANet}.
 
-We initially designed the networks layout by intuition, trial and error and available tips for networks layout from best practises of image processing. We designed network with five layers layout. The input layer's width depends on test vector length, usually it is 128 bits, encoded as \texttt{floats}. Then follow three hidden layers with widths eight, four, and two neurons. The output layer consists of a single neuron.
+We initially designed the network's layout by intuition, trial and error and available tips for networks layout from the best practices of image processing. We designed a network with five layers layout. The input layer's width depends on test vector length. Usually it is 128 bits, encoded as \texttt{floats}. Then follow three hidden layers with widths eight, four, and two neurones. The output layer consists of a single neurone.
 
-We analysed the performance of such prototype network and selected a benchmarking function for the comparison of the influence of network's parameters. We tested multiple layouts. The layout of the prototype network can be noted by a number of neurons in the hidden and output layers -- 8-4-2-1. We experimented with following layouts: 1, 16-1, 8-4-2-1, 8-8-8-1, and 16-8-4-2-1. The second tested parameter of the network was the number of test vectors evaluated in single iteration. Our preliminary results on the prototype network showed that smaller batches lead to better results. We analyse two properties of the execution: what was the final \textit{acceptance rate} of the network and how fast did the network learned the first statistically significant distinguisher. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$.
+We analysed the performance of such prototype network and selected a benchmarking function for the comparison of the influence of network's parameters. We tested multiple layouts. The layout of the prototype network can be noted by a number of neurones in the hidden and output layers -- 8-4-2-1. We experimented with following layouts: 1, 16-1, 8-4-2-1, 8-8-8-1, and 16-8-4-2-1. The second tested parameter of the network was the number of test vectors evaluated in a single iteration. Our preliminary results on the prototype network showed that smaller batches lead to better results. We analyse two properties of the execution: what was the final \textit{acceptance rate} of the network and how fast did the network learned the first statistically significant distinguisher. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$.
 
-\begin{table}[t]
+\begin{table}[b]
 \centering
 \begin{tabular}{l|l l l l l l l}
-Layout\textbackslash{}batch size & 10 & 25 & 50 & 100 & 250 & 500 & 1000\\ \hline{}
+Layout\textbackslash{}batch size & 10 & 25 & 50 & 100 & 250 & 500 & 1000\\ \hline
 1          & 0.985 & 0.967 & 0.957 & 0.934 & 0.937 & 0.641 & 0.716 \\
 16-1       & 0.992 & 0.970 & 0.960 & 0.935 & 0.938 & 0.665 & 0.719 \\
 8-4-2-1    & 0.525 & 0.663 & 0.510 & 0.581 & 0.605 & 0.505 & 0.500 \\
 8-8-8-1    & 0.515 & 0.632 & 0.736 & 0.617 & 0.652 & 0.549 & 0.562 \\
 16-8-4-2-1 & 0.516 & 0.500 & 0.503 & 0.507 & 0.504 & 0.506 & 0.518  
 \end{tabular}
-\caption{The final \textit{acceptance rate} of artificial neural network on two-round Salsa20 for different parametrisation. Rows describe the used layout and columns represents the size of the batch.}
+\caption{The final \textit{acceptance rate} of the artificial neural network on two-round Salsa20 for different parametrizations. Rows describe the used layout and columns represents the size of the batch.}
 \label{table:res-ann-acc}
 \end{table}
 
@@ -966,7 +966,7 @@ Layout\textbackslash{}batch size & 10 & 25 & 50 & 100 & 250 & 500 & 1000\\ \hlin
 16-8-4-2-1 & -- & -- & -- & -- & -- & -- & --  
 
 \end{tabular}
-\caption{The analysis of parametrisation of the neural network on two-round Salsa20. The cell contains the iteration number when the \textit{acceptance rate} overcome 0.6. Rows describe the used layout and columns represents the size of the batch.}
+\caption{The parametrizations analysis of the neural network on two-round Salsa20. The cell contains the iteration number when the \textit{acceptance rate} overcome 0.6. Rows describe the used layout and columns represents the size of the batch.}
 \label{table:res-ann-speed}
 \end{table}
 
@@ -974,11 +974,11 @@ An interpretation of the observations from the \cref{table:res-ann-acc,table:res
 
 \begin{itemize}
     \item An increasing batch size decreases the learning speed, as can be seen in \cref{table:res-ann-speed}. Our reasoning for this observation is that more testing vectors per one iteration overload the network with too much information. An ideal batch size can be from 10 up to 50 test vectors.
-    \item Complex networks learns slower than simple networks. Sometimes the complex networks are not able to learn on the data at all. Nevertheless, the network of a single neuron performs always the best over all the examined batch sizes. The single neuron can still observe if the test vector contains more ones than zeroes as well as simple patterns.
-    \item The learning capabilities of neural network in our implementation are limited. Based on these observations, we cannot expect neural network performing better than EACirc.
+    \item Complex networks learn slower than simple networks. Sometimes the complex networks are not able to learn from the data at all. Nevertheless, the network of a single neurone performs always the best over all the examined batch sizes. The single neurone can still observe if the test vector contains more ones than zeroes as well as simple patterns.
+    \item The learning capabilities of the neural networks in our implementation are limited. Based on these observations, we cannot expect neural network is performing better than EACirc.
 \end{itemize}
 
-We evaluated one of the the best working parametrisation (single neuron and batch size 25) of the neural network on the well-known cryptographic functions dataset. The results are in the \cref{table:res-usable-ann} where rows and cells are same as in the previous results in the \cref{table:res-usable-ils} and in the cell is a final acceptance rate of the run. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$. It measures the quality of the ANN, similarly as a fitness function was the metaheuristics' metric. The colours have same meaning as before, the \textit{critical value} used for rejection of randomness was set to 0.554, as such results has probability lower than 1\,\%.
+We evaluated one of the best working parametrisation (single neurone and batch size 25) of the neural network on the well-known cryptographic functions dataset. The results are in the \cref{table:res-usable-ann} where rows and cells are same as in the previous results in the \cref{table:res-usable-ils} and in the cell is a final acceptance rate of the run. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$. It measures the quality of the ANN, similarly as a fitness function was the metaheuristics' metric. The colours have the same meaning as before, the \textit{critical value} used for rejection of randomness was set to 0.554, as such results have probability lower than 1\,\%.
 
 \begin{table}[t]
 \centering
@@ -1002,13 +1002,13 @@ SOSEMANUK$_{4}$  & \fd{}1.0   & \fn{}1.0   & \fn{}0.476 & \fn{}0.456 \\
 TEA$_{4}$        & \fn{}0.548 & \fn{}0.500 & \fn{}0.495 & \fn{}0.511 \\
 TRIPLE-DES$_{2}$ & \fd{}0.997 & \fn{}0.522 & \fn{}0.493 & \fn{}0.507
 \end{tabular}
-\caption{The best obtained results of ANN on well-known cryptographic functions dataset. The values are corresponding to \textit{acceptance rate}, where value $0.5$ is expected for runs that cannot reject the randomness hypothesis of the tested data. The dash represents scenario that was not tested.}
+\caption{The best-obtained results of ANN on well-known cryptographic functions dataset. The values are corresponding to \textit{acceptance rate}, where value $0.5$ is expected for runs that cannot reject the randomness hypothesis of the tested data. The dash represents a scenario that was not tested.}
 \label{table:res-usable-ann}
 \end{table}
 
-We also experimented with a convoluted neural networks. The convoluted neural network works excellent for image and signal processing, as the convoluted layer detects local patterns. However, cryptographic functions should meet the strict avalanche criterion suppressing any data locality. A usage of CNN can be taken as a specific test for locality-specific patterns. If the reduced cryptographic function meets the strict avalanche criterion, the CNN should perform worse, as the first layer of CNN has lower capabilities than a fully connected layer of ANN.
+We also experimented with convoluted neural networks (CNN). The convoluted neural network works excellent for image and signal processing, as the convoluted layer detects local patterns. However, cryptographic functions should meet the strict avalanche criterion suppressing any data locality. The CNN serves as a specific test for locality-specific patterns. If the reduced cryptographic function meets the strict avalanche criterion, the CNN should perform worse, as the first layer of CNN has lower capabilities than a fully connected layer of ANN.
 
-Overall, the CNN performed worse than ANN. The problems were slower learning, but sometimes the distinguisher was not found even during more epochs.
+Overall, the CNN performed worse than ANN. The problems were slower learning than ANN, and sometimes the distinguisher was not found even during more epochs.
 
 %\subsection{Analysis of the neural network learning progress}
 %\label{subsec:res-ann-learn}
@@ -1044,30 +1044,31 @@ Overall, the CNN performed worse than ANN. The problems were slower learning, bu
 \section{Inter-approach comparison}
 \label{sec:res-comp}
 
-The interesting details about single-solution metaheuristics are summarized in \cref{table:ss-comparison}. Both artificial neural network models are omitted in the table. They are not able to detect non-randomness of functions reduced to the given number of rounds, except eight rounds MD6.
+The interesting details about single-solution metaheuristics are summarised in \cref{table:ss-comparison}. The artificial neural network models are omitted in the table. They are not able to detect non-randomness of functions reduced to the given number of rounds, except eight rounds MD6. The summary is presented below.
 
 \begin{table}
 \centering
-\begin{tabular}{l|l l l l l}
-Metaheuristic\textbackslash{}Function\_rounds   & AES$_3$ & BLAKE$_1$& MD6$_8$& DES$_5$& TEA$_4$\\ \hline
-Iterative local search                          & 0.160   & 0.110    & 0.774  & 0.204  & 0.444  \\
-Simulated annealing                             & \textbf{0.305} & 0.051    & 0.419  & 0.093  & 0.244  \\
-Guided local search                             & 0.164   & \textbf{0.260}    & \textbf{0.995}  & \textbf{0.496}  & 0.729  \\
-Variable neighbourhood search                   & 0.182   & 0.157    & 0.992  & 0.441  & \textbf{0.877}
+\begin{tabular}{l|l l l l}
+Function\_rounds\textbackslash{}Metaheuristic   & Iterative local search & Simulated annealing & Guided local search & Variable neighbourhood search \\ \hline
+AES$_3$     & \fd{}0.160         & \fd{}\textbf{0.305}    & \fd{}0.164             & \fd{}0.182         \\
+BLAKE$_1$   & \fd{}0.110         & \fd{}0.051             & \fd{}\textbf{0.260}    & \fd{}0.157         \\
+MD6$_8$     & \fd{}0.774         & \fd{}0.419             & \fd{}\textbf{0.995}    & \fd{}0.992         \\
+DES$_5$     & \fd{}0.204         & \fd{}0.093             & \fd{}\textbf{0.496}    & \fd{}0.441         \\
+TEA$_4$     & \fd{}0.444         & \fd{}0.244             & \fd{}0.729             & \fd{}\textbf{0.877}
 \end{tabular}
-\caption{Selected results of EACirc utilising different single-solution metaheuristics.}
+\caption{The \textit{rejection rate} for selected cryptographic functions of EACirc utilising different single-solution metaheuristics.}
 \label{table:ss-comparison}
 \end{table}
 
 
 \begin{itemize}
-    \item Guided local search is always more successful than the baseline iterated local search, and it is almost always the best among the tested methods. The single better result of simulated annealing does not mean it is better than guided local search, due to the worse reference value because of the \textit{connection bug}. The same holds for four-round TEA and variable neighbourhood search, as it has longer computation time.
-    \item The ANN can detect bit-level non-randomness, while EACirc cannot. The bit-oriented evaluation is expected to to be crucial for cryptanalysis. However, this did not led to creation of ANN distinguisher for any function, that would EACirc not be able to distinguish.
+    \item Guided local search is always more successful than the baseline iterated local search, and it is almost always the best among the tested methods. The single better result of simulated annealing does not mean it is better than guided local search, due to the higher \textit{empirical critical value} caused by the \textit{connection bug}. The same holds for four-round TEA and variable neighbourhood search, as it has a longer computation time.
+    \item The ANN can detect bit-level non-randomness, while EACirc cannot. The bit-oriented evaluation is expected to to be crucial for the cryptanalysis. However, this did not lead to the creation of ANN distinguisher for any function, that would EACirc not be able to distinguish.
     \item The runtime of the simulated annealing and the guided local search is the same as the runtime of the iterated local search. The variable neighbourhood search can take up to five times longer. The data consumption of all metaheuristics in EACirc is the same, as described in \cref{fig:dataUsage}.
     
-    In comparison, the neural networks need significantly less data (as was shown in \cref{fig:ann-dataUsage}). One run of ANN takes about ten times less time than one EACirc run. However, due to varying capabilities, these numbers are not comparable. EACirc can find distinguishers for the two-round AES within less than ten epochs, even though we set 300 \textit{epochs} as the default. Interesting comparison of the efficiency of EACirc implementation is that \texttt{C++} EACirc consumes twelve times more data per second of computation than ANN implemented in \texttt{Python}.
+    In comparison, the neural networks need significantly less data (as was shown in \cref{fig:ann-dataUsage}). One run of ANN takes about ten times less time than one EACirc run. However, due to varying capabilities, these numbers are not comparable. EACirc can also find distinguishers for the two-round AES within less than ten epochs, even though we set 300 \textit{epochs} as the default. Interesting comparison of the efficiency of EACirc implementation is that \texttt{C++} EACirc consumes twelve times more data per second of computation than ANN implemented in \texttt{Python}.
     
-    Still, the ANN is the only method, that can be used to classify a single test vector (16 bytes). The framework provides both its classification guess and the estimation of its certainty in the guess. No other method provides such application. EACirc is not able to classify a single vector in the current setting due to the statistical evaluation described in \cref{chap:eacirc}. Nevetherless, EACirc can be set to evaluate a single test vector, such settings was used by Ukrop in~\cite{ukropBcThesis}.
+    Still, the ANN is the only method, which can be used to classify a single test vector (16 bytes). The framework provides both its classification guess and the estimation of its certainty in the guess. No other method provides such application. EACirc is not able to classify a single vector in the current setting due to the statistical evaluation described in \cref{chap:eacirc}. Nevertheless, EACirc can be set to evaluate a single test vector. Such setting was used by Ukrop in~\cite{ukropBcThesis}.
 \end{itemize}
 
 \chapter{Related work}
