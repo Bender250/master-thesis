@@ -1002,22 +1002,22 @@ We evaluated one of the best working parametrisation (single neurone and batch s
 \begin{tabular}{l|l l l l}
 Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
 rnd\_rnd$_{\textnormal{no rounds}}$& -- & \fn{}0.503 & --         & --         \\\\
-AES$_{3}$        & \fd{}1.0   & \fn{}0.499 & \fn{}0.504 & \fn{}0.503 \\
-BLAKE$_{1}$      & \fd{}1.0   & \fn{}0.490 & \fn{}0.500 & \fn{}0.502 \\
-Grain$_{2}$      & \fd{}1.0   & \fd{}1.0   & \fn{}0.496 & \fn{}0.494 \\
-Gr\o stl$_{2}$   & \fn{}0.495 & \fn{}0.495 & \fn{}0.495 & \fn{}0.496 \\
-HC-128$_{\textnormal{no rounds}}$& --    & \fn{}0.492 & -- & --      \\
-JH$_{6}$         & \fd{}1.0   & \fd{}1.0   & \fn{}0.494 & \fn{}0.497 \\
-Keccak$_{3}$     & \fd{}0.992 & \fn{}0.496 & \fn{}0.502 & \fn{}0.495 \\
-MD6$_{8}$        & \fd{}0.706 & \fn{}0.490 & \fn{}0.500 & \fn{}0.501 \\
-Rabbit$_{0}$     &      --    & \fn{}0.456 & \fn{}0.504 & \fn{}0.512 \\
-RC4$_{\textnormal{no rounds}}$& --         & \fn{}0.502 & --         & --         \\
-Salsa20$_{2}$    & \fd{}0.996 & \fd{}0.985 & \fn{}0.500 & \fn{}0.502 \\
-SINGLE-DES$_{4}$ & \fn{}0.536 & \fn{}0.501 & \fn{}0.500 & \fn{}0.498 \\
-Skein$_{3}$      & \fd{}1.0   & \fd{}0.632 & \fn{}0.480 & \fn{}0.464 \\
-SOSEMANUK$_{4}$  & \fd{}1.0   & \fd{}1.0   & \fn{}0.476 & \fn{}0.456 \\
-TEA$_{4}$        & \fn{}0.512 & \fn{}0.500 & \fn{}0.495 & \fn{}0.496 \\
-TRIPLE-DES$_{2}$ & \fd{}0.999 & \fd{}0.596 & \fn{}0.506 & \fn{}0.501
+AES$_{3}$        & \fd{}1.0   & \fn{}0.501 & \fn{}0.498 & \fn{}0.506 \\
+BLAKE$_{1}$      & \fd{}1.0   & \fn{}0.500 & \fn{}0.501 & \fn{}0.503 \\
+Grain$_{2}$      & \fd{}1.0   & \fd{}1.0   & \fn{}0.500 & \fn{}0.508 \\
+Gr\o stl$_{2}$   & \fn{}0.496 & \fn{}0.500 & \fn{}0.498 & \fn{}0.495 \\
+HC-128$_{\textnormal{no rounds}}$& --    & \fn{}0.497 & -- & --      \\
+JH$_{6}$         & \fd{}1.0   & \fd{}1.0   & \fn{}0.495 & \fn{}0.501 \\
+Keccak$_{3}$     & \fd{}0.973 & \fn{}0.498 & \fn{}0.505 & \fn{}0.500 \\
+MD6$_{8}$        & \fd{}0.677 & \fn{}0.492 & \fn{}0.509 & \fn{}0.505 \\
+Rabbit$_{0}$     &      --    & \fn{}0.499 & \fn{}0.493 & \fn{}0.497 \\
+RC4$_{\textnormal{no rounds}}$& --         & \fn{}0.504 & --         & --         \\
+Salsa20$_{2}$    & \fd{}0.776 & \fd{}0.770 & \fn{}0.499 & \fn{}0.499 \\
+SINGLE-DES$_{4}$ & \fn{}0.637 & \fn{}0.508 & \fn{}0.502 & \fn{}0.509 \\
+Skein$_{3}$      & \fd{}0.999 & \fd{}0.577 & \fn{}0.505 & \fn{}0.508 \\
+SOSEMANUK$_{4}$  & \fd{}1.0   & \fd{}1.0   & \fn{}0.496 & \fn{}0.501 \\
+TEA$_{4}$        & \fd{}0.750 & \fn{}0.507 & \fn{}0.514 & \fn{}0.504 \\
+TRIPLE-DES$_{2}$ & \fd{}0.999 & \fd{}0.656 & \fn{}0.507 & \fn{}0.500
 \end{tabular}
 \caption{The best-obtained results of ANN on well-known cryptographic functions dataset. The values are corresponding to \textit{acceptance rate}, where value $0.5$ is expected for runs that cannot reject the randomness hypothesis of the tested data. The dash represents a scenario that was not tested.}
 \label{table:res-usable-ann}
@@ -1237,22 +1237,24 @@ AES$_{2}$                        & 2.  \fd & 15. \fd & 25. \fd & 15. \fd & 1.0  
 BLAKE$_{0}$                      & 0.  \fd & 0.  \fd & 1.  \fd & 0.  \fd & 1.0   \fd \\ \hline
 Grain$_{2}$                      & 3.  \fd & 11. \fd & 25. \fd & 11. \fd & 1.0   \fd \\ \hline
 Gr\o{}stl$_{0}$                  & 0.  \fd & 0.  \fd & 1.  \fd & 0.  \fd & 1.0   \fd \\ \hline
-HC-128$_{0}$                     & --  \fd & --  \fd & --  \fd & --  \fd & 0.492 \fd \\ \hline
+HC-128$_{0}$                     & --  \fd & --  \fd & --  \fd & --  \fd & 0.497 \fd \\ \hline
 JH$_{6}$                         & 57. \fd & 59. \fd & 68. \fd & 59. \fd & 1.0   \fd \\ \hline
 Keccak$_{1}$                     & 16. \fd & ++. \fd & 36. \fd & ++  \fd & 1.0   \fd \\
-Keccak$_{2}$                     & --  \fn & 99. \fn & --  \fn & 99. \fd & 0.992 \fd \\ \hline
+Keccak$_{2}$                     & --  \fn & 99. \fn & --  \fn & 99. \fd & 0.973 \fd \\ \hline
 MD6$_{6}$                        & ++  \fd & ++  \fd & 59. \fd & ++  \fd & 1.0   \fd \\
-MD6$_{7}$                        & 99. \fn & 97. \fn & --  \fn & 97. \fn & 0.706 \fd \\ \hline
-Rabbit$_{0}$                     & --  \fn & --  \fn & --  \fn & --  \fd & 0.456 \fd \\ \hline
-RC4$_{\textnormal{no rounds}}$   & --  \fn & --  \fn & --  \fn & --  \fn & 0.502 \fn \\ \hline
-Salsa20$_{2}$                    & --  \fd & 99. \fd & --  \fd & 99. \fd & 0.985 \fd \\ \hline
-Single DES$_{2}$                 & 71. \fd & 79. \fd & 84. \fd & 78. \fd & 0.824 \fd \\ \hline
-Skein$_{2}$                      & 93. \fd & 79. \fd & 93. \fd & 80. \fd & ++ \fd \\ \hline
+MD6$_{7}$                        & 99. \fn & 97. \fn & --  \fn & 97. \fn & 0.677 \fd \\ \hline
+Rabbit$_{0}$                     & --  \fn & --  \fn & --  \fn & --  \fd & 0.499 \fd \\ \hline
+RC4$_{\textnormal{no rounds}}$   & --  \fn & --  \fn & --  \fn & --  \fn & 0.504 \fn \\ \hline
+Salsa20$_{2}$                    & --  \fd & 99. \fd & --  \fd & 99. \fd & 0.771 \fd \\ \hline
+Single DES$_{2}$                 & 71. \fd & 79. \fd & 84. \fd & 78. \fd & 0.933 \fd \\
+Single DES$_{3}$                 & --  \fd & --  \fd & --  \fd & --  \fd & 0.637 \fd \\ \hline
+Skein$_{2}$                      & 93. \fd & 79. \fd & 93. \fd & 80. \fd & 0.999 \fd \\ \hline
+Skein$_{3}$                      & --  \fd & --  \fd & --  \fd & --  \fd & 0.577 \fd \\ \hline
 SOSEMANUK$_{4}$                  & 0.  \fd & 0.  \fd & 1.  \fd & 0.  \fd & 1.0   \fd \\ \hline
-TEA$_{2}$                        & 97. \fd & ++  \fd & 93. \fd & ++  \fd & 0.932 \fd \\
-TEA$_{3}$                        & --  \fn & 99. \fn & --  \fn & 88. \fd & 0.512 \fn \\ \hline
-Triple DES$_{2}$                 & 99. \fd & 98. \fd & 99. \fd & 98. \fd & 0.999 \fd \\
-Triple DES$_{2}$                 & --  \fd & --  \fd & --  \fd & --  \fd & 0.596 \fd \\
+TEA$_{2}$                        & 97. \fd & ++  \fd & 93. \fd & ++  \fd & 0.962 \fd \\
+TEA$_{3}$                        & --  \fn & 99. \fn & --  \fn & 88. \fd & 0.750 \fn \\ \hline
+Triple DES$_{1}$                 & 99. \fd & 98. \fd & 99. \fd & 98. \fd & 0.999 \fd \\
+Triple DES$_{2}$                 & --  \fd & --  \fd & --  \fd & --  \fd & 0.656 \fd \\
 
 \end{tabular}
 }
