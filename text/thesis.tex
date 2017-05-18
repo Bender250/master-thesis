@@ -145,9 +145,13 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
 \newcommand{\rewrite}[1]{rewrite: \textit{#1}}
 \newcommand{\reread}[1]{reread: \textbf{#1}}
 
+
 % table colours
-\newcommand{\fd}{\cellcolor{red!13}}
-\newcommand{\fn}{\cellcolor{green!13}}
+\definecolor{myred}{rgb}{0.84,0.10,0.11}
+\definecolor{mygreen}{rgb}{0.65,0.85,0.42}
+
+\newcommand{\fd}{\cellcolor{myred!15}}
+\newcommand{\fn}{\cellcolor{mygreen!20}}
 
 % make captions italic
 \usepackage[format=plain,
@@ -1066,7 +1070,11 @@ The interesting details about single-solution metaheuristics are summarised in \
 \begin{table}
 \centering
 \begin{tabular}{l|l l l l}
-Function\_rounds\textbackslash{}Metaheuristic   & \rot[90]{Iterative local search} & \rot[90]{Simulated annealing} & \rot[90]{Guided local search} & \rot[90]{Variable neighbourhood search} \\ \hline
+Function\_rounds\textbackslash{}Metaheuristic
+    & \multicolumn{1}{R{2.7cm}}{\textbf{Iterated\\local search}}
+    & \multicolumn{1}{R{2.7cm}}{\textbf{Simulated\\annealing}}
+    & \multicolumn{1}{R{2.7cm}}{\textbf{Guided\\local search}}
+    & \multicolumn{1}{R{2.7cm}}{\textbf{Variable\\neighbourhood\\search}} \\ \hline
 AES$_3$     & \fd{}0.160         & \fd{}\textbf{0.305}    & \fd{}0.164             & \fd{}0.182         \\
 BLAKE$_1$   & \fd{}0.110         & \fd{}0.051             & \fd{}\textbf{0.260}    & \fd{}0.157         \\
 MD6$_8$     & \fd{}0.774         & \fd{}0.419             & \fd{}\textbf{0.995}    & \fd{}0.992         \\
@@ -1146,14 +1154,14 @@ The comparison of multiple batteries can be seen in \cref{table:res-batteries}. 
 \scalebox{0.95}{
 \begin{tabular}{@{}l|rrrrrrrrrr@{}}
 \textbf{\large Algorithm} & 
-\multicolumn{1}{R{3.2cm}}{\textbf{NIST STS} \\ \footnotesize (x/15)} &
-\multicolumn{1}{R{3.2cm}}{\textbf{Dieharder} \\ \footnotesize (x/27)} &
-\multicolumn{1}{R{3.2cm}}{\textbf{Small Crush} \\ \footnotesize (x/10)} &
-\multicolumn{1}{R{3.2cm}}{\textbf{Crush} \\ \footnotesize (x/32)} &
-\multicolumn{1}{R{3.2cm}}{\textbf{Rabbit} \\ \footnotesize (x/16)} &
-\multicolumn{1}{R{3.2cm}}{\textbf{Alphabit} \\ \footnotesize (x/4)} &
-\multicolumn{1}{R{3.2cm}}{\textbf{Block Alphabit} \\ \footnotesize (x/4)} &
-\multicolumn{1}{R{3.2cm}}{\textbf{EACirc} \\ \footnotesize (\textit{rejection rate})} \\ \hline
+\multicolumn{1}{R{3.0cm}}{\textbf{NIST STS} \\ \footnotesize (x/15)} &
+\multicolumn{1}{R{3.0cm}}{\textbf{Dieharder} \\ \footnotesize (x/27)} &
+\multicolumn{1}{R{3.0cm}}{\textbf{Small Crush} \\ \footnotesize (x/10)} &
+\multicolumn{1}{R{3.0cm}}{\textbf{Crush} \\ \footnotesize (x/32)} &
+\multicolumn{1}{R{3.0cm}}{\textbf{Rabbit} \\ \footnotesize (x/16)} &
+\multicolumn{1}{R{3.0cm}}{\textbf{Alphabit} \\ \footnotesize (x/4)} &
+\multicolumn{1}{R{3.0cm}}{\textbf{Block Alphabit} \\ \footnotesize (x/4)} &
+\multicolumn{1}{R{3.0cm}}{\textbf{EACirc} \\ \footnotesize (\textit{rejection rate})} \\ \hline
 AES$_{3}$                        &  8    \fd & 15 \fd &  5   \fd & 20    \fd &  5 \fd & 2 \fd & 4 \fd & 0.164 \fd \\ \hline
 BLAKE$_{1}$                      & 11    \fd & 11 \fd &  5   \fd & 18    \fd &  5 \fd & 2 \fd & 3 \fd & 0.260 \fd \\ \hline
 Grain$_{2}^{\ast}$               & 14    \fd & 27 \fd &  9/9 \fd & 31/31 \fd & 15 \fd & 4 \fd & 4 \fd & 1.000 \fd \\
@@ -1181,8 +1189,8 @@ RC4$_{\textnormal{no rounds}}^{\ast}$ &  0 \fn &  0 \fn &  0 \fn &  3    \fn &  
 \end{tabular}
 }
 
-\caption{Application of statistical batteries and EACirc on data from round-reduced well-known cryptographic functions. 
-The the values in the table are described in \cref{subsec:relatwork-stat-res}.
+\caption{Application of the statistical batteries and EACirc on the data from round-reduced well-known cryptographic functions. 
+The values in the table are described in \cref{subsec:relatwork-stat-res}.
 The results were computed by Randomness Testing Toolkit. Complete results with detailed information about which tests are passing can be found on \href{http://rtt.ics.muni.cz/ViewResults/?created_from=2017-04-24+12\%3A00\%3A00&created_to=2017-04-29+00\%3A00\%3A00}{RTT page (as results from 2017-04-24 to 2017-04-28)}.}
 \label{table:res-batteries}
 \end{table}
@@ -1220,75 +1228,73 @@ We experimented with this approach, trying capabilities of compression programs.
 
 All the utilities were executed with highest compression ratio with the slowest speed.
 
-We denote the results in a similar manner as results of the batteries. The rows are labelled by cryptographic functions, columns are compression utilities. The cell is a pair of the round count that we executed the algorithm, and compression ratio, which says how much data we safe. Compression of random data should not safe anything, marked with dash, whatever higher means the data are nonrandom. We tested this evaluation experimentally on random data, and the compressed file was never smaller than the original file. This property was tested for more than ten samples. The dash means that the compression algorithm was unable to detect nonrandomness compress the data from any reduced version of the cryptographic function.
+We denote the results in a similar manner as results of the batteries. The rows are labelled by cryptographic functions, columns are compression utilities. The cell contains the compression ratio, which says how much was saved by the compression. Compression of random data should not safe anything, marked with dash, any higher value means the data are non-random. We tested this evaluation experimentally on random data, and the compressed file was never smaller than the original file. This property was tested for more than ten samples.
 
-\begin{table}[t]
+\begin{table}[H]
 \centering
 
-\scalebox{0.95}{
-\begin{tabular}{@{}l|lllll@{}}
+\begin{tabular}{@{}l|lllll}
 \textbf{\large Algorithm} & 
-\multicolumn{1}{R{1.3cm}}{\textbf{bzip2}} &
-\multicolumn{1}{R{1.3cm}}{\textbf{gz}} &
-\multicolumn{1}{R{1.3cm}}{\textbf{lzop}} &
-\multicolumn{1}{R{1.3cm}}{\textbf{zip}} &
-\multicolumn{1}{R{1.3cm}}{\textbf{ANN}} \\ \hline
-AES$_{2}$                        & 2.  \fd & 15. \fd & 25. \fd & 15. \fd & 1.0   \fd \\ \hline
-BLAKE$_{0}$                      & 0.  \fd & 0.  \fd & 1.  \fd & 0.  \fd & 1.0   \fd \\ \hline
-Grain$_{2}$                      & 3.  \fd & 11. \fd & 25. \fd & 11. \fd & 1.0   \fd \\ \hline
-Gr\o{}stl$_{0}$                  & 0.  \fd & 0.  \fd & 1.  \fd & 0.  \fd & 1.0   \fd \\ \hline
-HC-128$_{0}$                     & --  \fd & --  \fd & --  \fd & --  \fd & 0.497 \fd \\ \hline
-JH$_{6}$                         & 57. \fd & 59. \fd & 68. \fd & 59. \fd & 1.0   \fd \\ \hline
-Keccak$_{1}$                     & 16. \fd & ++. \fd & 36. \fd & ++  \fd & 1.0   \fd \\
-Keccak$_{2}$                     & --  \fn & 99. \fn & --  \fn & 99. \fd & 0.973 \fd \\ \hline
-MD6$_{6}$                        & ++  \fd & ++  \fd & 59. \fd & ++  \fd & 1.0   \fd \\
-MD6$_{7}$                        & 99. \fn & 97. \fn & --  \fn & 97. \fn & 0.677 \fd \\ \hline
-Rabbit$_{0}$                     & --  \fn & --  \fn & --  \fn & --  \fd & 0.499 \fd \\ \hline
-RC4$_{\textnormal{no rounds}}$   & --  \fn & --  \fn & --  \fn & --  \fn & 0.504 \fn \\ \hline
-Salsa20$_{2}$                    & --  \fd & 99. \fd & --  \fd & 99. \fd & 0.771 \fd \\ \hline
-Single DES$_{2}$                 & 71. \fd & 79. \fd & 84. \fd & 78. \fd & 0.933 \fd \\
-Single DES$_{3}$                 & --  \fd & --  \fd & --  \fd & --  \fd & 0.637 \fd \\ \hline
-Skein$_{2}$                      & 93. \fd & 79. \fd & 93. \fd & 80. \fd & 0.999 \fd \\ \hline
-Skein$_{3}$                      & --  \fd & --  \fd & --  \fd & --  \fd & 0.577 \fd \\ \hline
-SOSEMANUK$_{4}$                  & 0.  \fd & 0.  \fd & 1.  \fd & 0.  \fd & 1.0   \fd \\ \hline
-TEA$_{2}$                        & 97. \fd & ++  \fd & 93. \fd & ++  \fd & 0.962 \fd \\
-TEA$_{3}$                        & --  \fn & 99. \fn & --  \fn & 88. \fd & 0.750 \fn \\ \hline
-Triple DES$_{1}$                 & 99. \fd & 98. \fd & 99. \fd & 98. \fd & 0.999 \fd \\
-Triple DES$_{2}$                 & --  \fd & --  \fd & --  \fd & --  \fd & 0.656 \fd \\
+\multicolumn{1}{R{1.1cm}}{\textbf{bzip2}} &
+\multicolumn{1}{R{1.1cm}}{\textbf{gz}} &
+\multicolumn{1}{R{1.1cm}}{\textbf{lzop}} &
+\multicolumn{1}{R{1.1cm}}{\textbf{zip}} &
+\multicolumn{1}{R{1.1cm}}{\textbf{ANN}} \\ \hline
+AES$_{2}$                        & 2\,\%  \fd & 15\,\% \fd & 25\,\% \fd & 15\,\% \fd & 1.0   \fd \\ \hline
+BLAKE$_{0}$                      & 0\,\%  \fd & 0\,\%  \fd & 1\,\%  \fd & 0\,\%  \fd & 1.0   \fd \\ \hline
+Grain$_{2}$                      & 3\,\%  \fd & 11\,\% \fd & 25\,\% \fd & 11\,\% \fd & 1.0   \fd \\ \hline
+Gr\o{}stl$_{0}$                  & 0\,\%  \fd & 0\,\%  \fd & 1\,\%  \fd & 0\,\%  \fd & 1.0   \fd \\ \hline
+HC-128$_{0}$                     & --     \fn & --     \fn & --     \fn & --     \fn & 0.497 \fn \\ \hline
+JH$_{6}$                         & 57\,\% \fd & 59\,\% \fd & 68\,\% \fd & 59\,\% \fd & 1.0   \fd \\ \hline
+Keccak$_{1}$                     & 16\,\% \fd & 99\,\% \fd & 36\,\% \fd & 99\,\% \fd & 1.0   \fd \\
+Keccak$_{2}$                     & --     \fn & 99\,\% \fd & --     \fn & 99\,\% \fd & 0.973 \fd \\ \hline
+MD6$_{6}$                        & 99\,\% \fd & 99\,\% \fd & 59\,\% \fd & 99\,\% \fd & 1.0   \fd \\
+MD6$_{7}$                        & 99\,\% \fd & 97\,\% \fd & --     \fn & 97\,\% \fd & 0.677 \fd \\ \hline
+Rabbit$_{0}$                     & --     \fn & --     \fn & --     \fn & --     \fn & 0.499 \fn \\ \hline
+RC4$_{\textnormal{no rounds}}$   & --     \fn & --     \fn & --     \fn & --     \fn & 0.504 \fn \\ \hline
+Salsa20$_{2}$                    & --     \fn & 99\,\% \fd & --     \fn & 99\,\% \fd & 0.771 \fd \\ \hline
+Single DES$_{2}$                 & 71\,\% \fd & 79\,\% \fd & 84\,\% \fd & 78\,\% \fd & 0.933 \fd \\
+Single DES$_{3}$                 & --     \fn & --     \fn & --     \fn & --     \fn & 0.637 \fd \\ \hline
+Skein$_{2}$                      & 93\,\% \fd & 79\,\% \fd & 93\,\% \fd & 80\,\% \fd & 0.999 \fd \\ \hline
+Skein$_{3}$                      & --     \fn & --     \fn & --     \fn & --     \fn & 0.577 \fd \\ \hline
+SOSEMANUK$_{4}$                  & 0\,\%  \fd & 0\,\%  \fd & 1\,\%  \fd & 0\,\%  \fd & 1.0   \fd \\ \hline
+TEA$_{2}$                        & 97\,\% \fd & 99\,\% \fd & 93\,\% \fd & 99\,\% \fd & 0.962 \fd \\
+TEA$_{3}$                        & --     \fn & 99\,\% \fd & --     \fn & 88\,\% \fd & 0.750 \fd \\ \hline
+Triple DES$_{1}$                 & 99\,\% \fd & 98\,\% \fd & 99\,\% \fd & 98\,\% \fd & 0.999 \fd \\
+Triple DES$_{2}$                 & --     \fn & --     \fn & --     \fn & --     \fn & 0.656 \fd
 
 \end{tabular}
-}
 
-\caption{Capabilities of compression algorithms on cryptographic data. Cell contain pair of highest number of rounds, to which was the cryptographic function reduced and saved space ratio of the compression.}
+\caption{Capabilities of compression algorithms in comparison with artificial neural networks on cryptographic data. Cells contain how much space was saved by the compression or the acceptance rate of the neural network.}
 \label{table:res-compression}
 \end{table}
 
-\begin{table}[t]
-\centering{}
-\begin{tabular}{l|p{1.8cm} p{1.8cm} p{1.8cm} p{1.8cm}}
-Function\textbackslash{}algorithm & 
-                bzip2   &   gz      &   lzop    &   zip     \\ \hline
-AES         & 2, 2\,\%  & 2, 15\,\% & 2, 25\,\% & 2, 15\,\% \\
-BLAKE       & 0, 0\,\%  & 0, 0\,\%  & 0, 1\,\%  & 0, 0\,\%  \\
-Grain       & 2, 3\,\%  & 2, 11\,\% & 2, 25\,\% & 2, 11\,\% \\
-Grostl      & 0, 0\,\%  & 0, 0\,\%  & 0, 1\,\%  & 0, 0\,\%  \\
-HC-128      & --        & --        & --        & --        \\
-JH          & 6, 57\,\% & 6, 59\,\% & 6, 68\,\% & 6, 59\,\% \\
-Keccak      & 1, 16\,\% & 2, 99\,\% & 1, 36\,\% & 2, 99\,\% \\
-MD6         & 7, 99\,\% & 7, 97\,\% & 6, 59\,\% & 7, 97\,\% \\
-Rabbit      & --        & --        & --        & --        \\
-RC4         & --        & --        & --        & --        \\
-Salsa20     & --        & 2, 99\,\% & --        & 2, 99\,\% \\
-SINGLE-DES  & 2, 71\,\% & 2, 79\,\% & 2, 84\,\% & 2, 78\,\% \\
-Skein       & 2, 93\,\% & 2, 79\,\% & 2, 93\,\% & 2, 80\,\% \\
-SOSEMANUK   & 4, 0\,\%  & 4, 0\,\%  & 4, 1\,\%  & 4, 0\,\%  \\
-TEA         & 2, 97\,\% & 3, 99\,\% & 2, 93\,\% & 3, 99\,\% \\
-TRIPLE-DES  & 2, 99\,\% & 2, 98\,\% & 2, 99\,\% & 2, 98\,\% 
+%\begin{table}[t]
+%\centering{}
+%\begin{tabular}{l|p{1.8cm} p{1.8cm} p{1.8cm} p{1.8cm}}
+%Function\textbackslash{}algorithm & 
+                %bzip2   &   gz      &   lzop    &   zip     \\ \hline
+%AES         & 2, 2\,\%  & 2, 15\,\% & 2, 25\,\% & 2, 15\,\% \\
+%BLAKE       & 0, 0\,\%  & 0, 0\,\%  & 0, 1\,\%  & 0, 0\,\%  \\
+%Grain       & 2, 3\,\%  & 2, 11\,\% & 2, 25\,\% & 2, 11\,\% \\
+%Grostl      & 0, 0\,\%  & 0, 0\,\%  & 0, 1\,\%  & 0, 0\,\%  \\
+%HC-128      & --        & --        & --        & --        \\
+%JH          & 6, 57\,\% & 6, 59\,\% & 6, 68\,\% & 6, 59\,\% \\
+%Keccak      & 1, 16\,\% & 2, 99\,\% & 1, 36\,\% & 2, 99\,\% \\
+%MD6         & 7, 99\,\% & 7, 97\,\% & 6, 59\,\% & 7, 97\,\% \\
+%Rabbit      & --        & --        & --        & --        \\
+%RC4         & --        & --        & --        & --        \\
+%Salsa20     & --        & 2, 99\,\% & --        & 2, 99\,\% \\
+%SINGLE-DES  & 2, 71\,\% & 2, 79\,\% & 2, 84\,\% & 2, 78\,\% \\
+%Skein       & 2, 93\,\% & 2, 79\,\% & 2, 93\,\% & 2, 80\,\% \\
+%SOSEMANUK   & 4, 0\,\%  & 4, 0\,\%  & 4, 1\,\%  & 4, 0\,\%  \\
+%TEA         & 2, 97\,\% & 3, 99\,\% & 2, 93\,\% & 3, 99\,\% \\
+%TRIPLE-DES  & 2, 99\,\% & 2, 98\,\% & 2, 99\,\% & 2, 98\,\% 
 
-\end{tabular}
-\caption{Capabilities of compression algorithms on cryptographic data. Cell contain pair of highest number of rounds, to which was the cryptographic function reduced and saved space ratio of the compression.}
-\label{table:res-compression}
-\end{table}
+%\end{tabular}
+%\caption{Capabilities of compression algorithms on cryptographic data. Cell contain pair of highest number of rounds, to which was the cryptographic function reduced and saved space ratio of the compression.}
+%\label{table:res-compression}
+%\end{table}
 
 Observations from the results are following.
 
