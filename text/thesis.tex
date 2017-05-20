@@ -7,19 +7,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \documentclass[
-  print, %% This option enables the default options for the
-           %% digital version of a document. Replace with `printed`
-           %% to enable the default options for the printed version
-           %% of a document.
-  Table,   %% Causes the coloring of tables. Replace with `notable`
-           %% to restore plain tables.
-  nolof,     %% `lof` Prints the List of Figures. Replace with `nolof` to
-           %% hide the List of Figures.
-  nolot,     %% `lot` Prints the List of Tables. Replace with `nolot` to
-           %% hide the List of Tables.
+    %twoside,   % Printed version
+    %printed,   % Printed version
+    digital,    % PC version
+    oneside,    % PC version
+    color,
+    11pt,
+    nocover,
+    notable,
+    nolof,
+    nolot,
   %draft, %TODO remove, place final instead
-  11pt, % TODO disscus this
-  oneside  %% twoside for print
   %% More options are listed in the user guide at
   %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
 ]{fithesis3}
@@ -67,20 +65,21 @@ A detectable non-randomness of cryptoprimitive's output signals a bias of the cr
 This thesis has three main contributions. The first is a development of a testbed of 16 well-known cryptographic functions used for randomness testing comparison. The second is an extension of EACirc by three new metaheuristics. One of them, called guided local search, outperforms all the others in terms of its success rate. The third contribution is an analysis of randomness tests produced by EACirc computation. Successful tests contain evidence of the bias in the tested data. The influence of tested metaheuristics on the complexity of these tests is analysed. It is shown that the guided local search produces the least complex tests, such that allow easier cryptanalysis.
 }
 
-\thesislong{thanks}{%todo: metacentrum?
-I would like to thank members of CRoCS laboratory for a friendly environment with productive seasons and joyful fun and relaxation topics. From those, I thank EACirc team members, who consulted and criticised the topics presented in this thesis. Especially I thank Petr for supervising me with his never-ending enthusiasm for science at all.
-
-I apologise to my friends, who deserved more of my presence, but they still kept me at least a bit social. I am very grateful to my girlfriend Marta, who never left me being normal and bored by the work, as well as having any unused free time.
-
+\thesislong{thanks}{%todo: Valdo, Martin, Lubo
+I would like to thank members of CRoCS laboratory for a friendly environment with productive seasons and joyful fun and relaxation topics. From those, I thank EACirc team members, who consulted and criticised the topics presented in this thesis. Especially I thank Petr for supervising me with his never-ending enthusiasm for science at all.\\\\%
+%
+I apologise to my friends, who deserved more of my presence, but they still kept me at least a bit social. I am very grateful to my girlfriend Marta, who never left me being normal and bored by the work, as well as having any unused free time.\\\\%
+%
 Most of all I owe to my parents, who always stand behind me. You always sensed the moments, when I need a help and surprised me with nice support. I am proud of having you, thanks.
 
-\vspace*{6cm}\noindent{}
-Computational resources were provided by the CESNET LM2015042 and the CERIT Scientific Cloud LM2015085, provided under the programme "Projects of Large Research, Development, and Innovations Infrastructures".
-
-Computational resources were supplied by the Ministry of Education, Youth and Sports of the Czech Republic under the Projects CESNET (Project No. LM2015042) and CERIT-Scientific Cloud (Project No. LM2015085) provided within the program Projects of Large Research, Development and Innovations Infrastructures.
-
+\vspace*{5cm}\noindent{}
+Computational resources were provided by the CESNET LM2015042 and the CERIT Scientific Cloud LM2015085, provided under the programme "Projects of Large Research, Development, and Innovations Infrastructures".\\\\%
+%
+Computational resources were supplied by the Ministry of Education, Youth and Sports of the Czech Republic under the Projects CESNET (Project No. LM2015042) and CERIT-Scientific Cloud (Project No. LM2015085) provided within the program Projects of Large Research, Development and Innovations Infrastructures.\\\\%
+%
 We also acknowledge the support of Czech Science Foundation, the project GA16-08565S.
 }
+
 %% The following section sets up the bibliography.
 \usepackage{csquotes}
 \usepackage[              %% When typesetting the bibliography, the
@@ -95,6 +94,9 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
                           %% the file `example.bib` will be used.
 \usepackage{makeidx}      %% The `makeidx` package contains
 \makeindex                %% helper commands for index typesetting.
+
+
+
 %% These additional packages are used within the document:
 \usepackage{paralist}
 \usepackage{amsmath}
@@ -112,6 +114,8 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
 \usepackage{caption}
 % subcaption for 2 figures in one
 \usepackage{subcaption}
+% H figures
+\usepackage{float}
 
 % tables
 \usepackage{tabularx}
@@ -126,8 +130,8 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
 \usepackage{lmodern}
 % better typeset of line ends and so (nicer)
 \usepackage{microtype}
-% code
-\usepackage{minted}
+
+\thesisload{}
 
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning}
@@ -145,7 +149,6 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
 \newcommand{\rewrite}[1]{rewrite: \textit{#1}}
 \newcommand{\reread}[1]{reread: \textbf{#1}}
 
-
 % table colours
 \definecolor{myred}{rgb}{0.84,0.10,0.11}
 \definecolor{mygreen}{rgb}{0.65,0.85,0.42}
@@ -156,15 +159,25 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
 % make captions italic
 \usepackage[format=plain,
             font=it]{caption}
-% rotate figures
-\usepackage{rotating}
 
 % Lubo's hack for margins
-\newcommand{\lmar}{3cm}
-\newcommand{\rmar}{3cm}
-\usepackage[top=2.8cm, left=\lmar, right=\rmar, bottom=3cm]{geometry}
-\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
-\let\endchangemargin=\endlist{}
+	\newcommand{\lmar}{3cm} % PC
+	\newcommand{\rmar}{3cm} % PC
+	\newcommand{\tmp}{3cm}  % PC
+
+	%\newcommand{\lmar}{3.5cm} % Printed
+	%\newcommand{\rmar}{2.5cm} % Printed
+	%\newcommand{\tmp}{2.5cm}  % Printed
+
+
+\usepackage[top=3cm, bottom=3.5cm, left=\lmar, right=\rmar]{geometry}
+
+% Eliminates margins
+\def\nomar{\list{}{\rightmargin-\tmp \leftmargin-\tmp}\item[]}
+\let\endnomar=\endlist
+
+% rotate figures
+\usepackage{rotating}
 
 % Table rotations
 \usepackage{booktabs} % http://ctan.org/pkg/booktabs
@@ -176,6 +189,7 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
 \newcolumntype{R}[1]{>{\begin{turn}{90}\begin{minipage}{#1}}l%
 <{\end{minipage}\end{turn}}%
 }
+
 
 \begin{document}
 
@@ -245,7 +259,7 @@ The distinguisher is encoded as a software-emulated electronic circuit; an examp
 \label{fig:eac-circuit}
 \end{figure}
 
-The distinguisher is not able to classify a single test vector, as even a truly random test vector may look like the tested data. Therefore, EACirc process the output statistically. It proceeds 1\,000 analysed data test vectors and 1\,000 reference random data vectors, and it accumulates the outputs per dataset to an output distribution. These distributions for the tested and the reference datasets are compared using a $\chi^{2}$ test \todo{cite}. The result of the $\chi^{2}$ test is a $p$-value, which is transformed to the \textit{fitness} value as $1 - p$-value.
+The distinguisher is not able to classify a single test vector, as even a truly random test vector may look like the tested data. Therefore, EACirc process the output statistically. It proceeds 1\,000 analysed data test vectors and 1\,000 reference random data vectors, and it accumulates the outputs per dataset to an output distribution. These distributions for the tested and the reference datasets are compared using a $\chi^{2}$ test~\cite[p.~219]{stat-handbook}. The result of the $\chi^{2}$ test is a $p$-value, which is transformed to the \textit{fitness} value as $1 - p$-value.
 
 There is an enormous number of potential circuits. Therefore the computation starts with a randomly generated circuit, generally denoted as \textit{candidate solution}. To obtain intended solution, we perform modifications, whose are addition or removal of a connector or change of the operation in the node. By these changes that we denote as \textit{mutations}, we can create another \textit{candidate solution}, also sometimes denoted as \textit{neighbour}.
 
@@ -490,11 +504,10 @@ These models and algorithms can be used for various goals. Two main are feature 
 \label{subsec:opt-other-ann}
 
 The artificial neural networks (ANN) are classification optimisation method inspired by the process of learning of brain and neural system. The initial idea was inspired by the research of Donald Hebb~\cite{hebb49learning}, who described the neurones and the process of learning of living beings' neural systems. The Hebbian learning arose several trivial nonsupervised learning methods. Further development came with the invention of backpropagation algorithm by Paul Werbos~\cite{werbos75beyondThesis}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of algorithm and its implementation on GPUs. Both together allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks.
-% deeper introduction to ANN can be found in book http://www.deeplearningbook.org
+% TODO: ?deeper introduction to ANN can be found in book http://www.deeplearningbook.org
 
 The artificial neural network consists of purpose specialised layers. The first layer is called an input layer, and its input are the data for classification. Then there may be multiple hidden layers, which sequentially process the output of previous layers. The data proceed to the last -- output layer, which classifies the data. Each layer consists of neurones. Each neurone takes as input the output from all neurones of previous layers, and weight for each connection multiplies these outputs. The output is processed by an activation function, which ensures normalisation of the output. There are many types of activation function, and each layer can use different activation function. The most used activation function is a sigmoid function, with a real number input and the output is the interval $(-1, 1)$ or $(0, 1)$.
 
-%\todo{citations: }
 The artificial neural networks were used to solve various problems in classification and pattern recognition. The most common are applications in image processing, signal processing, text data processing and in robotics and system control.
 
 In cryptography, we have seen fewer applications of ANN. The main area of application of ANN in cryptography is authentication~\cite{li2001remote}, as it is a classification problem, where learning methods can bring speed-up traded off by approximation that allows errors.
@@ -674,9 +687,7 @@ The EACirc project formelly used tool Oneclick created by Lubomír Obrátil~\cit
 These scripts are expected to be modified by individual researchers for the needs of their experiments, so the scripts are stored in GitHub repository~\cite{eaUtils}, and users are supposed to fork them. The repository also contains \texttt{readme.md} file, with specifies the first steps of computations on MetaCentrum with these scripts. Every script also contains documentation in the code (concerning expected modifications for individual purposes), and when it is run without arguments, it prints out a help message.
 
 \begin{figure}[t]
-    \centering{}
-    
-\begin{changemargin}{-3cm}{-3cm}
+\begin{nomar}
     \centering{}
     \rotatebox{-90}{
     \scalebox{0.9}{
@@ -701,7 +712,7 @@ These scripts are expected to be modified by individual researchers for the need
     \end{tikzpicture}
     }
     }
-\end{changemargin}
+\end{nomar}
     
     \caption{Execution of EACirc on MetaCentrum grid -- order and purpose of the scripts.}
     \label{fig:scripts}
@@ -778,7 +789,6 @@ We prepared an automation scripts for an easier analysis of multiple files toget
 \chapter{Results}
 \label{chap:res}
 
-% TODO strange introduction, but we want this information somewhere
 To verify every implemented method, we perform a \textit{sanity experiment} comparing random data to random data. Such a test gives us a reference \textit{critical value}, under which we do not reject randomness hypothesis. As this reference \textit{critical value} depends on the analysed method, we state it explicitly with every test scenario.
 
 In \cref{sec:res-ss} we show results of single-solution metaheuristics, followed by \cref{sec:res-circ-anal} with analysis of metaheuristics influence on the complexity of produced distinguisher circuit. In \cref{sec:res-ann} we show results of ANN and finally in \cref{sec:res-comp} we compare all methods introduced in this thesis.
@@ -816,11 +826,11 @@ MD6$_{8}$        & \fd{}--    & \fd{}0.774 & \fn{}0.008 & \fn{}0.011\\
 Rabbit$_{0}$     &      --    & \fn{}0.017 & \fn{}0.007 & \fn{}0.015\\
 RC4$_{\textnormal{no rounds}}$& -- & \fn{}0.011 & --    & --        \\
 Salsa20$_{2}$    & \fd{}--    & \fd{}1.0   & \fn{}0.010 & \fn{}0.008\\
-SINGLE-DES$_{4}$ & \fd{}1.0   & \fd{}0.204 & \fn{}0.001 & \fn{}0.010\\
+Single DES$_{4}$ & \fd{}1.0   & \fd{}0.204 & \fn{}0.001 & \fn{}0.010\\
 Skein$_{3}$      & \fd{}1.0   & \fd{}1.0   & \fn{}0.016 & \fn{}0.010\\
 SOSEMANUK$_{4}$  & \fd{}--    & \fd{}1.0   & \fn{}0.017 & \fn{}0.011\\
 TEA$_{4}$        & \fd{}1.0   & \fd{}0.444 & \fn{}0.012 & \fn{}0.013\\
-TRIPLE-DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.006 & \fn{}0.007
+Triple DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.006 & \fn{}0.007
 \end{tabular}
 \caption{Results of iterated local search as EACirc metaheuristics on the well-known cryptographic functions. The values in the cells are the \textit{rejection rate} of the randomness hypothesis. The structure and the values in this table are explained in the \cref{sec:res-ss}.}
 \label{table:res-usable-ils}
@@ -906,7 +916,7 @@ The output from a run using guided local search created a significantly sparser 
 \textit{Pruning} works only for individuals that are good distinguishers. If the tested data seem random, guided local search will not create sparse circuit -- circuits remain even more connected. The density of the circuit can also show how successful a distinguisher is.
 
 \begin{figure}
-\begin{changemargin}{-3cm}{-3cm}
+\begin{nomar}
 \centering
 \begin{subfigure}{.65\textwidth}
   \centering
@@ -933,7 +943,7 @@ The output from a run using guided local search created a significantly sparser 
   \caption{A guided local search circuit after pruning.}
   \label{fig:gls-circuit-pruned}
 \end{subfigure}
-\end{changemargin}
+\end{nomar}
 \caption{The top two circuits were produced by iterated local search, while bottom two by guided local search. The tested data for all the cases were two-round AES. While the both unpruned and pruned iterated local search circuits are quite dense, even the unpruned guided local search circuit is sparse. However, if the tested data seems random, the guided local search circuit would be even denser than \cref{fig:ils-circuit-unpruned}.}
 \label{fig:ils-gls-circuits}
 \end{figure}
@@ -996,7 +1006,7 @@ An interpretation of the observations from the \cref{table:res-ann-acc,table:res
 
 We evaluated one of the best working parametrisation (single neurone and batch size 25) of the neural network on the well-known cryptographic functions dataset. The results are in the \cref{table:res-usable-ann} where rows and cells are the same as in the previous results in the \cref{table:res-usable-ils} and in the cell is a final acceptance rate of the run. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$. It measures the quality of the ANN, similarly as a fitness function was the metaheuristics' metric. The colours have the same meaning as before, the \textit{critical value} used for rejection of randomness was set to 0.554, as such results have probability lower than 1\,\%.
 
-\begin{table}[t]
+\begin{table}
 \centering
 \begin{tabular}{l|l l l l}
 Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
@@ -1012,11 +1022,11 @@ MD6$_{8}$        & \fd{}0.677 & \fn{}0.492 & \fn{}0.509 & \fn{}0.505 \\
 Rabbit$_{0}$     &      --    & \fn{}0.499 & \fn{}0.493 & \fn{}0.497 \\
 RC4$_{\textnormal{no rounds}}$& --         & \fn{}0.504 & --         & --         \\
 Salsa20$_{2}$    & \fd{}0.776 & \fd{}0.770 & \fn{}0.499 & \fn{}0.499 \\
-SINGLE-DES$_{4}$ & \fn{}0.637 & \fn{}0.508 & \fn{}0.502 & \fn{}0.509 \\
+Single DES$_{4}$ & \fn{}0.637 & \fn{}0.508 & \fn{}0.502 & \fn{}0.509 \\
 Skein$_{3}$      & \fd{}0.999 & \fd{}0.577 & \fn{}0.505 & \fn{}0.508 \\
 SOSEMANUK$_{4}$  & \fd{}1.0   & \fd{}1.0   & \fn{}0.496 & \fn{}0.501 \\
 TEA$_{4}$        & \fd{}0.750 & \fn{}0.507 & \fn{}0.514 & \fn{}0.504 \\
-TRIPLE-DES$_{2}$ & \fd{}0.999 & \fd{}0.656 & \fn{}0.507 & \fn{}0.500
+Triple DES$_{2}$ & \fd{}0.999 & \fd{}0.656 & \fn{}0.507 & \fn{}0.500
 \end{tabular}
 \caption{The best-obtained results of ANN on well-known cryptographic functions dataset. The values are corresponding to \textit{acceptance rate}, where value $0.5$ is expected for runs that cannot reject the randomness hypothesis of the tested data. The dash represents a scenario that was not tested.}
 \label{table:res-usable-ann}
@@ -1060,7 +1070,7 @@ Overall, the CNN performed worse than ANN. The problems were slower learning tha
 \section{Inter-approach comparison}
 \label{sec:res-comp}
 
-The interesting details about single-solution metaheuristics are summarised in \cref{table:ss-comparison}. The artificial neural network models are omitted in the table. They are not able to detect non-randomness of functions reduced to the given number of rounds, except eight rounds MD6. The summary is presented below.
+The interesting details about single-solution metaheuristics are summarised in \cref{table:ss-comparison}. The artificial neural network models are omitted in the table. They are not able to detect non-randomness of functions reduced to the given number of rounds.
 
 \begin{table}
 \centering
@@ -1073,7 +1083,7 @@ Function\_rounds\textbackslash{}Metaheuristic
 AES$_3$     & \fd{}0.160         & \fd{}\textbf{0.305}    & \fd{}0.164             & \fd{}0.182         \\
 BLAKE$_1$   & \fd{}0.110         & \fd{}0.051             & \fd{}\textbf{0.260}    & \fd{}0.157         \\
 MD6$_8$     & \fd{}0.774         & \fd{}0.419             & \fd{}\textbf{0.995}    & \fd{}0.992         \\
-DES$_5$     & \fd{}0.204         & \fd{}0.093             & \fd{}\textbf{0.496}    & \fd{}0.441         \\
+Single DES$_4$ & \fd{}0.204      & \fd{}0.093             & \fd{}\textbf{0.496}    & \fd{}0.441         \\
 TEA$_4$     & \fd{}0.444         & \fd{}0.244             & \fd{}0.729             & \fd{}\textbf{0.877}
 \end{tabular}
 \caption{The \textit{rejection rate} for selected cryptographic functions of EACirc utilising different single-solution metaheuristics.}
@@ -1105,7 +1115,7 @@ We presented our tools for randomness assessment, yet this area is broad, and ma
     \item[NIST STS] is the "golden" standard of statistical testing in cryptography~\cite{rukhin2001statistical}. Four tests of the battery were standardised as one step for the certification FIPS 140-2~\cite{fips2001140}. It was also used as one criterion of evaluation of the AES candidates, evaluated by Murphy in~\cite{murphy2000power}. For example, Murphy found NIST STS failing for the AES candidate HPC, which detected possible weaknesses of the algorithm.
 
     NIST STS was developed in the late nineties, and the last revision was released in 2010~\cite{rukhin2001statistical}. The 2010 update removed a biased test \textit{Lempel-Ziv Complexity of Sequences}. Further analysis of the bias in the $p$-values produced by NIST STS shows more dependent tests, which leads to a production of biased results. Overall NIST STS is accepted as the "golden" standard, so newer batteries extend it (at least the FIPS 140 subset of NIST STS battery) and relates to it. % third
-    \item[Dieharder] was developed by Robert G. Brown at the Duke University in 2004~\cite{brown2013dieharder}. It reimplements all tests of Diehard battery, and extends it by multiple additional tests. Dieharder also contains three of the fifteen tests of the NIST STS battery. However, it suffers similar bias flaws as NIST STS, as detected \todo{Lubo in}. % fourth
+    \item[Dieharder] was developed by Robert G. Brown at the Duke University in 2004~\cite{brown2013dieharder}. It reimplements all tests of Diehard battery, and extends it by multiple additional tests. Dieharder also contains three of the fifteen tests of the NIST STS battery. However, it suffers similar bias flaws as NIST STS, as detected Obrátil in the submitted thesis~\cite{obratilMgrThesis}. % fourth
     \item[TestU01] is state of the art in statistical testing. It is a library, continuously developed by Université de Montréal since 2007~\cite{l2007testu01}. The design of the tests is innovative in comparison to previous batteries. It uses fewer tests, whose are parametrised to form more sub-tests. This approach outperforms all other statistical batteries, as will be shown in our results in \cref{table:res-batteries}. The TestU01 also implements multiple PRNG from different categories, observing the same results, which proves the non-randomness. % fifth
 
     % TODO: variants
@@ -1145,7 +1155,6 @@ The comparison of multiple batteries can be seen in \cref{table:res-batteries}. 
 \begin{table}[H]
 \centering
 
-\scalebox{0.95}{
 \begin{tabular}{@{}l|rrrrrrrrrr@{}}
 \textbf{\large Algorithm} & 
 \multicolumn{1}{R{3.0cm}}{\textbf{NIST STS} \\ \footnotesize (x/15)} &
@@ -1181,7 +1190,6 @@ Triple DES$_{2}$                 & 12    \fd & 26 \fd &  9 \fd   & 31    \fd & 1
 Triple DES$_{3}$                 &  1    \fn &  4 \fd &  1 \fn   &  4    \fd &  0 \fn & 1 \fn & 1 \fn & 0.012 \fn \\
 
 \end{tabular}
-}
 
 \caption{Application of the statistical batteries and EACirc on the data from round-reduced well-known cryptographic functions. 
 The values in the table are described in \cref{subsec:relatwork-stat-res}.
@@ -1224,7 +1232,7 @@ All the utilities were executed with the highest compression ratio with the slow
 
 We denote the results in a similar manner as results of the batteries. The rows are labelled by cryptographic functions, columns represent compression utilities. The cell contains the compression ratio, which says how much was saved by the compression. Compression of random data should not safe anything, marked with dash, any higher value means the data are non-random. We tested this evaluation experimentally on random data, and the compressed file was never smaller than the original file. This property was tested for more than ten samples.
 
-\begin{table}[H]
+\begin{table}[t]
 \centering
 
 \begin{tabular}{@{}l|lllll}
@@ -1275,7 +1283,7 @@ Observations from the results are following.
 \section{Metaheuristcs for randomness testing}
 \label{sec:relatwork-paper}
 
-Besides statistical batteries, numerous other works did the cryptanalysis based on testing some of the statistical properties. We have encountered several works using genetic algorithms for statistical analysis of cryptoprimitives. Most of them analysed Tiny Encryption Algorithm (TEA), which is a simple block cipher designed by D. Wheeler and R. Needham in 1995~\cite{TEA}. It was used as a benchmark due to its simplicity and well-known vulnerabilities~\cite{TEAAttack}. The application of genetic algorithms started in 2002 by J. Hernández et al.~\cite{twoRoundsTea}, whose found statistical deviance in two-round TEA. Further improvements from the team were presented in 2004 finding the non-randomness in three- and four-round TEA as well~\cite{fourRoundsTea}. So far the best results using genetic algorithm were found by W. Hu~\cite{fiveRoundsTea}, who detected non-random properties for five-round TEA. We compared EACirc with these results in~\cite{2016-infocommunications-kubicek}.
+Besides statistical batteries, numerous other works did the cryptanalysis based on testing some of the statistical properties. We have encountered several works using genetic algorithms for statistical analysis of cryptoprimitives. Most of them analysed Tiny Encryption Algorithm (TEA), which is a simple block cipher designed by D. Wheeler and R. Needham in 1995~\cite{TEA}. It was used as a benchmark due to its simplicity and well-known vulnerabilities~\cite{TEAAttack}. The application of genetic algorithms started in 2002 by J. Hernández et al.~\cite{twoRoundsTea}, whose found statistical deviance in two-round TEA. Further improvements from the team were presented in 2004 finding the non-randomness in three- and four-round TEA as well~\cite{fourRoundsTea}. So far the best results using genetic algorithm were found by W. Hu~\cite{fiveRoundsTea}, who detected non-random properties for five-round TEA. We compared EACirc with these results in~\cite{kubicek2016new}.
 
 Genetic algorithms were also used for analysis of four-round DES~\cite{song2007cryptanalysis}. DES was also analysed using particle swarm metaheuristic in~\cite{shahzad2009cryptanalysis}, and Simplified DES was analysed by the simulated annealing, and the tabu search in~\cite{nalini2005cryptanalysis}. The best so far metaheuristic cryptanalysis on DES were on eight-round DES using genetic algorithm by Husein et al.~\cite{husein2007genetic}. Except the last work, these methods are worse than the statistical batteries in the number of rounds, but they can provide additional information to the cryptanalyst that batteries do not.
 
@@ -1301,9 +1309,9 @@ The capabilities of EACirc increased to the level of Dieharder battery. My estim
 
 Our team develop a bit-oriented randomness testing project. It does not utilise any metaheuristic yet, which may increase its already promising capabilities. It fits well population-based metaheuristic, such as evolutionary algorithms or swarm intelligence. The work on the integration of those metaheuristics already started within this thesis.
 
-The testbed of well-known functions can be further extended by different means of reduction of the cryptographic functions RC4 and HC-128. For RC4, we can use bit selection capabilities of the generator. Other plans are to extend the tool by already implemented CAESAR functions and new PRNG. Altogether with randomness testing toolkit is planned as a publication for \todo{...}.
+The testbed of well-known functions can be further extended by different means of reduction of the cryptographic functions RC4 and HC-128. For RC4, we can use bit selection capabilities of the generator. Other plans are to extend the tool by already implemented CAESAR functions and new PRNG. We plan publishing the generator altogether with the randomness testing toolkit for NordSec conference.
 
-Regarding the artificial neural network, we began cooperation with pattern recognition team from University Ca’ Foscari Venice. The results of this cooperation are still open. \todo{is this true before submition?}
+Regarding the artificial neural network, we began cooperation with pattern recognition team from University Ca’ Foscari Venice. The results of this cooperation are still open.
 
 
 
@@ -1380,7 +1388,7 @@ SINGLE-DES$_{4}$ & \fd{}1.0   & \fd{}0.093 & \fn{}0.017 & \fn{}0.02 \\
 Skein$_{3}$      & \fd{}1.0   & \fd{}1.0   & \fn{}0.025 & \fn{}0.015\\
 SOSEMANUK$_{4}$  & \fd{}--    & \fd{}1.0   & \fn{}0.019 & \fn{}0.025\\
 TEA$_{4}$        & \fd{}1.0   & \fd{}0.244 & \fn{}0.015 & \fn{}0.024\\
-TRIPLE-DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.015 & \fn{}0.029
+Triple DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.015 & \fn{}0.029
 \end{tabular}
 \caption{Results of simulated annealing as EACirc metaheuristics on usable testbed.}
 \label{table:res-usable-sa}
@@ -1402,11 +1410,11 @@ MD6$_{8}$        & \fd{}--    & \fd{}0.995 & \fn{}0.013 & \fn{}0.016\\
 Rabbit$_{0}$     &      --    & \fn{}0.007 & \fn{}0.003 & \fn{}0.013\\
 RC4$_{\textnormal{no rounds}}$& -- & \fn{}0.008 & --    & --        \\
 Salsa20$_{2}$    & \fd{}--    & \fd{}1.0   & \fn{}0.016 & \fn{}0.012\\
-SINGLE-DES$_{4}$ & \fd{}1.0   & \fd{}0.496 & \fn{}0.011 & \fn{}0.013\\
+Single DES$_{4}$ & \fd{}1.0   & \fd{}0.496 & \fn{}0.011 & \fn{}0.013\\
 Skein$_{3}$      & \fd{}1.0   & \fd{}1.0   & \fn{}0.012 & \fn{}0.006\\
 SOSEMANUK$_{4}$  & \fd{}--    & \fd{}1.0   & \fn{}0.015 & \fn{}0.009\\
 TEA$_{4}$        & \fd{}1.0   & \fd{}0.729 & \fn{}0.015 & \fn{}0.006\\
-TRIPLE-DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.012 & \fn{}0.007
+Triple DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.012 & \fn{}0.007
 \end{tabular}
 \caption{Results of guided local search as EACirc metaheuristics on usable testbed.}
 \label{table:res-usable-gls}
