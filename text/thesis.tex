@@ -201,16 +201,16 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
 
 Cryptoprimitives, such as block ciphers, stream ciphers and hash functions are basic building blocks of secure communication. A development of such primitives is complex and time consuming. Therefore, the primitives are expected to be supported for a long time, even extended due to backwards compatibility. Hence, vulnerabilities in them can be exploited for a long time. An example of such occasion is biased stream function RC4, supported before the version TLS 1.3~\cite{dierks2008transport}.
 
-The cryptoprimitives are selected in contests like AES~\cite{aes-competition}, eSTREAM~\cite{estream-competition}, SHA-3~\cite{sha3-competition}, PHC~\cite{password-hashing-competition} or CAESAR~\cite{caesar-competition}. Each contest consists of proposals submission, their iterative cryptanalysis and elimination, until a single or multiple finalists are selected as the winners. This thesis aims at the analysis part.
+The cryptoprimitives are selected in contests such as AES~\cite{aes-competition}, eSTREAM~\cite{estream-competition}, SHA-3~\cite{sha3-competition} or CAESAR~\cite{caesar-competition}. Each contest consists of proposals submission, their iterative cryptanalysis and elimination, until a single or multiple finalists are selected as the winners. This thesis aims at the analysis part.
 
 There are multiple types of cryptanalysis, classified by used knowledge, required computation, and other criteria. We develop an automated cryptanalysis tool, which works on ciphertext with no prior information of the data. Our goal is not to decipher the data, but to inspect a selected property of the cryptoprimitives. For example, the properties can be following.
 
 \begin{description}
-    \item[Irreversibility without the encryption key:] from given ciphertext, the attacker is not able to reconstruct any bit of plaintext with a probability higher than 50\,\%. If the probability was over 50\,\%, the ciphertext would reveal some information about the plaintext. % bit prediction?
+    \item[Irreversibility without the encryption key:] from given ciphertext, the attacker is not able to reconstruct any bit of the plaintext with a probability higher than 50\,\%. If the probability was over 50\,\%, the ciphertext would reveal some information about the plaintext. % bit prediction?
 
-    \item[Strict avalanche criterion:] every bit flip of plaintext changes around 50\,\% of output bits.
+    \item[Strict avalanche criterion:] every flipped bit in the plaintext changes around 50\,\% of the ciphertext's bits.
 
-    \item[Semantic security:] even though plaintext usually does not look like random data, the ciphertext has to look so. If the output would be distinguishable from random data, it may reveal information about the plaintext. This property is tested by statistical batteries and tool EACirc, whose extension is one of the goals of this thesis. The previous properties can be tested as well, yet not directly.
+    \item[Semantic security:] even though the plaintext usually does not look like random data, the ciphertext has to seem so. If the output would be distinguishable from random data, it may reveal information about the plaintext. This property is tested by statistical batteries and tool EACirc, whose extension is one of the goals of this thesis. The previous properties can be tested as well, yet not directly.
 \end{description}
 
 
@@ -219,15 +219,13 @@ There are multiple types of cryptanalysis, classified by used knowledge, require
 
 Assume encrypting many distinct, yet similar plaintexts. From the semantic security and strict avalanche properties, the ciphertext should look random, and it should not reveal any information. To examine it, we can use statistical batteries, consisting of many individual tests. These tests inspect statistical properties, such as the amount of ones and zeroes. A random stream has the probability of one half for a bit to be one, so the total amount of ones should be similar to the amount of zeroes.
 
-Other tests may check different types of bias, like bits dependency and patterns occurrences. A statistical battery consists of such tests. Over time, various statistical batteries were developed, such as NIST STS, Dieharder, and TestU01.
+Other tests may check different types of non-randomness, like bits dependency and patterns occurrences. A statistical battery consists of such tests. Over time, various statistical batteries were developed, such as NIST STS, Dieharder, and TestU01.
 
 Statistical batteries are fixed set of tests. Therefore, the battery does not adapt to the tested data. The goal of the EACirc tool is to create a statistical test directly based on the tested data. To adapt to the tested data, EACirc utilises heuristic for problem optimisation. The goal of the problem optimisation is constructing a test capable of a bias detection. The aim of this thesis is to analyse alternative optimisation techniques and implement some of them to advance the optimisation process.
 
-Following this introduction, in the \cref{chap:eacirc} we explain the computation of EACirc. After that, in the \cref{chap:metaheuristics} we present methods of problem optimisation and we inspect their potential for application in randomness testing. The \cref{chap:method} defines analysis methodology and introduces the testing dataset. The results of the work are presented in \cref{chap:res}, followed by comparison with related work in \cref{chap:relatwork}. The \cref{chap:conclusion} concludes the thesis and proposes future direction in the area. % TODO appendinx
+Following this introduction, in the \cref{chap:eacirc} we explain the computation of EACirc. After that, in the \cref{chap:metaheuristics} we present methods of problem optimisation and we inspect their potential for application in randomness testing. The \cref{chap:method} defines analysis methodology and introduces the testing dataset. The results of the work are presented in \cref{chap:res}, followed by comparison with related work in \cref{chap:relatwork}. The \cref{chap:conclusion} concludes the thesis and proposes future direction in the area. The \cref{chap:app-glos} contains a glossary of defined and advanced terms. We emphasised these terms in the text by italic type. The \cref{chap:app-ss-res} shows some additional results.
 
-Even though the research of this work was performed mainly by myself, the plural is used in the text. EACirc and other randomness testing tools are researched by a team at the Centre for Research on Cryptography and Security, Masaryk University\footnote{The team of randomness testing involves following people: Radka Cieslarová, Michal Hajas, Dušan Klinec, Matúš Nemec, Jiří Novotný, Ľubomír Obrátil, Marek Sýs, Petr Švenda, Martin Ukrop and others.}.
-
-%TODO: add link to crcs
+Even though the research of this work was performed mainly by myself, the plural is used in the text. EACirc and other randomness testing tools are researched by a team at the Centre for Research on Cryptography and Security (CRoCS), Masaryk University\footnote{The team of randomness testing involves following people: Radka Cieslarová, Michal Hajas, Dušan Klinec, Matúš Nemec, Jiří Novotný, Ľubomír Obrátil, Marek Sýs, Petr Švenda, Martin Ukrop and others.}$^{,}$\footnote{The thesis materials together with an overview of the contributions are available online on the CRoCS's pages: \url{http://crcs.cz/thesis/kubicek2017}.}.
 
 
 \chapter{EACirc}
@@ -247,11 +245,11 @@ The distinguisher is encoded as a software-emulated electronic circuit; an examp
 \label{fig:eac-circuit}
 \end{figure}
 
-The distinguisher is not able to classify a single test vector, as even a truly random test vector may look like the tested data. Therefore, EACirc process the output statistically. It proceeds 1\,000 analysed data test vectors and 1\,000 reference random data vectors, and it accumulates the outputs per dataset to output distribution. These distributions for tested and reference datasets are compared using a $\chi^{2}$ test \todo{cite}. The result of the $\chi^{2}$ test is a $p$-value, which is transformed to the \textit{fitness} value as $1 - p$-value.
+The distinguisher is not able to classify a single test vector, as even a truly random test vector may look like the tested data. Therefore, EACirc process the output statistically. It proceeds 1\,000 analysed data test vectors and 1\,000 reference random data vectors, and it accumulates the outputs per dataset to an output distribution. These distributions for the tested and the reference datasets are compared using a $\chi^{2}$ test \todo{cite}. The result of the $\chi^{2}$ test is a $p$-value, which is transformed to the \textit{fitness} value as $1 - p$-value.
 
-There is an enormous number of potential circuits. Therefore the computation starts with a randomly generated circuit, generally denoted as \textit{candidate solution}. To obtain intended solution, we perform modifications, whose are addition or removal of a connector or change of the operation in the node. By these changes that we denote as a \textit{mutation}, we can create another \textit{candidate solution}.
+There is an enormous number of potential circuits. Therefore the computation starts with a randomly generated circuit, generally denoted as \textit{candidate solution}. To obtain intended solution, we perform modifications, whose are addition or removal of a connector or change of the operation in the node. By these changes that we denote as \textit{mutations}, we can create another \textit{candidate solution}, also sometimes denoted as \textit{neighbour}.
 
-Those two \textit{candidate solutions} are compared using the \textit{fitness} function. We want to minimise the $p$-value, which means maximise the \textit{fitness}. Therefore we select the \textit{candidate solutions} with higher \textit{fitness}. We repeat the process 100 times, these iterations are called \textit{epoch}.
+Those two \textit{candidate solutions} are compared using the \textit{fitness} function. We want to minimise the $p$-value, which means maximise the \textit{fitness}. Therefore we select the \textit{candidate solutions} with the higher \textit{fitness}. We repeat the process 100 times, these iterations are called \textit{epoch}.
 
 At the end of the \textit{epoch}, there is a likelihood that the circuit exploited some property of the tested data. To not \textit{overfit} to the data, we change the tested datasets and repeat the \textit{epoch}.%TODO: toto neznamena automaticky preuceni
 
@@ -736,7 +734,7 @@ The generator takes as an input the \texttt{JSON} dump of the results from the p
 
 \todo{Petr's comments are not corrected}
 
-The ultimate goal of the experiments with metaheuristics is increasing detection capabilities of nonrandomness of tested datastream. The analysed functions, described in \cref{sec:method-data}, are round-reduced. The randomness of the data increases rapidly with the rounds addition, so the comparison of metaheuristics may not be enough fine-grained. We would need functions with a low increase of the randomness per round as a benchmark, but we did not observe such behaviour by any of the tested functions, nor our own design of benchmarking function does not behave that way~\cite{EACirc-lut}.
+The ultimate goal of the experiments with metaheuristics is increasing detection capabilities of non-randomness of tested datastream. The analysed functions, described in \cref{sec:method-data}, are round-reduced. The randomness of the data increases rapidly with the rounds addition, so the comparison of metaheuristics may not be enough fine-grained. We would need functions with a low increase of the randomness per round as a benchmark, but we did not observe such behaviour by any of the tested functions, nor our own design of benchmarking function does not behave that way~\cite{EACirc-lut}.
 
 Less ambitious, but still useful goal can be an increase of the \textit{rejection rate} of the null hypothesis per experiment. Rejecting only 10\,\% of runs lead to difficulties with the analysis of the output test. The higher is the \textit{rejection rate}, the easier is the interpretation of found distinguisher.
 
@@ -1096,24 +1094,26 @@ TEA$_4$     & \fd{}0.444         & \fd{}0.244             & \fd{}0.729          
 \chapter{Related work}
 \label{chap:relatwork}
 
-We presented our tools for randomness assessment, yet this area is broad, and many researchers developed their own tools. The tools are not usually adaptive to the data. Instead, they test the data for a set of statistical properties. These statistical tests are grouped to statistical test batteries. There are multiple batteries, we present the followings.
+We presented our tools for randomness assessment, yet this area is broad, and many researchers developed their own tools. However, these tools are not usually adaptive to the data as EACirc. Instead, they test the data for a set of statistical properties. These statistical tests are grouped to statistical test batteries. There are multiple batteries, we present the followings.
 
 %Assesment of randomness is necessary in other fields than just cryptography. Physicists use randomness assesment for .... Overal, all research areas need to evaluate their data by statisticaal tests. Therefore, statistical testing is well studied field with multiple standard tools. There are multiple statistical batteries. 
 
 \begin{description}
-    \item[Donald Knuth] explains statistical testing in the second edition of The Art of Computer Programming~\cite{knuth1969vol}. He suggested several PRNGs, and for analysis, he designed some statistical tests. The high quality of this source discouraged other researchers from work in this area until George Marsaglia came with the Diehard battery. \todo{cite discouraged} %zeroth
+    \item[Donald Knuth] explains statistical testing in the second edition of The Art of Computer Programming~\cite{knuth1969vol}. He suggested several PRNGs, and for analysis, he designed some statistical tests. The high quality of this source was sufficient in the field until George Marsaglia came with the Diehard battery. %zeroth
     \item[Diehard] was developed at Florida State University by George Marsaglia in 1995~\cite{marsaglia1996diehard}. It was published on CD together with three so-called true random data sources and multiple PRNGs. %first
     \item[Crypt-X suite] was a test battery for analysis of cryptoprimitives used in the late nineties~\cite{cryptxs}. NIST STS fully surpassed it. % second
-    \item[NIST STS] is the golden standard of statistical testing in cryptography~\cite{rukhin2001statistical}. NIST standardised part of the battery as one step for certification FIPS FIPS 140-2. It was also used as one criterion of evaluation of AES candidates, evaluated by Murphy in~\cite{murphy2000power}. For example, Murphy found that the AES candidate HPC failed in NIST STS, which detected possible weaknesses of the algorithm.
+    \item[NIST STS] is the "golden" standard of statistical testing in cryptography~\cite{rukhin2001statistical}. Four tests of the battery were standardised as one step for the certification FIPS 140-2~\cite{fips2001140}. It was also used as one criterion of evaluation of the AES candidates, evaluated by Murphy in~\cite{murphy2000power}. For example, Murphy found NIST STS failing for the AES candidate HPC, which detected possible weaknesses of the algorithm.
 
-    NIST STS was developed in the late nineties, and the last revision was released in 2010~\cite{rukhin2001statistical}. The 2010 update removed biased test \textit{Lempel-Ziv Complexity of Sequences}. Further analysis of the bias in the $p$-values produced by NIST STS shows more dependent tests, which leads to a production of biased results. Overall NIST STS is accepted as a "golden" standard, so newer batteries extend it (at least the FIPS 140 subset of NIST STS battery) and relates to it. % third
-    \item[Dieharder] was developed by Robert G. Brown at the Duke University in 2004~\cite{brown2013dieharder}. It reimplements all tests of Diehard battery, and extends it by many additional tests. Dieharder also contains three of fifteen test of NIST STS battery. However, it suffers similar bias flaws as NIST STS, as detected \todo{Lubo in}. % fourth
-    \item[TestU01] is state of the art in statistical testing. It is a library, continuously developed by Université de Montréal since 2007~\cite{l2007testu01}. The design of the test is innovative in comparison to previous batteries. It uses fewer tests, whose are parametrised to form more sub-tests. This approach outperforms all other statistical batteries, as will be shown in our results in \cref{table:res-batteries}. The TestU01 also implements multiple PRNG from different categories, observing the same results, which proves the non-randomness. % fifth
-    \item[PractRand] is another competitor to TestU01~\cite{dotypractically}. The author claims PracRand suits better for testing a large amount of data in comparison to other batteries. However, we have not testified this claim.
-    \item[RaBiGeTe] is user friendly battery for Windows users~\cite{rabigete}. It implements some of the NIST STS's tests and some of Donald Knuth's tests.
+    NIST STS was developed in the late nineties, and the last revision was released in 2010~\cite{rukhin2001statistical}. The 2010 update removed a biased test \textit{Lempel-Ziv Complexity of Sequences}. Further analysis of the bias in the $p$-values produced by NIST STS shows more dependent tests, which leads to a production of biased results. Overall NIST STS is accepted as the "golden" standard, so newer batteries extend it (at least the FIPS 140 subset of NIST STS battery) and relates to it. % third
+    \item[Dieharder] was developed by Robert G. Brown at the Duke University in 2004~\cite{brown2013dieharder}. It reimplements all tests of Diehard battery, and extends it by multiple additional tests. Dieharder also contains three of the fifteen tests of the NIST STS battery. However, it suffers similar bias flaws as NIST STS, as detected \todo{Lubo in}. % fourth
+    \item[TestU01] is state of the art in statistical testing. It is a library, continuously developed by Université de Montréal since 2007~\cite{l2007testu01}. The design of the tests is innovative in comparison to previous batteries. It uses fewer tests, whose are parametrised to form more sub-tests. This approach outperforms all other statistical batteries, as will be shown in our results in \cref{table:res-batteries}. The TestU01 also implements multiple PRNG from different categories, observing the same results, which proves the non-randomness. % fifth
+
+    % TODO: variants
+    \item[PractRand] is another competitor to the TestU01~\cite{dotypractically}. The author claims that the PracRand suits better for testing a large amount of data in comparison to other batteries. However, we have not testified this claim.
+    \item[RaBiGeTe] is a statistical battery for Windows users~\cite{rabigete}. It implements some of the NIST STS's tests and some of Donald Knuth's tests.
 \end{description}
 
-There are also others statistical batteries: CryptoStat~\cite{kaminsky2013cryptostat}, YAARX~\cite{biryukov2014automatic}, ENT~\cite{walker2008ent}, SPRNG~\cite{mascagni2000algorithm}, gjrand~\cite{gjrand} and BSI test suite~\cite{schindler2002evaluation}. \todo{Petr: proc vsechny necitujes? Proc o nich neni neco uvedeno? }
+There are also others statistical batteries: CryptoStat~\cite{kaminsky2013cryptostat}, YAARX~\cite{biryukov2014automatic}, ENT~\cite{walker2008ent}, SPRNG~\cite{mascagni2000algorithm}, gjrand~\cite{gjrand} and BSI's test suite~\cite{schindler2002evaluation}.
 
 % randomness is analysed in more research areas
 %   statistical batteries
@@ -1124,26 +1124,23 @@ There are also others statistical batteries: CryptoStat~\cite{kaminsky2013crypto
 \section{Statistical batteries}
 \label{sec:relatwork-stat}
 
-% what they are
-% methodics
+We evaluated the dataset of well-known cryptographic functions with NIST STS (faster implementation by Sýs et al. was used~\cite{sys2016algorithm}), Dieharder and TestU01 battery. Those batteries were automated in the project Randomness testing toolkit (RTT)~\cite{rttgit} as part of the master thesis of Lubomír Obrátil~\cite{obratilMgrThesis}. RTT is an online service, which allows the user to upload binary data and it executes the batteries on them. It automatically detects the best possible setting of the batteries, as they are parametrised mainly by the size of the input file. After the execution, RTT postprocess the results, and outputs a human readable interpretation of them. Similarly to the previous visualisations in this thesis, we use colours to simplify the table interpretation, where red stands for rejected test and green for passed test.
 
-We evaluated the dataset of well-known functions with NIST STS (faster implementation by Sýs et al. was used~\cite{sys2016algorithm}), Dieharder and TestU01 battery. Those batteries were automated in the project Randomness testing toolkit (RTT)~\cite{rttgit} as part of the master thesis of Lubomír Obrátil~\cite{obratilMgrThesis}. RTT is online service, which allows the user to upload binary data and it executes the batteries on them. It automatically detects the best possible setting of the batteries, as they are parametrised mainly by the size of the binary file. After the execution, RTT postprocess the results and outputs human readable interpretation of them. Similarly to the previous visualisations in this thesis, we use colours to simplify the table interpretation, where red stands for rejected test and green for passed test.
+Such interpretation is straightforward. However, we show it may be incorrect in a very specific situation due to the statistical properties of the batteries. To prove that, we need to explain the interpretation in a statistical manner.
 
-Such interpretation is straightforward. However, we show it may be incorrect in a very specific situation due to statistical properties of the batteries. To prove that, we need to explain the interpretation in a statistical manner.
-
-A single test assesses the data against the null hypothesis that the data are random. The test may reject the hypothesis and therefore state the data seems nonrandom, or it may accept the hypothesis, where it means the test cannot find enough evidence for nonrandomness of the data. However, the test may fail with an error of two types.
+A single test assesses the data against the null hypothesis that the data are random. The test may reject the hypothesis implying the data seems non-random, or it may accept the hypothesis, where it means the test cannot find enough evidence for non-randomness of the data. However, the test may fail with an error of two types.
 
 \begin{description}
-    \item[Type I error] describes the likelihood of acceptance null hypothesis when it is false (false positive). The test incorrectly states that the data are not random. This error occurs with the probability specified by significance level $\alpha$ for random data.
-    \item[Type II error] describes the likelihood of rejection null hypothesis when it is true (false negative). The test did not spot nonrandomness of the data. The probability of type II error is also dependent on $\alpha$, and its calculation is denoted $\beta$.
+    \item[Type I error] describes the likelihood of acceptance the null hypothesis when it is false (false positive). The test incorrectly states that the data are not random. This error occurs with the probability specified by the \textit{significance level} $\alpha$ for random data.
+    \item[Type II error] describes the likelihood of rejection the null hypothesis when it is true (false negative). The test did not spot non-randomness of the data. The probability of type II error is also dependent on the $\alpha$, and it is denoted as $\beta$.
 \end{description}
 
-The batteries consist of a set of tests, that are parametrised up to hundreds of sub-tests. If the significance level $\alpha$ is, for example, $1\,\%$, then the probability that all 100 tests will correctly pass is $0.99^{100}=36.6\,\%$ (suppose the tests are independent, which however do not hold for sub-tests). Therefore, we have to expect type I errors. The probability of type I error further increases if the tests are dependent. Sýs et al.~\cite{sys2015interpretation} showed that some of the NIST STS tests are dependent and they proposed the interpretation of the battery based on calculated proportion of failed tests. The same authors plan to revise also Dieharder battery, which contains similar ambiguity in interpretation. Part of these results are going to be published in thesis of Lubomír Obrátil~\cite{obratilMgrThesis}. RTT uses this approach for the interpretation.
+The batteries consist of a set of tests, that are parametrised up to hundreds of sub-tests. If the significance level $\alpha$ is, for example, $1\,\%$, then the probability that all 100 tests will correctly pass is $0.99^{100}=36.6\,\%$ (suppose the tests are independent, which however do not hold for sub-tests). Therefore, we have to expect type I errors. The probability of type I error further increases if the tests are dependent. Sýs et al.~\cite{sys2015interpretation} showed that some of the NIST STS tests are dependent and they proposed the interpretation of the battery based on calculated proportion of the failed tests. The same authors plan to revise also Dieharder battery, which contains similar ambiguity in interpretation. Part of these results are going to be published in thesis of Lubomír Obrátil~\cite{obratilMgrThesis}. RTT's interpretation takes into account the type I error.
 
 \subsection{Statistical batteries results}
 \label{subsec:relatwork-stat-res}
 
-The comparison of multiple batteries can be seen in \cref{table:res-batteries}. The visualisation required changes of the table. The rows of the table represent cryptographic functions reduced to the given number of rounds. These functions with rounds may repeat, if different statistical testing tools were able to detect non-randomness of the function reduced to a different number of rounds. The column represents single statistical battery or EACirc tool with guided local search metaheuristic. The contains the number of failed sub-tests of total sub-tests from the table header or EACirc's \textit{rejection rate}. Or interpretation of the randomness is signalised by the highlight. The red colour signalises the tool rejected randomness hypothesis, the cell is green othervise.
+The comparison of multiple batteries can be seen in \cref{table:res-batteries}. The visualisation required changes of the table. The rows of the table represent cryptographic functions reduced to the given number of rounds. These functions with rounds may repeat, if different statistical testing tools were able to detect non-randomness of the function reduced to a different number of rounds. A column represents a single statistical battery or EACirc tool with the guided local search metaheuristic. A cell contains the number of failed sub-tests of total sub-tests from the table header or EACirc's \textit{rejection rate}. Or interpretation of the randomness is signalised by the highlight. The red colour signalises the tool rejected randomness hypothesis, the cell is green othervise.
 
 \begin{table}[H]
 \centering
@@ -1161,16 +1158,17 @@ The comparison of multiple batteries can be seen in \cref{table:res-batteries}. 
 \multicolumn{1}{R{3.0cm}}{\textbf{EACirc} \\ \footnotesize (\textit{rejection rate})} \\ \hline
 AES$_{3}$                        &  8    \fd & 15 \fd &  5   \fd & 20    \fd &  5 \fd & 2 \fd & 4 \fd & 0.164 \fd \\ \hline
 BLAKE$_{1}$                      & 11    \fd & 11 \fd &  5   \fd & 18    \fd &  5 \fd & 2 \fd & 3 \fd & 0.260 \fd \\ \hline
-Grain$_{2}^{\ast}$               & 14    \fd & 27 \fd &  9/9 \fd & 31/31 \fd & 15 \fd & 4 \fd & 4 \fd & 1.000 \fd \\
+Grain$_{2}$                      & 14    \fd & 27 \fd &  9/9 \fd & 31/31 \fd & 15 \fd & 4 \fd & 4 \fd & 1.000 \fd \\
 Grain$_{6}^{\ast}$               &  1    \fn &  0 \fn &  0   \fn &  3    \fn &  1 \fn & 0 \fn & 0 \fn & 0.017 \fn \\ \hline
 Gr\o{}stl$_{2}$                  & 12    \fd & 23 \fd &  9 \fd   & 27    \fd &  9 \fd & 3 \fd & 3 \fd & 1.000 \fd \\ \hline
 JH$_{6}$                         & 12/13 \fd & 27 \fd & 10 \fd   & 30/31 \fd & 15 \fd & 4 \fd & 4 \fd & 1.000 \fd \\ \hline
 Keccak$_{2}$                     & 14    \fd & 27 \fd & 10 \fd   & 31    \fd & 15 \fd & 4 \fd & 4 \fd & 1.000 \fd \\
 Keccak$_{3}$                     &  0    \fn &  1 \fn &  1 \fn   & 11    \fd &  4 \fd & 0 \fn & 3 \fd & 0.017 \fn \\ \hline
-MD6$_{8}^{\ast}$                 &  9    \fd & 19 \fd &  5 \fd   & 16    \fd &  8 \fd & 2 \fd & 3 \fd & 0.995 \fd \\
+MD6$_{8}$                        &  9    \fd & 19 \fd &  5 \fd   & 16    \fd &  8 \fd & 2 \fd & 3 \fd & 0.995 \fd \\
 MD6$_{10}^{\ast}$                &  0    \fn &  0 \fn &  0 \fn   &  2    \fn &  3 \fd & 0 \fn & 0 \fn & 0.016 \fn \\ \hline
-Rabbit$_{0}^{\ast}$              &  1    \fn &  1 \fn &  0 \fn   &  4    \fd &  3 \fd & 1 \fn & 1 \fn & 0.017 \fn \\
+Rabbit$_{0}$                     &  1    \fn &  1 \fn &  0 \fn   &  4    \fd &  3 \fd & 1 \fn & 1 \fn & 0.017 \fn \\
 Rabbit$_{4}^{\ast}$              &  0    \fn &  0 \fn &  0 \fn   &  3    \fn &  3 \fd & 1 \fn & 1 \fn & 0.009 \fn \\ \hline
+RC4$_{\textnormal{no rounds}}^{\ast}$ &  0 \fn &  0 \fn &  0 \fn &  3    \fn &  0 \fn & 0 \fn & 0 \fn & 0.008 \fn \\ \hline
 Salsa20$_{2}$                    & 12    \fd & 26 \fd &  8 \fd   & 28    \fd & 11 \fd & 3 \fd & 3 \fd & 1.000 \fd \\ \hline
 Single DES$_{4}$                 &  7    \fd & 22 \fd &  7 \fd   & 26    \fd & 11 \fd & 4 \fd & 4 \fd & 0.496 \fd \\
 Single DES$_{5}$                 &  1    \fn &  6 \fd &  1 \fn   & 18    \fd &  5 \fd & 2 \fd & 3 \fd & 0.011 \fn \\ \hline
@@ -1180,8 +1178,7 @@ SOSEMANUK$_{4}$                  & 13/13 \fd & 27 \fd & 10 \fd   & 31/31 \fd & 1
 TEA$_{4}$                        &  8    \fd & 19 \fd &  6 \fd   & 15    \fd &  4 \fd & 2 \fd & 3 \fd & 0.729 \fd \\
 TEA$_{5}$                        &  0    \fn &  3 \fn &  2 \fn   &  4    \fd &  1 \fn & 0 \fn & 3 \fd & 0.015 \fn \\ \hline
 Triple DES$_{2}$                 & 12    \fd & 26 \fd &  9 \fd   & 31    \fd & 15 \fd & 3 \fd & 4 \fd & 1.000 \fd \\
-Triple DES$_{3}$                 &  1    \fn &  4 \fd &  1 \fn   &  4    \fd &  0 \fn & 1 \fn & 1 \fn & 0.012 \fn \\ \hline
-RC4$_{\textnormal{no rounds}}^{\ast}$ &  0 \fn &  0 \fn &  0 \fn &  3    \fn &  0 \fn & 0 \fn & 0 \fn & 0.008 \fn \\
+Triple DES$_{3}$                 &  1    \fn &  4 \fd &  1 \fn   &  4    \fd &  0 \fn & 1 \fn & 1 \fn & 0.012 \fn \\
 
 \end{tabular}
 }
@@ -1195,17 +1192,17 @@ The results were computed by Randomness Testing Toolkit. Complete results with d
 From those results, we have multiple observations.
 
 \begin{itemize}
-    \item EACirc performs similarly to NIST STS, Dieharder and TestU01 Small Crush.
-    \item TestU01 Crush outperforms all other batteries, which is traded-of by its computation time and the amount of analysed data.
-    \item High amount of failed test indicates the data are biased in multiple characteristics. Such data are usually rejected by all batteries. However, when only a single battery detects nonrandomness, it is TestU01.
-    \item \textbf{TestU01 was able to detect deviances in full Rabbit cipher.} After analysis of this result, we found that there was a report \textit{On a bias of Rabbit}~\cite{aumasson2007bias} during the eSTREAM competition, which discovered the same property. Even though this bias was found, Rabbit cipher was selected as software profile finalist, stating that the bias does not allow any feasible attack due to complexity.
-    \item Similarly observation is the bias of a hardware profile eSTREAM finalist Grain. TestU01 Crush can detect bias up to six rounds Grain, which is almost one-half of the full function (13 rounds). The known \textit{dynamic cube attack} on the same version of Grain~\cite{dinur2011breaking} do not explain the bias observed by us. Our round reduction is based on a limitation of the shuffle of the non-linear feedback shift registers, which may require more than six rounds to shuffle the data enough. The full Grain cipher has 13 rounds, which still provides some security margin.
-    \item The interpretation based on the probability of fail of $n$ sub-tests would not detect the nonrandomness property of Grain reduced to five rounds. The rejection approach is strict (so it has hight probability of type II error), however manual observation that the failed sub-tests are the same as failed sub-tests of four and six rounds Grain provide necessary trust to our interpretation that the data are biased. In addition, such results were examined via retesting on different data from the same setting.
-    \item Note: MD6 reduced to 10 rounds is nonrandom based on TestU01 Crush and Rabbit. The results in the table were omitted due to consistency, as the interpretation method leaves them as passed test. However, the probability of those extreme results is below 1\,\%. The same behaviour was detected for RC4 by TestU01 Crush.
-    \item Rejection of randomness by the battery do not have to be taken as black-box (as we present here), but we can analyse, which test failed. However, depending on the test, it may be more difficult than analysis of the output circuit from EACirc.
+    \item EACirc performs similarly to NIST STS and TestU01 Small Crush. Dieharder is slightly better than EACirc.
+    \item TestU01 Crush outperforms all other batteries having a disadvantage of the computation time and the amount of analysed data.
+    \item High amount of failed test indicates the data are biased in multiple characteristics. Such data are usually rejected by all batteries. However, when only a single battery detects non-randomness, it is TestU01.
+    \item \textbf{TestU01 Rabbit was able to detect deviances in full Rabbit cipher.} After analysis of this result, we found that there was a report \textit{On a bias of Rabbit}~\cite{aumasson2007bias} during the eSTREAM competition, which discovered the same property. Even though this bias was found, Rabbit cipher was selected as software profile finalist, stating that the bias does not allow any feasible attack due to its complexity.
+    \item A similar observation is the bias of a hardware profile eSTREAM finalist Grain. TestU01 Crush can detect bias up to six rounds Grain, which is almost one-half of the full function (13 rounds). The only known cryptanalysis of Grain is a \textit{dynamic cube attack}~\cite{dinur2011breaking}. It does not explain the bias observed by us. Our round reduction is based on a limitation of the shuffle of the non-linear feedback shift registers, which may require more than six rounds to shuffle the data enough. The full Grain cipher has 13 rounds, which still provides some security margin.
+    \item The interpretation based on the probability of fail of $n$ sub-tests would not detect the non-randomness property of five-round Grain. The rejection approach is strict (so it has hight probability of type II error). However, a manual observation of the failing sub-tests are being the same as the failing sub-tests of four- and six-round Grain provide a necessary trust to our interpretation that the data are non-random. In addition, such results were examined via retesting on different data from the same setting.
+    \item The results marked with asterisk on TestU01 Crush and Rabbit were manually classified as non-random. We did not highlight them due to consistency, as the interpretation method leaves them as passed test. However, the probability of those extreme results is below 1\,\%.
+    \item A rejection of randomness by the battery do not have to be as a black-box (as we present here), but we can analyse, which test failed. However, depending on the test, it may be more difficult than analysis of the output circuit from EACirc.
 
-    EACirc may also provide concrete proof of the data dependency. If there is a dependency between specifics bytes, it would always be present in the circuit for strong distinguishers. The statistical battery would some test, probably the \textit{dependency test}. However, they would not state, what is the dependence in the data.
-    \item Another advantage of EACirc is the simplicity of already learned distinguisher. Using learned distinguisher needs much less data, only low kilobytes and it may even state the guess for a single test vector. The test of statistical battery always requires fixed amount of data.
+    EACirc may also provide concrete proof of the data dependency. If there is a dependency between specifics bytes, it would be present in the strong distinguisher's circuit. The statistical battery would fail some test, probably the \textit{dependency test}. However, they would not state, what is the pattern in the data.
+    \item Another advantage of EACirc is the simplicity of already learned distinguisher. Using learned distinguisher needs only kilobytes of the tested data. EACirc may even state the guess for a single test vector, such setting was used in \cite{ukropBcThesis}. The test of statistical battery always requires fixed amount of data.
 \end{itemize}
 
 \section{Compression algorithms}
@@ -1223,9 +1220,9 @@ We experimented with this approach, trying capabilities of compression programs.
     \item[NanoZip] in version 0.09a is the latest version from the year 2011 of an experimental archiver software based on Burrows-Wheeler compression~\cite{nanozip}. Based on multiple data compression benchmarks, NanoZip has the highest compression capabilities. Although we used various parameters, we did not obtain archive, which could be losslessly decompressed. Therefore we omit this algorithm.
 \end{description}
 
-All the utilities were executed with highest compression ratio with the slowest speed.
+All the utilities were executed with the highest compression ratio with the slowest speed.
 
-We denote the results in a similar manner as results of the batteries. The rows are labelled by cryptographic functions, columns are compression utilities. The cell contains the compression ratio, which says how much was saved by the compression. Compression of random data should not safe anything, marked with dash, any higher value means the data are non-random. We tested this evaluation experimentally on random data, and the compressed file was never smaller than the original file. This property was tested for more than ten samples.
+We denote the results in a similar manner as results of the batteries. The rows are labelled by cryptographic functions, columns represent compression utilities. The cell contains the compression ratio, which says how much was saved by the compression. Compression of random data should not safe anything, marked with dash, any higher value means the data are non-random. We tested this evaluation experimentally on random data, and the compressed file was never smaller than the original file. This property was tested for more than ten samples.
 
 \begin{table}[H]
 \centering
@@ -1266,48 +1263,21 @@ Triple DES$_{2}$                 & --     \fn & --     \fn & --     \fn & --    
 \label{table:res-compression}
 \end{table}
 
-%\begin{table}[t]
-%\centering{}
-%\begin{tabular}{l|p{1.8cm} p{1.8cm} p{1.8cm} p{1.8cm}}
-%Function\textbackslash{}algorithm & 
-                %bzip2   &   gz      &   lzop    &   zip     \\ \hline
-%AES         & 2, 2\,\%  & 2, 15\,\% & 2, 25\,\% & 2, 15\,\% \\
-%BLAKE       & 0, 0\,\%  & 0, 0\,\%  & 0, 1\,\%  & 0, 0\,\%  \\
-%Grain       & 2, 3\,\%  & 2, 11\,\% & 2, 25\,\% & 2, 11\,\% \\
-%Grostl      & 0, 0\,\%  & 0, 0\,\%  & 0, 1\,\%  & 0, 0\,\%  \\
-%HC-128      & --        & --        & --        & --        \\
-%JH          & 6, 57\,\% & 6, 59\,\% & 6, 68\,\% & 6, 59\,\% \\
-%Keccak      & 1, 16\,\% & 2, 99\,\% & 1, 36\,\% & 2, 99\,\% \\
-%MD6         & 7, 99\,\% & 7, 97\,\% & 6, 59\,\% & 7, 97\,\% \\
-%Rabbit      & --        & --        & --        & --        \\
-%RC4         & --        & --        & --        & --        \\
-%Salsa20     & --        & 2, 99\,\% & --        & 2, 99\,\% \\
-%SINGLE-DES  & 2, 71\,\% & 2, 79\,\% & 2, 84\,\% & 2, 78\,\% \\
-%Skein       & 2, 93\,\% & 2, 79\,\% & 2, 93\,\% & 2, 80\,\% \\
-%SOSEMANUK   & 4, 0\,\%  & 4, 0\,\%  & 4, 1\,\%  & 4, 0\,\%  \\
-%TEA         & 2, 97\,\% & 3, 99\,\% & 2, 93\,\% & 3, 99\,\% \\
-%TRIPLE-DES  & 2, 99\,\% & 2, 98\,\% & 2, 99\,\% & 2, 98\,\% 
-
-%\end{tabular}
-%\caption{Capabilities of compression algorithms on cryptographic data. Cell contain pair of highest number of rounds, to which was the cryptographic function reduced and saved space ratio of the compression.}
-%\label{table:res-compression}
-%\end{table}
-
 Observations from the results are following.
 
 \begin{itemize}
     \item The efficiency of newer \textit{bzip2} on cryptographic data is not higher than efficiency of \textit{gzip} and \textit{zip}.
     \item The fact that we have to reduce functions to very few rounds is probably caused by character (byte-level) specialisation of the compression algorithms. The cryptographic data may contain more bit-level dependencies.
-    \item Still the compression algorithms state similarly to results of neural networks. From these results, we can assume that neural networks detected only the disproportion of zeroes and ones or simple byte-level patterns.
+    \item The artificial neural networks perform slightly better than compression algorithms. ANN have an advantage of bit-level data inspection, while they can test only a single test vector (16 bytes) of data. The similar results of ANN and compression algorithms may indicate significant data non-randomness, such as disproportion of zeroes and ones.
 \end{itemize}
 
 
 \section{Metaheuristcs for randomness testing}
 \label{sec:relatwork-paper}
 
-Besides statistical batteries, numerous other works did the cryptanalysis based on testing some of the statistical properties. We have encountered several works using genetics for statistical analysis of cryptoprimitives. Most of them analysed Tiny Encryption Algorithm (TEA), which is a simple block cipher designed by D. Wheeler and R. Needham in 1995~\cite{TEA}. It was used as a benchmark due to its simplicity and well-known vulnerabilities~\cite{TEAAttack}. The application of genetics programming started in 2002 by J. Hernández et al.~\cite{twoRoundsTea}, whose found statistical deviance in two rounds TEA. Further improvements from the team were presented in 2004 finding the non-randomness in three and four rounds TEA as well~\cite{fourRoundsTea}. So far the best results using genetic programming were found by W. Hu~\cite{fiveRoundsTea}, who detected non-random properties for five rounds TEA. We compared EACirc with these results in~\cite{2016-infocommunications-kubicek}.
+Besides statistical batteries, numerous other works did the cryptanalysis based on testing some of the statistical properties. We have encountered several works using genetic algorithms for statistical analysis of cryptoprimitives. Most of them analysed Tiny Encryption Algorithm (TEA), which is a simple block cipher designed by D. Wheeler and R. Needham in 1995~\cite{TEA}. It was used as a benchmark due to its simplicity and well-known vulnerabilities~\cite{TEAAttack}. The application of genetic algorithms started in 2002 by J. Hernández et al.~\cite{twoRoundsTea}, whose found statistical deviance in two-round TEA. Further improvements from the team were presented in 2004 finding the non-randomness in three- and four-round TEA as well~\cite{fourRoundsTea}. So far the best results using genetic algorithm were found by W. Hu~\cite{fiveRoundsTea}, who detected non-random properties for five-round TEA. We compared EACirc with these results in~\cite{2016-infocommunications-kubicek}.
 
-The Genetic programming was also used for analysis of four rounds DES~\cite{song2007cryptanalysis}. DES was also analysed using particle swarm metaheuristic in~\cite{shahzad2009cryptanalysis}, and Simplified DES was analysed by simulated annealing, and tabu search in~\cite{nalini2005cryptanalysis}. The best so far metaheuristic cryptanalysis on DES were on eight rounds DES using genetic programming by Husein et al.~\cite{husein2007genetic}. In general, these methods are worse than statistical batteries in the number of rounds, but they can provide additional information to the cryptanalyst that batteries do not.
+Genetic algorithms were also used for analysis of four-round DES~\cite{song2007cryptanalysis}. DES was also analysed using particle swarm metaheuristic in~\cite{shahzad2009cryptanalysis}, and Simplified DES was analysed by the simulated annealing, and the tabu search in~\cite{nalini2005cryptanalysis}. The best so far metaheuristic cryptanalysis on DES were on eight-round DES using genetic algorithm by Husein et al.~\cite{husein2007genetic}. Except the last work, these methods are worse than the statistical batteries in the number of rounds, but they can provide additional information to the cryptanalyst that batteries do not.
 
 
 \chapter{Conclusion}
@@ -1343,7 +1313,7 @@ Regarding the artificial neural network, we began cooperation with pattern recog
 \appendix{}
 
 \chapter{Glossary}
-\label{sec:app-glos}
+\label{chap:app-glos}
 
 \todo{Sort it lexicographically}
 
@@ -1358,7 +1328,7 @@ Regarding the artificial neural network, we began cooperation with pattern recog
     \item[Pruning] is the process of removal unused connectors and nodes from the circuit. Prunning is done by breath first search from the output with prior knowledge, what is the arity of functions in nodes.
     \item[Rejection rate] is the number of EACirc runs that rejected the randomness hypothesis divided by total number of runs, usually 1\,000 runs.
     \item[Binary weight] is the number of ones in the data.
-    \item[Weight evaluator] is method for fitness evaluation based on binary weight of the circuits outputs. If the amount of ones output by the circuit per tested dataset significantly differs from amount of ones from the reference dataset, than the tested data are nonrandom.
+    \item[Weight evaluator] is method for fitness evaluation based on binary weight of the circuits outputs. If the amount of ones output by the circuit per tested dataset significantly differs from amount of ones from the reference dataset, than the tested data are non-random.
     \item[Epoch] is the number of rounds evaluated on the same dataset. After the end of epoch, the dataset is regenerated.
     \item[Test vector] is the least tested unit of data. It is usually a single ciphertext.
     \item[Space exploration] is the process of broad search in the solution space for a feasible solution.
@@ -1388,7 +1358,7 @@ Regarding the artificial neural network, we began cooperation with pattern recog
 \end{description}
 
 \chapter{Single-solution metaheuristics results}
-\label{sec:app-ss-res}
+\label{chap:app-ss-res}
 
 \begin{table}[H]
 \centering
