@@ -248,7 +248,7 @@ EACirc is a randomness testing tool developed at the Centre for Research on Cryp
 \section{EACirc workflow}
 \label{sec:eac-comp}
 
-The distinguisher is encoded as a software-emulated electronic circuit; an example is shown in \cref{fig:eac-circuit}. The circuit consists of connectors and nodes. The nodes are arranged in layers. The first is an input layer that splits the test vector to bytes. These bytes are processed by further layers, where nodes modify the data by Boolean operations. The output is reduced to a single byte, upon which the circuit bases the classification.
+The distinguisher is encoded as a software-emulated electronic circuit; an example is shown in \cref{fig:eac-circuit}. The circuit consists of connectors and nodes. The nodes are arranged in layers. The first is an input layer that splits the \textit{test vector} to bytes. These bytes are processed by further layers, where nodes modify the data by Boolean operations. The output is reduced to a single byte, upon which the circuit bases the classification.
 
 \begin{figure}[h]
   \centering
@@ -257,7 +257,7 @@ The distinguisher is encoded as a software-emulated electronic circuit; an examp
 \label{fig:eac-circuit}
 \end{figure}
 
-The distinguisher is not able to classify a single test vector, as even a truly random test vector may look like the tested data. Therefore, EACirc process the output statistically. It proceeds 1\,000 analysed data test vectors and 1\,000 reference random data vectors, and it accumulates the outputs per dataset to an output distribution. These distributions for the tested and the reference datasets are compared using a $\chi^{2}$ test~\cite[p.~219]{stat-handbook}. The result of the $\chi^{2}$ test is a $p$-value, which is transformed to the \textit{fitness} value as $1 - p$-value.
+The distinguisher is not able to classify a single \textit{test vector}, as even a truly random \textit{test vector} may look like the tested data. Therefore, EACirc process the output statistically. It proceeds 1\,000 analysed data \textit{test vectors} and 1\,000 reference random data vectors, and it accumulates the outputs per dataset to an output distribution. These distributions for the tested and the reference datasets are compared using a $\chi^{2}$ test~\cite[p.~219]{stat-handbook}. The result of the $\chi^{2}$ test is a $p$-value, which is transformed to the \textit{fitness} value as $1 - p$-value.
 
 There is an enormous number of potential circuits. Therefore the computation starts with a randomly generated circuit, generally denoted as \textit{candidate solution}. To obtain intended solution, we perform modifications, whose are addition or removal of a connector or change of the operation in the node. By these changes that we denote as \textit{mutations}, we can create another \textit{candidate solution}, also sometimes denoted as \textit{neighbour}.
 
@@ -273,9 +273,9 @@ The whole process is called \textit{iterated local search}. It is a metaheuristi
 
 A computational problem is a task to find a solution for given question. An optimisation problem is a task to find the feasible solution, which satisfies the criteria best. A heuristic is a problem specific technique for finding some approximative solution, where exact techniques fail. Finally, the metaheuristic is technique abstracted from the problem so that it can be used for various optimisation problems.
 
-Metaheuristics are applicable for optimisation problems if a programmer can provide three crucial parts. First is an instance of candidate solution for the problem, it is the circuit in EACirc. Second is a function to vary the solution, in EACirc it is the mutation. Third and usually the most important is the fitness function, which measures the quality of the solution. Metaheuristic uses these parts to follow the landscape of the problem, and they try to find better solutions during the time.
+Metaheuristics are applicable for optimisation problems if a programmer can provide three crucial parts. First is an instance of candidate solution for the problem, it is the circuit in EACirc. Second is a function to vary the solution, in EACirc it is the mutation. Third and usually the most important is the \textit{fitness function}, which measures the quality of the solution. Metaheuristic uses these parts to follow the landscape of the problem, and they try to find better solutions during the time.
 
-The main advantage of metaheuristics is that they are well-known and studied. This overview, as well as implementation ideas, are following book Metaheuristics from Talbi~\cite{talbi2009metaheuristics}. Please refer to this book for more examples of metaheuristic applications, whose are out of the scope of this work. The citations that are mentioned in this thesis extend the literature of the book, mainly in areas close to application in cryptography.
+The main advantage of metaheuristics is that they are well-known and studied. This overview, as well as implementation ideas, are following book Metaheuristics from Talbi~\cite{talbi2009metaheuristics}. Please refer to this book for more examples of metaheuristic applications. The citations that are mentioned in this thesis extend the literature of the book, mainly in areas close to application in cryptography.
 
 The number of candidate solutions inspected simultaneously splits metaheuristics into two categories: single-solution metaheuristics are present in \cref{sec:opt-single-sol} and population-based metaheuristics in \cref{sec:opt-population}. \Cref{sec:opt-other} describes other methods. All the approaches are firstly described and then analysed for application in randomness testing. If the application is suitable, we describe the possible implementation in more detail.
 
@@ -318,11 +318,11 @@ The number of candidate solutions inspected simultaneously splits metaheuristics
 \subsection{Local search}
 \label{subsec:opt-single-sol-ls}
 
-Local search is the very basic approach in the problem optimisation. The search begins with a single initial random candidate solution, which is mutated into a neighbour candidate. Then the local search compares fitnesses of these two solutions and selects the better candidate to the next generation. The algorithm iterates this approach until it finds a satisfactory solution, or it ran for the limited amount of iterations.
+Local search is the very basic approach in the problem optimisation. The search begins with a single initial random candidate solution, which is mutated into a \textit{neighbour} candidate. Then the local search compares \textit{fitnesses} of these two solutions and selects the better candidate to the next generation. The algorithm iterates this approach until it finds a satisfactory solution, or it ran for the limited amount of iterations.
 
-The algorithm can also be referred as hill-climbing, as we with acceptance of an improving solution, we step up in the fitness space. Therefore local search often finds only the sub-optimal solution -- a \textit{local optimum}.
+The algorithm can also be referred as hill-climbing, as we with acceptance of an improving solution, we step up in the \textit{fitness} space. Therefore local search often finds only the sub-optimal solution -- a \textit{local optimum}.
 
-Escaping \textit{local optima} is an important phenomenon, as fitness function landscape depends on tested data, or on the specific evaluation approach.
+Escaping \textit{local optima} is an important phenomenon, as \textit{fitness function} landscape depends on tested data, or on the specific evaluation approach.
 
 As EACirc is using an iterated version of local search, the application of local search would be straightforward. However, this would decrease the capabilities of EACirc do to omit of the learning process.
 
@@ -331,9 +331,9 @@ As EACirc is using an iterated version of local search, the application of local
 
 Iterative local search is and extension of local search. After defined amounts of iteration of basic local search, the tested data are changed. The computation on one set of data is called an \textit{epoch}, so we denote the amount of iterations \textit{epoch length}.
 
-During the \textit{epoch}, the fitness progress is non-decreasing. However, after the end of each \textit{epoch}, the fitness is expected to drop. The final fitness has to be tested on a new dataset. This rule applies for every metaheuristic. Therefore, we distinguish between the learning dataset and the testing dataset.
+During the \textit{epoch}, the \textit{fitness function's} progress is non-decreasing. However, after the end of each \textit{epoch}, the \textit{fitness} is expected to drop. The final \textit{fitness} has to be tested on a new dataset. This rule applies for every metaheuristic. Therefore, we distinguish between the learning dataset and the testing dataset.
 
-The \textit{epoch length} is a crucial parameter of this metaheuristic. A short \textit{epoch length} can be computationally more demanding due to higher data consumption, and the solution may not be able to adapt to the data. Too long \textit{epoch} leads to \textit{overfitting}, a situation when the individual is learning a specific pattern of the current dataset over general patterns of all datasets. Martin Ukrop examined the overfitting process in EACirc in~\cite[Chapter~7]{ukropBcThesis}.
+The \textit{epoch length} is a crucial parameter of this metaheuristic. A short \textit{epoch length} can be computationally more demanding due to higher data consumption, and the solution may not be able to adapt to the data. Too long \textit{epoch} leads to \textit{overfitting}, a situation when the individual is learning a specific pattern of the current dataset over general patterns of all datasets. Martin Ukrop examined the \textit{overfitting} process in EACirc in~\cite[Chapter~7]{ukropBcThesis}.
 
 The EACirc have used the iterated local search since~\cite{sys2014constructing}. Therefore it is used as a baseline for single-solution metaheuristics tested in this work.
 
@@ -342,7 +342,7 @@ The EACirc have used the iterated local search since~\cite{sys2014constructing}.
 
 The greedy randomised adaptive search procedure is splitting each iteration into two steps: a feasible solution construction by greedy algorithm and performing the local search using the generated solution.
 
-We abandoned this metaheuristic as we did not found any greedy algorithm for circuit construction, such that would reflect tested data. Also, it does not fit the iterative process of learning in \textit{epochs}.
+We refused this metaheuristic as we did not found any greedy algorithm for circuit construction, such that would reflect tested data. Also, it does not fit the iterative process of learning in \textit{epochs}.
 
 \subsection{Multi-start local search}
 \label{subsec:opt-single-sol-msls}
@@ -356,7 +356,7 @@ We decided not to cover multi-start local search, as saving a small fraction of 
 \subsection{Guided local search}
 \label{subsec:opt-single-sol-gls}
 
-Guided local search is a single-solution metaheuristic based on dynamic changing of the fitness function. If the metaheuristic got stuck in a \textit{local optimum}, guided local search would change the fitness function so the individual can continue climbing.
+Guided local search is a single-solution metaheuristic based on dynamic changing of the \textit{fitness function}. If the metaheuristic got stuck in a \textit{local optimum}, guided local search would change the \textit{fitness function} so the individual can continue climbing.
 
 The EACirc computation can get trapped in a \textit{local optimum} mainly in two cases:
 
@@ -365,41 +365,41 @@ The EACirc computation can get trapped in a \textit{local optimum} mainly in two
     \item the individual is already successful due to finding feature of the tested data, but it could not get better.
 \end{enumerate}
 
-We do not need to fix the first case, as such individual would be replaced in next \textit{epoch}. However, we can use guided local search to improve individual from the second case. Our alternative fitness function can be designed to reflect the density of the circuit. Such fitness would simplify the solution, which would help us with the interpretation of the last individual. Alternatively, we can use completely different fitness function.
+We do not need to fix the first case, as such individual would be replaced in next \textit{epoch}. However, we can use guided local search to improve individual from the second case. Our alternative \textit{fitness function} can be designed to reflect the density of the circuit. Such \textit{fitness} would simplify the solution, which would help us with the interpretation of the last individual. Alternatively, we can use completely different \textit{fitness function}.
 
 We decided to implement guided local search in EACirc, as it also represents single-solution metaheuristics with a change of the objective function from \cref{fig:opt-single-sol-overview}.
 
 \subsection{Noisy method}
 \label{subsec:opt-single-sol-nois}
 
-The noisy method is another metaheuristic, which changes the fitness space to escape \textit{local optima}. It is done by adding random noise to the input data, as Talbi described in~\cite[Section 2.9.2]{talbi2009metaheuristics}. At the beginning of the computation, the noise is the strongest, and it disappears during the computation, so the final \textit{epochs} can be evaluated on the unmodified data.
+The noisy method is another metaheuristic, which changes the \textit{fitness} space to escape \textit{local optima}. It is done by adding random noise to the input data, as Talbi described in~\cite[Section 2.9.2]{talbi2009metaheuristics}. At the beginning of the computation, the noise is the strongest, and it disappears during the computation, so the final \textit{epochs} can be evaluated on the unmodified data.
 
-In EACirc, our research goal is already distinguishing pseudo-random data from truly random data. An additional random noise in the input would probably lead to an even more complicated learning process. For example, the noise could flip a bit on a position, which is necessary for distinguishing between the data sources. Therefore, this method was abandoned.
+In EACirc, our research goal is already distinguishing pseudo-random data from truly random data. An additional random noise in the input would probably lead to an even more complicated learning process. For example, the noise could flip a bit on a position, which is necessary for distinguishing between the data sources. Therefore, this method was refused.
 
 \subsection{Smoothing method}
 \label{subsec:opt-single-sol-smooth}
 
-Smoothing method is the last metaheuristic using changes in fitness function to escape \textit{local optima}. The method is based on smoothing the landscape of fitness function by computing a local average of all neighbours to given distance. If the fitness is overall increasing in one direction, but more zoomed observation shows small fluctuation, smoothing method smooths the fluctuation and allows locating the \textit{global optimum}.
+Smoothing method is the last metaheuristic using changes in the \textit{fitness function} to escape \textit{local optima}. The method is based on smoothing the landscape of \textit{fitness function} by computing a local average of all \textit{neighbours} to given distance. If the \textit{fitness function} is overall increasing in one direction, but more zoomed observation shows small fluctuation, smoothing method smooths the fluctuation and allows locating the \textit{global optimum}.
 
-\textit{Neigbours} in EACirc are defined as solutions obtained by \textit{mutation} of the circuit. Available \textit{mutation} methods are an addition or a removal of a connector or changing the Boolean function in the node. The neighbourhood of an individual in EACirc is enormous (over $2^{25}$ neighbours in the distance one for the basic EACirc setup), this method would not be possible due to computational requirements.
+\textit{Neigbours} in EACirc are defined as solutions obtained by \textit{mutation} of the circuit. Available \textit{mutation} methods are an addition or a removal of a connector or changing the Boolean function in the node. The \textit{neighbourhood} of an individual in EACirc is enormous (over $2^{25}$ \textit{neighbours} in the distance one for the basic EACirc setup), this method would not be possible due to computational requirements.
 
 \subsection{Variable neighbourhood search}
 \label{subsec:opt-single-sol-vns}
 
-Variable neighbourhood search also changes the landscape of the problem. However, it does not modify the fitness function or its interpretation, but it defines other methods for neighbour selection. If the computation gets trapped in a \textit{local optimum}, the neighbourhood method is changed. Alternatively, the neighbourhood can be changed periodically. This method does not guarantee to escape from the \textit{local optimum}, as all neighbourhoods can contain only worse solutions.
+Variable neighbourhood search also changes the landscape of the problem. However, it does not modify the \textit{fitness function} or its interpretation, but it defines other methods for \textit{neighbour} selection. If the computation gets trapped in a \textit{local optimum}, the \textit{neighbourhood} method is changed. Alternatively, the \textit{neighbourhood} can be changed periodically. This method does not guarantee to escape from the \textit{local optimum}, as all \textit{neighbourhoods} can contain only worse solutions.
 
-Specifying different neighbourhood in EACirc is hard. However, the method lead us to a different idea. EACirc is heading two mutually exclusive problems. We would like to have circuit connected sparsely for easier interpretation of the final solution. However, we also want to have the circuit's input and output nodes connected. We can solve the problems by reduction of the searched neighbourhood.
+Specifying different \textit{neighbourhood} in EACirc is hard. However, the method lead us to a different idea. EACirc is heading two mutually exclusive problems. We would like to have circuit connected sparsely for easier interpretation of the final solution. However, we also want to have the circuit's input and output nodes connected. We can solve the problems by reduction of the searched \textit{neighbourhood}.
 
-If we already have a successful solution, we can inspect only solutions with fewer connectors. In contrast, if the circuit is not connected (therefore the circuit's fitness is equal to zero), we can inspect only the individual with more connectors.
+If we already have a successful solution, we can inspect only solutions with fewer connectors. In contrast, if the circuit is not connected (therefore the circuit's \textit{fitness} is equal to zero), we can inspect only the individual with more connectors.
 
 \subsection{Simulated annealing}
 \label{subsec:opt-single-sol-sa}
 
-Remaining two single-solution metaheuristics can accept non-improving neighbours. Short term acceptance of worse solution can lead to escape from \textit{local optima} and finding the \textit{global optimum}.
+Remaining two single-solution metaheuristics can accept non-improving \textit{neighbours}. Short term acceptance of worse solution can lead to escape from \textit{local optima} and finding the \textit{global optimum}.
 
 Simulated annealing metaheuristic is inspired by the physical process of annealing in metallurgy. The annealing is an iterative process of heating the metal to increase the size of the crystals, which reduces the probability of a defect. During the process, the metal is heated to lower and lower temperatures.
 
-Simulated annealing uses variable temperature, which describes the probability of acceptance of worse neighbour. This probability is decreasing during the computations. In the beginning, the likelihood of acceptance of worse solution is high, but at the end of the computation, only better solutions are accepted.
+Simulated annealing uses variable temperature, which describes the probability of acceptance of worse \textit{neighbour}. This probability is decreasing during the computations. In the beginning, the likelihood of acceptance of worse solution is high, but at the end of the computation, only better solutions are accepted.
 
 This metaheuristic is widely used, which was the reason for implementing it as a testing scenario for metaheuristics. Besides, it serves as a represent of the group of single-solution metaheuristics that accepts non-improving solutions. Its implementation in EACirc does not require complex changes, only the specification of this method. However, this method is not specified for the iterative approach with learning \textit{epochs}.
 
@@ -408,7 +408,7 @@ This metaheuristic is widely used, which was the reason for implementing it as a
 
 Similarly to simulated annealing, tabu search can also accept non-improving solutions to escape from \textit{local optima}. However, the decision whether to accept a non-improving solution is not stochastic, but it is based on knowledge of already visited solutions. Therefore, tabu search holds a memory of visited solutions, called \textit{tabu list}, and it would not use twice the same solution. This way, tabu search avoids cycles during the optimisation process.
 
-Application of tabu search in EACirc has several issues. Firstly, how to store used individuals (memory usage may be a problem), which can be solved by storing only a hash of the solution. Secondly, the neighbourhood space of an individual is huge, as stated in \cref{subsec:opt-single-sol-smooth}. It is higher than the number of individuals tested during whole computation. Choosing twice the same solution is unlikely. Therefore we decided to try only simulated annealing and leave the decision of tabu search implementation on the result of simulated annealing.
+Application of tabu search in EACirc has several issues. Firstly, how to store used individuals (memory usage may be a problem), which can be solved by storing only a hash of the solution. Secondly, the \textit{neighbourhood} space of an individual is huge, as stated in \cref{subsec:opt-single-sol-smooth}. It is higher than the number of individuals tested during whole computation. Choosing twice the same solution is unlikely. Therefore we decided to try only simulated annealing and leave the decision of tabu search implementation on the result of simulated annealing.
 
 \section{Population-based metaheuristics}
 \label{sec:opt-population}
@@ -433,12 +433,12 @@ Evolutionary algorithms are a group of population-based metaheuristics inspired 
 The computation is an iterative loop of three main steps, together denoted as a generation. The evolution starts with a random population of initial solutions.
 
 \begin{description}
-    \item[Selection of parents] from the population. Usually based on the fitness function with some randomization technique.
+    \item[Selection of parents] from the population. Usually based on the \textit{fitness function} with some randomization technique.
     \item[Reproduction to new offsprings] using \textit{mutation} and \textit{crossover} -- an algorithm for recombination of the parents.
-    \item[Population replacement] by offsprings. Here can be again used the evaluation by fitness. 
+    \item[Population replacement] by offsprings. Here can be again used the evaluation by \textit{fitness}. 
 \end{description}
 
-This iterative approach can by an application of well-selected fitness, \textit{mutation} and \textit{crossover} increase the quality of the individual. The algorithm can be stopped by the number of generations or by achieving target fitness.
+This iterative approach can by an application of well-selected \textit{fitness function}, \textit{mutation} and \textit{crossover} increase the quality of the individual. The algorithm can be stopped by the number of generations or by achieving target \textit{fitness}.
 
 During the 40 years, many variants of evolutionary algorithms emerged.
 
@@ -476,7 +476,7 @@ The scatter search method is highly utilising the combination of the individuals
     \item The \textit{reference set} is split to subsets of the size 2 to 4 individuals.
     \item We combine the individuals of the subsets to create new candidate individuals.
     \item We run a single-solution metaheuristic to improve the candidate individuals.
-    \item The \textit{reference set} incorporates the candidate individuals based on fitness.
+    \item The \textit{reference set} incorporates the candidate individuals based on the \textit{fitness}.
 \end{enumerate}
 
 The main problem of application is the second step, where are solutions combined. We would have to develop a function, which combines multiple solutions and takes their shared properties. However, there is no guarantee that various advanced individuals share the same property. Also, the approach is similar to evolutionary algorithms. Therefore we did not test it.
@@ -504,7 +504,7 @@ These models and algorithms can be used for various goals. Two main are feature 
 The artificial neural networks (ANN) are classification optimisation method inspired by the process of learning of brain and neural system. The initial idea was inspired by the research of Donald Hebb~\cite{hebb49learning}, who described the neurones and the process of learning of living beings' neural systems. The Hebbian learning arose several trivial nonsupervised learning methods. Further development came with the invention of backpropagation algorithm by Paul Werbos~\cite{werbos75beyondThesis}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of algorithm and its implementation on GPUs. Both together allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks.
 % TODO: ?deeper introduction to ANN can be found in book http://www.deeplearningbook.org
 
-The artificial neural network consists of purpose specialised layers. The first layer is called an input layer, and its input are the data for classification. Then there may be multiple hidden layers, which sequentially process the output of previous layers. The data proceed to the last -- output layer, which classifies the data. Each layer consists of neurones. Each neurone takes as input the output from all neurones of previous layers, and weight for each connection multiplies these outputs. The output is processed by an activation function, which ensures normalisation of the output. There are many types of activation function, and each layer can use different activation function. The most used activation function is a sigmoid function, with a real number input and the output is the interval $(-1, 1)$ or $(0, 1)$.
+The artificial neural network consists of purpose specialised layers. The first layer is called an input layer, and its input are the data for classification. Then there may be multiple hidden layers, which sequentially process the output of previous layers. The data proceed to the last -- output layer, which classifies the data. Each layer consists of neurones. Each neurone takes as input the output from all neurones of previous layers, and weight for each connection multiplies these outputs. The output is processed by an \textit{activation function}, which ensures normalisation of the output. There are many types of \textit{activation function}, and each layer can use different \textit{activation function}. The most used \textit{activation function} is a sigmoid function, with a real number input and the output is the interval $(-1, 1)$ or $(0, 1)$.
 
 The artificial neural networks were used to solve various problems in classification and pattern recognition. The most common are applications in image processing, signal processing, text data processing and in robotics and system control.
 
@@ -527,7 +527,7 @@ The primary testing goal of EACirc is to assess randomness of ciphertext of cryp
 
 The approach for evaluation is briefly described in \cref{chap:eacirc}. The tested data were produced from 16 different cryptographic functions. These functions are reduced by the number of rounds. We selected intervals of rounds based on EACirc reference capabilities, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds\footnote{Further is this round setting referred as "an edge".}. Usually we test also $i-1$ and $i+2$ rounds, for broader comparison of the results with state of the art of statistical testing cryptanalysis.
 
-EACirc works as a distinguisher between the tested dataset (produced by the cryptographic function) and the reference random data. Formerly we used quantum random number generator (QRNG) services as the source of the reference data. The need of having QRNG data for the computation has the following disadvantages.
+EACirc works as a distinguisher between the tested dataset (produced by the cryptographic function) and the reference random data. Formerly we used \textit{quantum random number generator} (\textit{QRNG}) services as the source of the reference data. The need of having \textit{QRNG} data for the computation has the following disadvantages.
 
 \begin{itemize}
     \item Transmission of the reference data on the computation grid brings a slowdown and a more complex handling of the computations.
@@ -535,7 +535,7 @@ EACirc works as a distinguisher between the tested dataset (produced by the cryp
     \item More requirements on EACirc's users and developers. We have to ship the tool with the reference data.
 \end{itemize}
 
-Therefore we switched from QRNG to pseudo random number generator (PRNG) PCG32~\cite{pcgGen} as reference data generator. PCG32 is fast and computationally strong PRNG. We did experiment of comparison PCG32 with QRNG and we found no bias, as well as we retested old results using QRNG newly with PRNG and the results are the same. Hence, we believe build-in PRNG is a more secure and convenient option.
+Therefore we switched from QRNG to \textit{pseudo random number generator} (\textit{PRNG}) PCG32~\cite{pcgGen} as reference data generator. PCG32 is fast and computationally strong \textit{PRNG}. We did experiment of comparison PCG32 with QRNG and we found no bias, as well as we retested old results using QRNG newly with \textit{PRNG} and the results are the same. Hence, we believe build-in \textit{PRNG} is a more secure and convenient option.
 
 \section{Used data}
 \label{sec:method-data}
@@ -549,15 +549,15 @@ Therefore, for the comparison with other randomness testing tools, we decided to
 
 The implementation of SHA-3 and eStream candidates in EACirc was called projects. The projects were handling everything related to data generation, specifically IV, key and plaintext. Every project had its own implementation of the \textit{counter} plaintext generator, the \textit{strict avalanche criterion} generator, and other data sources.
 
-For the implementation of the new project for block ciphers, we decided to reimplement data generation in more variable and modifiable way. For this, we decided for data manipulation via streams, whose can be nested into each other. Each stream implements a simple interface with constructor and function \texttt{next}, which returns next test vector. The stream is specified only by the output size of the test vector.
+For the implementation of the new project for block ciphers, we decided to reimplement data generation in more variable and modifiable way. For this, we decided for data manipulation via streams, whose can be nested into each other. Each stream implements a simple interface with constructor and function \texttt{next}, which returns next \textit{test vector}. The stream is specified only by the output size of the \textit{test vector}.
 
-The purpose of the streams is unification of all data manipulation in the whole project, independent on the used cryptographic function. All streams inherit from abstract class \texttt{stream} with minimalistic interface. The streams have to specify its \texttt{size} and they have to implement method \texttt{next()}, which returns next test vector. We have currently various types of streams in EACirc.
+The purpose of the streams is unification of all data manipulation in the whole project, independent on the used cryptographic function. All streams inherit from abstract class \texttt{stream} with minimalistic interface. The streams have to specify its \texttt{size} and they have to implement method \texttt{next()}, which returns next \textit{test vector}. We have currently various types of streams in EACirc.
 
 \begin{itemize}
     \item Data sources streams, that are used as an input to cryptographic functions or as reference data. Example of such streams are:
     \begin{itemize}
-        \item input streams: true and false bits generators, counter and multiple variants of the strict avalanche criterion generator, and
-        \item PRNG's PCG32~\cite{pcgGen} and Mersenne Twister~\cite{matsumoto1998mersenne}.
+        \item input streams: true and false bits generators, counter and multiple variants of the \textit{strict avalanche criterion} generator, and
+        \item \textit{PRNGs} PCG32~\cite{pcgGen} and Mersenne Twister~\cite{matsumoto1998mersenne}.
     \end{itemize}
     \item The projects of cryptographic functions. Namely project eStream and SHA-3 and newly implemented block ciphers.
     \item Postprocessing streams are applied to data from cryptographic functions for more advanced experiments. They allows us analysis of selected bits of the function.
@@ -570,13 +570,13 @@ All these changes significantly simplified the codebase, unified many implementa
 \subsection{Implementation of functions}
 \label{subsec:method-data-funcs}
 
-AES, DES and 3-DES implementations follows educative repository~\cite{cryptoFunc}. The author of this repository verifies the encryption to the test vectors to ensure correctly working implementation. The only modification of the code is a limitation of the functions in the number of rounds.
+AES, DES and 3-DES implementations follows educative repository~\cite{cryptoFunc}. The author of this repository verifies the encryption to the \textit{test vectors} to ensure correctly working implementation. The only modification of the code is a limitation of the functions in the number of rounds.
 
 TEA implementation is based on Wikipedia code~\cite{teaWiki}, and it was already implemented in EACirc before. The implementation was simplified and reduced due to changes in the interface. It is also reduced to selected amount of rounds.
 
 RC4 is also based on the educative repository~\cite{cryptoFunc}, but the code is unchanged as RC4 has no round structure.
 
-All these functions together with the new interface of new block project and test vectors processing algorithm were released in minor version EACirc 4.1.
+All these functions together with the new interface of new block project and the \textit{test vectors} processing algorithm were released in minor version EACirc 4.1.
 
 \paragraph{Corrections and code review of SHA-3 and eStream functions} was another part of streams update. Multiple cryptographic functions from previous implementation were incorrectly round-reduced.
 \label{par:method-data-funcs-bugs}
@@ -592,13 +592,13 @@ These bugfixes together with fix of improper configuration of eStream project we
 \subsection{Data generator tool}
 \label{subsec:method-data-generator}
 
-For direct comparison of the tested methods, we need to analyse the same data. EACirc has build in generation of test vectors feeding the computation, as is described in \cref{sec:method-data}. Therefore, we implemented side project from EACirc for production of data. We call it \textit{Generator} and it shares the source code of cryptographic functions with EACirc. This is done using GitHub submodules, so the \textit{Generator} has its repository~\cite{EACircStreams}.
+For direct comparison of the tested methods, we need to analyse the same data. EACirc has build in generation of \textit{test vectors} feeding the computation, as is described in \cref{sec:method-data}. Therefore, we implemented side project from EACirc for production of data. Within the thesis in denoted as \textit{generator} and it shares the source code of cryptographic functions with EACirc. This is done using GitHub submodules, so the \textit{generator} has its repository~\cite{EACircStreams}.
 
-The \textit{Generator} is fully configurable via \texttt{JSON} configuration file as EACirc. The structure of the file is reduced, as the configuration describes only generated data. So the \textit{Generator} inherits all the capabilities of streams, providing complex control on the data production. For simplification and automation, we also prepared script, that generates configuration files for the most common settings, which allows a simple execution by command line arguments. For even simpler access to testing data, we generated 100~MB file for each basic setting per each widely-known cryptographic function (described in \cref{subsec:method-data-funcs}) reduced to wide interval of rounds. This dataset is publicly accessible \href{https://drive.google.com/drive/folders/0B5Z1zst5NzwXQmFKaXgxREJWNk0?usp=sharing}{online}.
+The \textit{generator} is fully configurable via \texttt{JSON} configuration file as EACirc. The structure of the file is reduced, as the configuration describes only generated data. So the \textit{generator} inherits all the capabilities of streams, providing complex control on the data production. For simplification and automation, we also prepared script, that generates configuration files for the most common settings, which allows a simple execution by command line arguments. For even simpler access to testing data, we generated 100~MB file for each basic setting per each widely-known cryptographic function (described in \cref{subsec:method-data-funcs}) reduced to wide interval of rounds. This dataset is publicly accessible \href{https://drive.google.com/drive/folders/0B5Z1zst5NzwXQmFKaXgxREJWNk0?usp=sharing}{online}.
 
-We have an ongoing publication plan, which will crucially utilize the \textit{Generator}. It will be a paper on statistical testing tools comparison on wide variety of cryptographic data. The \textit{Generator} will be used as it unifies many different cryptographic functions and it can reduce the functions in the number of rounds, or selection of specified bits. The \textit{Generator} has already all the necessary features.
+We have an ongoing publication plan, which will crucially utilize the \textit{generator}. It will be a paper on statistical testing tools comparison on wide variety of cryptographic data. The \textit{generator} will be used as it unifies many different cryptographic functions and it can reduce the functions in the number of rounds, or selection of specified bits. The \textit{generator} has already all the necessary features.
 
-An important work for the generator was fixing the implementation bugs, described in previous~\cref{par:method-data-funcs-bugs}.
+An important work for the \textit{generator} was fixing the implementation bugs, described in previous~\cref{par:method-data-funcs-bugs}.
 
 
 \section{Methodology for specific optimisation methods}
@@ -606,7 +606,7 @@ An important work for the generator was fixing the implementation bugs, describe
 
 As the tested scenarios vary not only by optimisation method but by used tools as well, the methodology changes for given metaheuristics. The base of the experiment was used for single-solution metaheuristics, as they were implemented directly to the EACirc and they inherited the experiment environment of our tool.
 
-For direct inter-method comparison, we need to use the same data for testing. Therefore, all used data are produced by the \textit{Generator}, described in \cref{subsec:method-data-funcs}. The cross-method comparison is still sensitive to the testing approach, therefore we describe it in detail in following sections.
+For direct inter-method comparison, we need to use the same data for testing. Therefore, all used data are produced by the \textit{generator}, described in \cref{subsec:method-data-funcs}. The cross-method comparison is still sensitive to the testing approach, therefore we describe it in detail in following sections.
 
 
 \subsection{Single-solution methodology}
@@ -620,9 +620,9 @@ The main advantage of single-solution metaheuristics is their simplicity and str
 \subsubsection{\textbf{Statistical evaluation}}
 \label{subsubsec:method-spec-ss-stat}
 
-As was stated in \cref{sec:eac-comp}, the fitness of an individual is $1 - p$-value of two sample $\chi^{2}$ test, which tests, if the output bytes per source have the same distribution. For a well-working individual on a non-random data, the fitness is close to 1. As the quality of the individual decreases, the fitness decreases as well. However, completely random guess like coin tossing has the $p$-value uniformly distributed on the interval (0, 1).
+As was stated in \cref{sec:eac-comp}, the \textit{fitness} of an individual is $1 - p$-value of two sample $\chi^{2}$ test, which tests, if the output bytes per source have the same distribution. For a well-working individual on a non-random data, the \textit{fitness} is close to 1. As the quality of the individual decreases, the \textit{fitness} decreases as well. However, completely random guess like coin tossing has the $p$-value uniformly distributed on the interval (0, 1).
 
-As the $p$-values are uniformly distributed for a random guess, getting high $p$-value can imply two scenarios. Either the $\chi^{2}$ test rejected the hypothesis and scored a significant output. Or we were lucky on seemingly random data, and the test returned high $p$-value from a uniform distribution on interval $(0, 1)$. Therefore, we avoid interpretation of a single $p$-value. We collect a single $p$-value per every \textit{epoch} computed on a fresh dataset. We process these $p$-values by a Kolmogorov-Smirnov test at the end of the run. The Kolmogorov-Smirnov test analyses the uniformity of usually 300 $p$-values. This test is using significance level $\alpha = 1\,\%$, so it rejects the null hypothesis that tested data are random, in a case they are random, in 1\,\% of runs. To avoid such case, we run the experiment with the same setting 1\,000 times and we analyse the \textit{rejection rate} given as the amount of failed KS tests per 1\,000 runs. If the \textit{rejection rate} is around 1\,\%, the data seem to be random. If it is significantly higher, the experiment rejected randomness hypothesis of the tested data.
+As the $p$-values are uniformly distributed for a random guess, getting high $p$-value can imply two scenarios. Either the $\chi^{2}$ test rejected the hypothesis and scored a significant output. Or we were lucky on seemingly random data, and the test returned high $p$-value from a uniform distribution on interval $(0, 1)$. Therefore, we avoid interpretation of a single $p$-value. We collect a single $p$-value per every \textit{epoch} computed on a fresh dataset. We process these $p$-values by a Kolmogorov-Smirnov test at the end of the run. The Kolmogorov-Smirnov test analyses the uniformity of usually 300 $p$-values. This test is using \textit{significance level} $\alpha = 1\,\%$, so it rejects the null hypothesis that tested data are random, in a case they are random, in 1\,\% of runs. To avoid such case, we run the experiment with the same setting 1\,000 times and we analyse the \textit{rejection rate} given as the amount of failed KS tests per 1\,000 runs. If the \textit{rejection rate} is around 1\,\%, the data seem to be random. If it is significantly higher, the experiment rejected randomness hypothesis of the tested data.
 
 This approach is vastly increasing the amount of data needed for the computation, as well as the overall run-time. This method is a trade-off for the success rate of EACirc, as different evaluators do not need statistical evaluation. Hence they need much fewer data; however, such evaluators are slightly worse based on the results from~\cite{svenda2013towards}.
 
@@ -752,7 +752,7 @@ We can also analyse specific goals per metaheuristics. Both variable neighbourho
 \subsection{Artificial neural networks methodology}
 \label{subsubsec:method-spec-ms-aco}
 
-The neural network also classifies the test vectors into two sets -- the tested data set and the reference data set. Therefore, the implementation takes as an input two binary files -- the tested file and the reference file. We generate these files with the \textit{Generator}, so we ensure consistency and comparability of the results within the approaches.
+The neural network also classifies the \textit{test vectors} into two sets -- the tested data set and the reference data set. Therefore, the implementation takes as an input two binary files -- the tested file and the reference file. We generate these files with the \textit{generator}, so we ensure consistency and comparability of the results within the approaches.
 
 The execution of the neural network consist of a training phase, where we iteratively changing the batches of the learning data, and an evaluation phase, where we use fresh data for the final evaluation of the network's \textit{success rate}. The whole computation needs significantly fewer input data than EACirc, as is shown in \cref{fig:ann-dataUsage}.
 
@@ -795,7 +795,7 @@ In \cref{sec:res-ss} we show results of single-solution metaheuristics, followed
 
 %http://stattrek.com/online-calculator/binomial.aspx
 \todo{this was already in previous chapter}
-Single-solutions metaheuristics use evaluation described in \cref{subsubsec:method-spec-ss-stat}. It means, we execute EACirc 1\,000 times independently with the same setting and we evaluate how many of the runs rejected the randomness hypothesis. The number of rejections divided by the number of runs is called the \textit{rejection rate}. As we use a significance level $\alpha=1\,\%$, the \textit{sanity experiment} should reject the randomness hypothesis on average in $1\,\%$ of the runs. As we would like to have higher confidence in this \textit{sanity experiment}, we perform it with 100\,000 runs. The probability of incorrect \textit{rejection rate} of such case can be computed from the binomial distribution. For example, a \textit{rejection rate} higher or equal to $1.2\,\%$ of the \textit{sanity experiment} with 1\,000 runs can occur with probability of 4.787\,\%, while the probability decreases to less than 0.001\,\% for 100\,000 runs. We include the measured \textit{rejection rate} to the first row of further presented result tables. Other rows contain results of round-reduced cryptographical functions.
+Single-solutions metaheuristics use evaluation described in \cref{subsubsec:method-spec-ss-stat}. It means, we execute EACirc 1\,000 times independently with the same setting and we evaluate how many of the runs rejected the randomness hypothesis. The number of rejections divided by the number of runs is called the \textit{rejection rate}. As we use a \textit{significance level} $\alpha=1\,\%$, the \textit{sanity experiment} should reject the randomness hypothesis on average in $1\,\%$ of the runs. As we would like to have higher confidence in this \textit{sanity experiment}, we perform it with 100\,000 runs. The probability of incorrect \textit{rejection rate} of such case can be computed from the binomial distribution. For example, a \textit{rejection rate} higher or equal to $1.2\,\%$ of the \textit{sanity experiment} with 1\,000 runs can occur with probability of 4.787\,\%, while the probability decreases to less than 0.001\,\% for 100\,000 runs. We include the measured \textit{rejection rate} to the first row of further presented result tables. Other rows contain results of round-reduced cryptographical functions.
 
 \Cref{table:res-usable-ils} and additional \cref{table:res-usable-sa,table:res-usable-gls,table:res-usable-vns} in the Appendix summarise results of the tested single-solution metaheuristics applied in EACirc. Every row of the table corresponds to one cryptographical function. The lower index after the function name specifies the number of rounds we limit the functions to in EACirc. The columns with -1, 0, +1 and +2 denote an offset to the number of rounds specified in the index. For example, AES$_{3}$ was tested reduced to two rounds, three rounds as default and four rounds. Five rounds were not tested, which is denoted by a dash in the corresponding cell. The number in the cell represents the \textit{rejection rate} for the particular case. For indistinguishable data, values around the \textit{rejection rate} of the \textit{sanity experiment} are expected. Results higher than twice the \textit{rejection rate} of the \textit{sanity experiment} can happen in less then 0.15\,\% cases for indistinguishable data, we denote it \textit{empirical critical value}. Therefore, results over the \textit{empirical critical value} are not considered random.
 
@@ -809,7 +809,7 @@ As was stated in \cref{chap:eacirc}, EACirc used iterative local search as the m
 \begin{table}[t]
 \centering
 \begin{tabular}{l|l l l l}
-Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
+\textbf{\large Function\textbackslash{}rounds} & \textbf{\large -1} & \textbf{\large 0} & \textbf{\large 1} & \textbf{\large 2}\\ \hline
 rnd\_rnd$_{\textnormal{no rounds}}$ & --  & \fn{}0.01128& --   & -- \\\\
 AES$_{3}$        & \fd{}1.0   & \fd{}0.160 & \fn{}0.007 & \fn{}--   \\
 BLAKE$_{1}$      & \fd{}1.0   & \fd{}0.110 & \fn{}0.021 & \fn{}0.006\\
@@ -842,9 +842,9 @@ The results of iterated local search are shown in \cref{table:res-usable-ils}. F
 We also performed other tests, which showed some additional information.
 
 \begin{itemize}
-    \item It is possible to obtain the \textit{rejection rate} higher (up to full 100\,\%) than shows \cref{table:res-usable-ils} for the \textit{benchmarking functions}. However, advancing the results require time-consuming manual fine-tuning to the tested data or more computational time. In the study of TEA~\cite{kubicek2016new}, we showed almost 100\,\% distinguisher for four rounds TEA. Obtaining such result required different shape of the circuit due to TEA block length and 100 times more test vectors. On the other hand, an increase of the \textit{rejection rate} by better metaheuristic applies in general, so all results should benefit such improvements.
+    \item It is possible to obtain the \textit{rejection rate} higher (up to full 100\,\%) than shows \cref{table:res-usable-ils} for the \textit{benchmarking functions}. However, advancing the results require time-consuming manual fine-tuning to the tested data or more computational time. In the study of TEA~\cite{kubicek2016new}, we showed almost 100\,\% distinguisher for four rounds TEA. Obtaining such result required different shape of the circuit due to TEA block length and 100 times more \textit{test vectors}. On the other hand, an increase of the \textit{rejection rate} by better metaheuristic applies in general, so all results should benefit such improvements.
     
-    \item The results shown in \cref{table:res-usable-ils} were tested with the \textit{epoch length} of 100 generations. It means that the metaheuristic performed 100 generations on the same dataset. This setup seems to lead to overfitting, as Ukrop examined in~\cite[Section~7.1]{ukropBcThesis}. We tried decreasing the \textit{epoch length} to 20, which lead to the increase of influence of the \textit{connection bug}, as the \textit{empirical critical value} raised to $0.03127$. Such setup did not increase the number of distinguished rounds for any function, but it increased the \textit{rejection rate} of all the \textit{benchmarking functions}. However, only the \textit{rejection rate} of three-round AES increased significantly to $0.982$. The same behaviour appeared for shorter \textit{epochs} for all metaheuristics.
+    \item The results shown in \cref{table:res-usable-ils} were tested with the \textit{epoch length} of 100 generations. It means that the metaheuristic performed 100 generations on the same dataset. This setup seems to lead to \textit{overfitting}, as Ukrop examined in~\cite[Section~7.1]{ukropBcThesis}. We tried decreasing the \textit{epoch length} to 20, which lead to the increase of influence of the \textit{connection bug}, as the \textit{empirical critical value} raised to $0.03127$. Such setup did not increase the number of distinguished rounds for any function, but it increased the \textit{rejection rate} of all the \textit{benchmarking functions}. However, only the \textit{rejection rate} of three-round AES increased significantly to $0.982$. The same behaviour appeared for shorter \textit{epochs} for all metaheuristics.
 \end{itemize}
 
 \subsection{Simulated annealing}
@@ -852,7 +852,7 @@ We also performed other tests, which showed some additional information.
 
 We tested the simulated annealing as a representative of single-solution metaheuristics that can accept a non-improving solution. The results are available in the Appendix as \cref{table:res-usable-sa}, as they are very similar to \cref{table:res-usable-ils} with iterative local search results. A direct comparison of notable metaheuristics results on the \textit{benchmarking functions} will be summarised in \cref{sec:res-comp}.
 
-The \textit{sanity experiment} ended with the \textit{rejection rate} of $0.01681$, which corresponds to a higher influence of the \textit{connection bug} for metaheuristics that accepts non-improving neighbour. As the \textit{rejection rate} of the random-random experiment increases, all other \textit{rejection rates} increase as well. Therefore, the \textit{connection bug} probably influenced \textit{benchmarking functions} results, so the increased \textit{rejection rate} of them may not imply a significant improvement.
+The \textit{sanity experiment} ended with the \textit{rejection rate} of $0.01681$, which corresponds to a higher influence of the \textit{connection bug} for metaheuristics that accepts non-improving \textit{neighbour}. As the \textit{rejection rate} of the random-random experiment increases, all other \textit{rejection rates} increase as well. Therefore, the \textit{connection bug} probably influenced \textit{benchmarking functions} results, so the increased \textit{rejection rate} of them may not imply a significant improvement.
 
 The simulated annealing uses two configurable variables that influence the learning process. Those are the initial temperature and the cooling ratio. They both corresponds to the probability of accepting a non-improving solution. We analysed three different cooling scenarios, every on three different initial temperatures and cooling ratios. The cooling scenarios are illustrated in \cref{fig:sa-cooling-scenarios} and the difference is based on the behaviour on changed learning data. The tested variables were $(\mathit{initial~temperature, cooling~ratio}) \in \{ (500, 0.9), (100, 0.98), (50, 0.995) \}$. Every combination of cooling scenarios and temperature variables were analysed. The \cref{table:res-usable-sa} is the final and the best result of those nine tested configurations. The configuration is described by the blue temperature scheduling curve with the $\mathit{initial~temperature} = 500$ and the $\mathit{cooling~ratio} = 0.9$, as suggests Talbi in~\cite{talbi2009metaheuristics}.
 
@@ -866,11 +866,11 @@ The simulated annealing uses two configurable variables that influence the learn
 \subsection{Guided local search}
 \label{subsec:res-ss-gls}
 
-We implemented second fitness function for guided local search. It is equal to the number of connectors in the circuit. Within the guided local search scope of the text, we refer to this second fitness function as \textit{penalisation}.
+We implemented second \textit{fitness function} for guided local search. It is equal to the number of connectors in the circuit. Within the guided local search scope of the text, we refer to this second \textit{fitness function} as \textit{penalisation}.
 
-Guided local search can escape \textit{local optima} by the change of the evaluation method. Our goal was set to escape not \textit{local optima}, but unwanted solutions with fitness equal to 0, which is caused by \textit{connection bug}. We \textit{penalise} unconnected solutions, as we prefer denser circuits. This \textit{penalisation} proved to lead to more connected solutions faster.
+Guided local search can escape \textit{local optima} by the change of the evaluation method. Our goal was set to escape not \textit{local optima}, but unwanted solutions with \textit{fitness} equal to 0, which is caused by \textit{connection bug}. We \textit{penalise} unconnected solutions, as we prefer denser circuits. This \textit{penalisation} proved to lead to more connected solutions faster.
 
-In contrast, solutions with fitness higher than 0.9 are \textit{penalised}, if they have too many connectors. We expected that the circuit of strong distinguisher would be sparser, which was also verified by the experiments. The both \textit{penalization} methods were tested independently, and they both have a similar role in the improvement of the results of \textit{benchmarking functions}. However, they are working especially well together, as they hold the circuits reasonably dense.
+In contrast, solutions with \textit{fitness} higher than 0.9 are \textit{penalised}, if they have too many connectors. We expected that the circuit of strong distinguisher would be sparser, which was also verified by the experiments. The both \textit{penalization} methods were tested independently, and they both have a similar role in the improvement of the results of \textit{benchmarking functions}. However, they are working especially well together, as they hold the circuits reasonably dense.
 
 The \textit{penalisation} for increasing connectivity can be referred to as \textit{space exploration}, while the \textit{penalisation} for reducing connectivity corresponds to \textit{solution exploitation}, concepts well known from machine learning. For further explanation, please refer to Talbi~\cite[Section 1.3.3, page 24]{talbi2009metaheuristics}.
 
@@ -878,19 +878,19 @@ The final results of the guided local search are similar to results of iterated 
 
 \subsubsection{\textbf{Unrelated fitness functions}}
 
-We have also analysed the original idea of guided local search, such that we should change between unrelated fitness functions to help the metaheuristic find a better solution. We implemented another fitness method called \textit{weight evaluator} based on different statistics than the $\chi^{2}$ test. While the $\chi^{2}$ test analyses the bits and their order in the circuit's output byte, the \textit{weight evaluator} analyses only the values of the bits, ignoring their position. Therefore, the \textit{weight evaluator} can be compared to \textit{monobit test} of circuit outputs. Hence the fitness function using \textit{weight evaluator} alone performs slightly worse than $\chi^{2}$ test fitness function.
+We have also analysed the original idea of guided local search, such that we should change between unrelated \textit{fitness functions} to help the metaheuristic find a better solution. We implemented another \textit{fitness function} called \textit{weight evaluator} based on different statistics than the $\chi^{2}$ test. While the $\chi^{2}$ test analyses the bits and their order in the circuit's output byte, the \textit{weight evaluator} analyses only the values of the bits, ignoring their position. Therefore, the \textit{weight evaluator} can be compared to \textit{monobit test} of circuit outputs. Hence the \textit{fitness function} using \textit{weight evaluator} alone performs slightly worse than $\chi^{2}$ test \textit{fitness function}.
 
-Concurrent usage of these both fitness functions resulted in significantly worse distinguishing capabilities than the first method described in this sub-section.
+Concurrent usage of these both \textit{fitness functions} resulted in significantly worse distinguishing capabilities than the first method described in this sub-section.
 
 
 \subsection{Variable neighbourhood search}
 \label{subsec:res-ss-vns}
 
-The goals of the variable neighbourhood search are very similar to the guided local search goals. We also want to increase the connector density in the case of unconnected circuits and decrease it if the circuit works as a good distinguisher. The guided local search ensures this through the fitness function changes, while variable neighbourhood search changes inspected individuals. If the circuit is not connected, it tries only denser circuits. If the circuit is working well, it considers only sparser circuits for the \textit{neighbours}.
+The goals of the variable neighbourhood search are very similar to the guided local search goals. We also want to increase the connector density in the case of unconnected circuits and decrease it if the circuit works as a good distinguisher. The guided local search ensures this through the \textit{fitness function} changes, while variable neighbourhood search changes inspected individuals. If the circuit is not connected, it tries only denser circuits. If the circuit is working well, it considers only sparser circuits for the \textit{neighbours}.
 
 If we have an unconnected circuit, we try adding a new connector, so the probability of reaching connected graph increases. In the opposite case, when we have a good working individual, we examine only solutions with fewer connectors.
 
-The variable neighbourhood search results are in the Appendix in \cref{table:res-usable-vns}. It is performing better than the iterative local search. However, overall it performs slightly worse than guided local search, as can be seen at the end of this chapter in inter-approach comparison in \cref{table:ss-comparison}. It is probable that the limitation of the neighbourhood does not allow exploration of a significantly better solution in case of well-working solutions.
+The variable neighbourhood search results are in the Appendix in \cref{table:res-usable-vns}. It is performing better than the iterative local search. However, overall it performs slightly worse than guided local search, as can be seen at the end of this chapter in inter-approach comparison in \cref{table:ss-comparison}. It is probable that the limitation of the \textit{neighbourhood} does not allow exploration of a significantly better solution in case of well-working solutions.
 
 
 \section{Analysis of the resulting circuit}
@@ -905,9 +905,9 @@ We also perform \textit{pruning} of the circuit removing the unnecessary connect
 \subsection{Guided local search}
 \label{subsec:res-circ-anal-gls}
 
-A secondary goal of the guided local search was the simplification of output circuits. When the metaheuristic founds a distinguisher for the tested data, it \textit{penalises} dense circuits over sparser circuits. During this circuit simplification, guided local search does not lose any relevant connectors, as the leading fitness function is still the $\chi^{2}$ test. Therefore, we remove only unnecessary connectors.
+A secondary goal of the guided local search was the simplification of output circuits. When the metaheuristic founds a distinguisher for the tested data, it \textit{penalises} dense circuits over sparser circuits. During this circuit simplification, guided local search does not lose any relevant connectors, as the leading \textit{fitness function} is still the $\chi^{2}$ test. Therefore, we remove only unnecessary connectors.
 
-The output from a run using guided local search created a significantly sparser circuit, usually already with less than 50\,\% of connectors compared to iterative local search runs, as is shown in~\cref{fig:ils-gls-circuits}. The \textit{pruning} of such circuits resulted in very sparse circuits. These simpler circuits are easier for analysis, so it is less demanding to find the source of non-randomness of the tested data. \textit{Pruning} is an important tool for manual cryptanalysis. The cryptanalysts can reveal potential weaknesses of the cryptographic function based on a simple circuit. The visualisation and pruning also help our team understand the EACirc computations.
+The output from a run using guided local search created a significantly sparser circuit, usually already with less than 50\,\% of connectors compared to iterative local search runs, as is shown in~\cref{fig:ils-gls-circuits}. The \textit{pruning} of such circuits resulted in very sparse circuits. These simpler circuits are easier for analysis, so it is less demanding to find the source of non-randomness of the tested data. \textit{Pruning} is an important tool for manual cryptanalysis. The cryptanalysts can reveal potential weaknesses of the cryptographic function based on a simple circuit. The visualisation and \textit{pruning} also help our team understand the EACirc computations.
 
 \textit{Pruning} works only for individuals that are good distinguishers. If the tested data seem random, guided local search will not create sparse circuit -- circuits remain even more connected. The density of the circuit can also show how successful a distinguisher is.
 
@@ -947,7 +947,7 @@ The output from a run using guided local search created a significantly sparser 
 \subsection{Variable neighbourhood search}
 \label{subsec:res-circ-anal-vns}
 
-As in \cref{subsec:res-circ-anal-gls}, we inspected the density of the output circuit. Again, the circuits were on average sparser than circuits from iterated local search. However, they were significantly denser than circuits from guided local search runs. The observation may also support the hypothesis that limiting the neighbourhood is too strict, and disallows valuable changes in the learning process.
+As in \cref{subsec:res-circ-anal-gls}, we inspected the density of the output circuit. Again, the circuits were on average sparser than circuits from iterated local search. However, they were significantly denser than circuits from guided local search runs. The observation may also support the hypothesis that limiting the \textit{neighbourhood} is too strict, and disallows valuable changes in the learning process.
 
 %Martin checked
 
@@ -955,18 +955,18 @@ As in \cref{subsec:res-circ-anal-gls}, we inspected the density of the output ci
 \section{Artificial neural networks}
 \label{sec:res-ann}
 
-We analysed artificial neural networks on the same dataset. The algorithm takes two binary files as an input -- the tested data and the referential random data. The first step is encoding the data to a \texttt{NumPy} array of \texttt{floats}. Then we form two mutually exclusive datasets -- the learning and the testing dataset. Both contain randomly chosen test vectors from either of the input files, together with the label of the data source.
+We analysed artificial neural networks on the same dataset. The algorithm takes two binary files as an input -- the tested data and the referential random data. The first step is encoding the data to a \texttt{NumPy} array of \texttt{floats}. Then we form two mutually exclusive datasets -- the learning and the testing dataset. Both contain randomly chosen \textit{test vectors} from either of the input files, together with the label of the data source.
 
 We implemented the neural network in the Python library Keras~\cite{chollet2015keras}, which is a high-level API for TensorFlow~\cite{abadi2016tensorflow}. Keras allows a simple prototyping of the network's layout, while TensorFlow is a highly effective implementation of linear algebra for neural networks capable of computation on CPU and GPU. The implementation is entirely independent of the EACirc, and the code is published on GitHub~\cite{EANet}.
 
-We initially designed the network's layout by intuition, trial and error and available tips for networks layout from the best practices of image processing. We designed a network with five layers layout. The input layer's width depends on test vector length. Usually it is 128 bits, encoded as \texttt{floats}. Then follow three hidden layers with widths eight, four, and two neurones. The output layer consists of a single neurone.
+We initially designed the network's layout by intuition, trial and error and available tips for networks layout from the best practices of image processing. We designed a network with five layers layout. The input layer's width depends on \textit{test vector's} length. Usually it is 128 bits, encoded as \texttt{floats}. Then follow three hidden layers with widths eight, four, and two neurones. The output layer consists of a single neurone.
 
-We analysed the performance of such prototype network and selected a benchmarking function for the comparison of the influence of network's parameters. We tested multiple layouts. The layout of the prototype network can be noted by a number of neurones in the hidden and output layers -- 8-4-2-1. We experimented with following layouts: 1, 16-1, 8-4-2-1, 8-8-8-1, and 16-8-4-2-1. The second tested parameter of the network was the number of test vectors evaluated in a single iteration. Our preliminary results on the prototype network showed that smaller batches lead to better results. We analyse two properties of the execution: what was the final \textit{acceptance rate} of the network and how fast did the network learned the first statistically significant distinguisher. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$.
+We analysed the performance of such prototype network and selected a benchmarking function for the comparison of the influence of network's parameters. We tested multiple layouts. The layout of the prototype network can be noted by a number of neurones in the hidden and output layers -- 8-4-2-1. We experimented with following layouts: 1, 16-1, 8-4-2-1, 8-8-8-1, and 16-8-4-2-1. The second tested parameter of the network was the number of \textit{test vectors} evaluated in a single iteration. Our preliminary results on the prototype network showed that smaller batches lead to better results. We analyse two properties of the execution: what was the final \textit{acceptance rate} of the network and how fast did the network learned the first statistically significant distinguisher. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$.
 
 \begin{table}[b]
 \centering
 \begin{tabular}{l|l l l l l l l}
-Layout\textbackslash{}batch size & 10 & 25 & 50 & 100 & 250 & 500 & 1000\\ \hline
+\textbf{\large Layout\textbackslash{}batch size} & \textbf{\large 10} & \textbf{\large 25} & \textbf{\large 50} & \textbf{\large 100} & \textbf{\large 250} & \textbf{\large 500} & \textbf{\large 1000}\\ \hline
 1          & 0.985 & 0.967 & 0.957 & 0.934 & 0.937 & 0.641 & 0.716 \\
 16-1       & 0.992 & 0.970 & 0.960 & 0.935 & 0.938 & 0.665 & 0.719 \\
 8-4-2-1    & 0.525 & 0.663 & 0.510 & 0.581 & 0.605 & 0.505 & 0.500 \\
@@ -980,7 +980,7 @@ Layout\textbackslash{}batch size & 10 & 25 & 50 & 100 & 250 & 500 & 1000\\ \hlin
 \begin{table}[t]
 \centering
 \begin{tabular}{l|l l l l l l l}
-Layout\textbackslash{}batch size & 10 & 25 & 50 & 100 & 250 & 500 & 1000\\ \hline
+\textbf{\large Layout\textbackslash{}batch size} & \textbf{\large 10} & \textbf{\large 25} & \textbf{\large 50} & \textbf{\large 100} & \textbf{\large 250} & \textbf{\large 500} & \textbf{\large 1000}\\ \hline
 1          & 1 & 1 & 0 & 1 & 2 & 10 & 9 \\
 16-1       & 2 & 2 & 1 & 6 & 4 & 31 & 20 \\
 8-4-2-1    & -- & 53 & -- & -- & 96 & -- & -- \\ 
@@ -995,17 +995,17 @@ Layout\textbackslash{}batch size & 10 & 25 & 50 & 100 & 250 & 500 & 1000\\ \hlin
 An interpretation of the observations from \cref{table:res-ann-acc,table:res-ann-speed} are the following.
 
 \begin{itemize}
-    \item An increasing batch size decreases the learning speed, as can be seen in \cref{table:res-ann-speed}. Our reasoning for this observation is that more testing vectors per one iteration overload the network with too much information. An ideal batch size can be from 10 up to 50 test vectors.
-    \item Complex networks learn slower than simple networks. Sometimes the complex networks are not able to learn from the data at all. Nevertheless, the network of a single neurone performs always the best over all the examined batch sizes. The single neurone can still observe if the test vector contains more ones than zeroes as well as simple patterns.
+    \item An increasing batch size decreases the learning speed, as can be seen in \cref{table:res-ann-speed}. Our reasoning for this observation is that more testing vectors per one iteration overload the network with too much information. An ideal batch size can be from 10 up to 50 \textit{test vectors}.
+    \item Complex networks learn slower than simple networks. Sometimes the complex networks are not able to learn from the data at all. Nevertheless, the network of a single neurone performs always the best over all the examined batch sizes. The single neurone can still observe if the \textit{test vector} contains more ones than zeroes as well as simple patterns.
     \item The learning capabilities of the neural networks in our implementation are limited. Based on these observations, we cannot expect neural network is performing better than EACirc.
 \end{itemize}
 
-We evaluated one of the best working parametrisation (single neurone and batch size 25) of the neural network on the well-known cryptographic functions dataset. The results are in \cref{table:res-usable-ann} where rows and cells are the same as in the previous results in \cref{table:res-usable-ils} and in the cell is a final acceptance rate of the run. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$. It measures the quality of the ANN, similarly as a fitness function was the metaheuristics' metric. The colours have the same meaning as before, the \textit{critical value} used for rejection of randomness was set to 0.554, as such results have probability lower than 1\,\%.
+We evaluated one of the best working parametrisation (single neurone and batch size 25) of the neural network on the well-known cryptographic functions dataset. The results are in \cref{table:res-usable-ann} where rows and cells are the same as in the previous results in \cref{table:res-usable-ils} and in the cell is a final acceptance rate of the run. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$. It measures the quality of the ANN, similarly as a \textit{fitness function} was the metaheuristics' metric. The colours have the same meaning as before, the \textit{critical value} used for rejection of randomness was set to 0.554, as such results have probability lower than 1\,\%.
 
 \begin{table}
 \centering
 \begin{tabular}{l|l l l l}
-Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
+\textbf{\large Function\textbackslash{}rounds} & \textbf{\large -1} & \textbf{\large 0} & \textbf{\large 1} & \textbf{\large 2}\\ \hline
 rnd\_rnd$_{\textnormal{no rounds}}$& -- & \fn{}0.503 & --         & --         \\\\
 AES$_{3}$        & \fd{}1.0   & \fn{}0.501 & \fn{}0.498 & \fn{}0.506 \\
 BLAKE$_{1}$      & \fd{}1.0   & \fn{}0.500 & \fn{}0.501 & \fn{}0.503 \\
@@ -1028,39 +1028,9 @@ Triple DES$_{2}$ & \fd{}0.999 & \fd{}0.656 & \fn{}0.507 & \fn{}0.500
 \label{table:res-usable-ann}
 \end{table}
 
-We also experimented with convoluted neural networks (CNN). The convoluted neural network works excellent for image and signal processing, as the convoluted layer detects local patterns. However, cryptographic functions should meet the strict avalanche criterion suppressing any data locality. The CNN serves as a specific test for locality-specific patterns. If the reduced cryptographic function meets the strict avalanche criterion, the CNN should perform worse, as the first layer of CNN has lower capabilities than a fully connected layer of ANN.
+We also experimented with convoluted neural networks (CNN). The convoluted neural network works excellent for image and signal processing, as the convoluted layer detects local patterns. However, cryptographic functions should meet the \textit{strict avalanche criterion} suppressing any data locality. The CNN serves as a specific test for locality-specific patterns. If the reduced cryptographic function meets the \textit{strict avalanche criterion}, the CNN should perform worse, as the first layer of CNN has lower capabilities than a fully connected layer of ANN.
 
 Overall, the CNN performed worse than ANN. The problems were slower learning than ANN, and sometimes the distinguisher was not found even during more \textit{epochs}.
-
-%\subsection{Analysis of the neural network learning progress}
-%\label{subsec:res-ann-learn}
-
-%An analysis of ANN learning can be evaluated by following two variables.
-
-%\begin{description}
-    %\item[Acceptance rate] is equal to ratio of $\frac{\#_{\textnormal{correct quesses}}}{\#_{\textnormal{total quesses}}}$. So it measures the quality of the ANN, similarly as fitness function was the metaheuristics' metric.
-    %\item[Crossentropy loss] describes how big changes can the network do for learning itself (similar to the temperature of simulated annealing). %TODO cite
-%\end{description}
-
-%Those values are shown for AES in 1 to 3 rounds with both ANN and CNN for comparison in \cref{fig:ann-learning}.
-
-%\begin{figure}[H]
-%\begin{changemargin}{-3cm}{-3cm}
-%\centering
-%\begin{subfigure}{.6\textwidth}
-  %\centering
-  %\includegraphics[width=.98\textwidth]{./graphics/ann/ann}
-  %\label{fig:ann-learning-ann}
-%\end{subfigure}% % this comment has to be here
-%\begin{subfigure}{.6\textwidth}
-  %\centering
-  %\includegraphics[width=.98\textwidth]{./graphics/ann/cnn}
-  %\label{fig:ann-learning-cnn}
-%\end{subfigure}
-%\end{changemargin}
-%\caption{Learning process of ANN (left) and CNN (right) on AES reduced to one to three rounds.}
-%\label{fig:ann-learning}
-%\end{figure}
 
 
 \section{Inter-approach comparison}
@@ -1071,7 +1041,7 @@ The interesting details about single-solution metaheuristics are summarised in \
 \begin{table}
 \centering
 \begin{tabular}{l|l l l l}
-Function\_rounds\textbackslash{}Metaheuristic
+\textbf{\large Function$_{\textbf{rounds}}$\textbackslash{}Metaheuristic}
     & \multicolumn{1}{R{2.7cm}}{\textbf{Iterated\\local search}}
     & \multicolumn{1}{R{2.7cm}}{\textbf{Simulated\\annealing}}
     & \multicolumn{1}{R{2.7cm}}{\textbf{Guided\\local search}}
@@ -1094,7 +1064,7 @@ TEA$_4$     & \fd{}0.444         & \fd{}0.244             & \fd{}0.729          
     
     In comparison, the neural networks need significantly less data (as was shown in \cref{fig:ann-dataUsage}). One run of ANN takes about ten times less time than one EACirc run. However, due to varying capabilities, these numbers are not comparable. EACirc can also find distinguishers for the two-round AES within less than ten \textit{epochs}, even though we set 300 \textit{epochs} as the default. Interesting comparison of the efficiency of EACirc implementation is that \texttt{C++} EACirc consumes twelve times more data per second of computation than ANN implemented in \texttt{Python}.
     
-    Still, the ANN is the only method, which can be used to classify a single test vector (16 bytes). The framework provides both its classification guess and the estimation of its certainty in the guess. No other method provides such application. EACirc is not able to classify a single vector in the current setting due to the statistical evaluation described in \cref{chap:eacirc}. Nevertheless, EACirc can be set to evaluate a single test vector. Such setting was used by Ukrop in~\cite{ukropBcThesis}.
+    Still, the ANN is the only method, which can be used to classify a single \textit{test vector} (16 bytes). The framework provides both its classification guess and the estimation of its certainty in the guess. No other method provides such application. EACirc is not able to classify a single vector in the current setting due to the statistical evaluation described in \cref{chap:eacirc}. Nevertheless, EACirc can be set to evaluate a single \textit{test vector}. Such setting was used by Ukrop in~\cite{ukropBcThesis}.
 \end{itemize}
 
 \chapter{Related work}
@@ -1105,14 +1075,14 @@ We presented our tools for randomness assessment, yet this area is broad, and ma
 %Assesment of randomness is necessary in other fields than just cryptography. Physicists use randomness assesment for .... Overal, all research areas need to evaluate their data by statisticaal tests. Therefore, statistical testing is well studied field with multiple standard tools. There are multiple statistical batteries. 
 
 \begin{description}
-    \item[Donald Knuth] explains statistical testing in the second edition of The Art of Computer Programming~\cite{knuth1969vol}. He suggested several PRNGs, and for analysis, he designed some statistical tests. The high quality of this source was sufficient in the field until George Marsaglia came with the Diehard battery. %zeroth
-    \item[Diehard] was developed at Florida State University by George Marsaglia in 1995~\cite{marsaglia1996diehard}. It was published on CD together with three so-called true random data sources and multiple PRNGs. %first
+    \item[Donald Knuth] explains statistical testing in the second edition of The Art of Computer Programming~\cite{knuth1969vol}. He suggested several \textit{PRNGs}, and for analysis, he designed some statistical tests. The high quality of this source was sufficient in the field until George Marsaglia came with the Diehard battery. %zeroth
+    \item[Diehard] was developed at Florida State University by George Marsaglia in 1995~\cite{marsaglia1996diehard}. It was published on CD together with three so-called true random data sources and multiple \textit{PRNGs}. %first
     \item[Crypt-X suite] was a test battery for analysis of cryptoprimitives used in the late nineties~\cite{cryptxs}. NIST STS fully surpassed it. % second
     \item[NIST STS] is the "golden" standard of statistical testing in cryptography~\cite{rukhin2001statistical}. Four tests of the battery were standardised as one step for the certification FIPS 140-2~\cite{fips2001140}. It was also used as one criterion of evaluation of the AES candidates, evaluated by Murphy in~\cite{murphy2000power}. For example, Murphy found NIST STS failing for the AES candidate HPC, which detected possible weaknesses of the algorithm.
 
     NIST STS was developed in the late nineties, and the last revision was released in 2010~\cite{rukhin2001statistical}. The 2010 update removed a biased test \textit{Lempel-Ziv Complexity of Sequences}. Further analysis of the bias in the $p$-values produced by NIST STS shows more dependent tests, which leads to a production of biased results. Overall NIST STS is accepted as the "golden" standard, so newer batteries extend it (at least the FIPS 140 subset of NIST STS battery) and relates to it. % third
     \item[Dieharder] was developed by Robert G. Brown at the Duke University in 2004~\cite{brown2013dieharder}. It reimplements all tests of Diehard battery, and extends it by multiple additional tests. Dieharder also contains three of the fifteen tests of the NIST STS battery. However, it suffers similar bias flaws as NIST STS, as detected Obrátil in the submitted thesis~\cite{obratilMgrThesis}. % fourth
-    \item[TestU01] is state of the art in statistical testing. It is a library, continuously developed by Université de Montréal since 2007~\cite{l2007testu01}. The design of the tests is innovative in comparison to previous batteries. It uses fewer tests, whose are parametrised to form more sub-tests. This approach outperforms all other statistical batteries, as will be shown in our results in \cref{table:res-batteries}. The TestU01 also implements multiple PRNG from different categories, observing the same results, which proves the non-randomness. % fifth
+    \item[TestU01] is state of the art in statistical testing. It is a library, continuously developed by Université de Montréal since 2007~\cite{l2007testu01}. The design of the tests is innovative in comparison to previous batteries. It uses fewer tests, whose are parametrised to form more sub-tests. This approach outperforms all other statistical batteries, as will be shown in our results in \cref{table:res-batteries}. The TestU01 also implements multiple \textit{PRNG} from different categories, observing the same results, which proves the non-randomness. % fifth
 
     % TODO: variants
     \item[PractRand] is another competitor to the TestU01~\cite{dotypractically}. The author claims that the PracRand suits better for testing a large amount of data in comparison to other batteries. However, we have not testified this claim.
@@ -1130,7 +1100,7 @@ There are also others statistical batteries: CryptoStat~\cite{kaminsky2013crypto
 \section{Statistical batteries}
 \label{sec:relatwork-stat}
 
-We evaluated the dataset of well-known cryptographic functions with NIST STS (faster implementation by Sýs et al. was used~\cite{sys2016algorithm}), Dieharder and TestU01 battery. Those batteries were automated in the project Randomness testing toolkit (RTT)~\cite{rttgit} as part of the master thesis of Lubomír Obrátil~\cite{obratilMgrThesis}. RTT is an online service, which allows the user to upload binary data and it executes the batteries on them. It automatically detects the best possible setting of the batteries, as they are parametrised mainly by the size of the input file. After the execution, RTT postprocess the results, and outputs a human readable interpretation of them. Similarly to the previous visualisations in this thesis, we use colours to simplify the table interpretation, where red stands for rejected test and green for passed test.
+We evaluated the dataset of well-known cryptographic functions with NIST STS (faster implementation by Sýs et al. was used~\cite{sys2016algorithm}), Dieharder and TestU01 battery. Those batteries were automated in the project \textit{Randomness testing toolkit} (\textit{RTT})~\cite{rttgit} as part of the master thesis of Lubomír Obrátil~\cite{obratilMgrThesis}. \textit{RTT} is an online service, which allows the user to upload binary data and it executes the batteries on them. It automatically detects the best possible setting of the batteries, as they are parametrised mainly by the size of the input file. After the execution, \textit{RTT} postprocess the results, and outputs a human readable interpretation of them. Similarly to the previous visualisations in this thesis, we use colours to simplify the table interpretation, where red stands for rejected test and green for passed test.
 
 Such interpretation is straightforward. However, we show it may be incorrect in a very specific situation due to the statistical properties of the batteries. To prove that, we need to explain the interpretation in a statistical manner.
 
@@ -1141,7 +1111,7 @@ A single test assesses the data against the null hypothesis that the data are ra
     \item[Type II error] describes the likelihood of rejection the null hypothesis when it is true (false negative). The test did not spot non-randomness of the data. The probability of type II error is also dependent on the $\alpha$, and it is denoted as $\beta$.
 \end{description}
 
-The batteries consist of a set of tests, that are parametrised up to hundreds of sub-tests. If the significance level $\alpha$ is, for example, $1\,\%$, then the probability that all 100 tests will correctly pass is $0.99^{100}=36.6\,\%$ (suppose the tests are independent, which however do not hold for sub-tests). Therefore, we have to expect type I errors. The probability of type I error further increases if the tests are dependent. Sýs et al.~\cite{sys2015interpretation} showed that some of the NIST STS tests are dependent and they proposed the interpretation of the battery based on calculated proportion of the failed tests. The same authors plan to revise also Dieharder battery, which contains similar ambiguity in interpretation. Part of these results are going to be published in thesis of Lubomír Obrátil~\cite{obratilMgrThesis}. RTT's interpretation takes into account the type I error.
+The batteries consist of a set of tests, that are parametrised up to hundreds of sub-tests. If the \textit{significance level} $\alpha$ is, for example, $1\,\%$, then the probability that all 100 tests will correctly pass is $0.99^{100}=36.6\,\%$ (suppose the tests are independent, which however do not hold for sub-tests). Therefore, we have to expect type I errors. The probability of type I error further increases if the tests are dependent. Sýs et al.~\cite{sys2015interpretation} showed that some of the NIST STS tests are dependent and they proposed the interpretation of the battery based on calculated proportion of the failed tests. The same authors plan to revise also Dieharder battery, which contains similar ambiguity in interpretation. Part of these results are going to be published in thesis of Lubomír Obrátil~\cite{obratilMgrThesis}. \textit{RTT}'s interpretation takes into account the type I error.
 
 \subsection{Statistical batteries results}
 \label{subsec:relatwork-stat-res}
@@ -1152,7 +1122,7 @@ The comparison of multiple batteries can be seen in \cref{table:res-batteries}. 
 \centering
 
 \begin{tabular}{@{}l|rrrrrrrrrr@{}}
-\textbf{\large Algorithm} & 
+\textbf{\large Function$_{\textbf{rounds}}$} & 
 \multicolumn{1}{R{3.0cm}}{\textbf{NIST STS} \\ \footnotesize (x/15)} &
 \multicolumn{1}{R{3.0cm}}{\textbf{Dieharder} \\ \footnotesize (x/27)} &
 \multicolumn{1}{R{3.0cm}}{\textbf{Small Crush} \\ \footnotesize (x/10)} &
@@ -1189,7 +1159,7 @@ Triple DES$_{3}$                 &  1    \fn &  4 \fd &  1 \fn   &  4    \fd &  
 
 \caption{Application of the statistical batteries and EACirc on the data from round-reduced well-known cryptographic functions. 
 The values in the table are described in \cref{subsec:relatwork-stat-res}.
-The results were computed by Randomness Testing Toolkit. Complete results with detailed information about which tests are passing can be found on \href{http://rtt.ics.muni.cz/ViewResults/?created_from=2017-04-24+12\%3A00\%3A00&created_to=2017-04-29+00\%3A00\%3A00}{RTT page (as results from 2017-04-24 to 2017-04-28)}.}
+The results were computed by \textit{Randomness Testing Toolkit}. Complete results with detailed information about which tests are passing can be found on \href{http://rtt.ics.muni.cz/ViewResults/?created_from=2017-04-24+12\%3A00\%3A00&created_to=2017-04-29+00\%3A00\%3A00}{RTT page (as results from 2017-04-24 to 2017-04-28)}.}
 \label{table:res-batteries}
 \end{table}
 
@@ -1206,7 +1176,7 @@ From those results, we have multiple observations.
     \item A rejection of randomness by the battery do not have to be as a black-box (as we present here), but we can analyse, which test failed. However, depending on the test, it may be more difficult than analysis of the output circuit from EACirc.
 
     EACirc may also provide concrete proof of the data dependency. If there is a dependency between specifics bytes, it would be present in the strong distinguisher's circuit. The statistical battery would fail some test, probably the \textit{dependency test}. However, they would not state, what is the pattern in the data.
-    \item Another advantage of EACirc is the simplicity of already learned distinguisher. Using learned distinguisher needs only kilobytes of the tested data. EACirc may even state the guess for a single test vector, such setting was used in \cite{ukropBcThesis}. The test of statistical battery always requires fixed amount of data.
+    \item Another advantage of EACirc is the simplicity of already learned distinguisher. Using learned distinguisher needs only kilobytes of the tested data. EACirc may even state the guess for a single \textit{test vector}, such setting was used in \cite{ukropBcThesis}. The test of statistical battery always requires fixed amount of data.
 \end{itemize}
 
 \section{Compression algorithms}
@@ -1232,7 +1202,7 @@ We denote the results in a similar manner as results of the batteries. The rows 
 \centering
 
 \begin{tabular}{@{}l|lllll}
-\textbf{\large Algorithm} & 
+\textbf{\large Function$_{\textbf{rounds}}$} & 
 \multicolumn{1}{R{1.1cm}}{\textbf{bzip2}} &
 \multicolumn{1}{R{1.1cm}}{\textbf{gz}} &
 \multicolumn{1}{R{1.1cm}}{\textbf{lzop}} &
@@ -1272,7 +1242,7 @@ Observations from the results are following.
 \begin{itemize}
     \item The efficiency of newer \textit{bzip2} on cryptographic data is not higher than efficiency of \textit{gzip} and \textit{zip}.
     \item The fact that we have to reduce functions to very few rounds is probably caused by character (byte-level) specialisation of the compression algorithms. The cryptographic data may contain more bit-level dependencies.
-    \item The artificial neural networks perform slightly better than compression algorithms. ANN have an advantage of bit-level data inspection, while they can test only a single test vector (16 bytes) of data. The similar results of ANN and compression algorithms may indicate significant data non-randomness, such as disproportion of zeroes and ones.
+    \item The artificial neural networks perform slightly better than compression algorithms. ANN have an advantage of bit-level data inspection, while they can test only a single \textit{test vector} (16 bytes) of data. The similar results of ANN and compression algorithms may indicate significant data non-randomness, such as disproportion of zeroes and ones.
 \end{itemize}
 
 
@@ -1296,7 +1266,7 @@ Another tested method was using the artificial neural network. This area require
 
 In comparison to state of the art in randomness testing, all our methods perform worse than the TestU01 statistical battery. In comparison with other statistical batteries, EACirc finally reached capabilities comparable with Dieharder. The only advantage of EACirc over TestU01 is the analysis of the developed distinguisher circuit, which may reveal concrete bytes dependencies. TestU01 Crush, the strongest battery setting, found bias of full Rabbit function, which shown to be a replication of already known results discovered during eStream competition.
 
-An important product of this work is the testbed of well-known cryptographic function, which is an extension and correction of previous testing sets. Besides, we presented generator tool for the direct generation of the tested data, which can be used by developers of others randomness testing tools as a benchmark. It can be used as well by cryptographers to generate specifically modified cryptography data, usually reduced in the number of rounds.
+An important product of this work is the testbed of well-known cryptographic function, which is an extension and correction of previous testing sets. Besides, we presented \textit{generator} tool for the direct generation of the tested data, which can be used by developers of others randomness testing tools as a benchmark. It can be used as well by cryptographers to generate specifically modified cryptography data, usually reduced in the number of rounds.
 
 \section{Future work}
 \label{sec:conclusion-future}
@@ -1305,7 +1275,9 @@ The capabilities of EACirc increased to the level of Dieharder battery. My estim
 
 Our team develop a bit-oriented randomness testing project. It does not utilise any metaheuristic yet, which may increase its already promising capabilities. It fits well population-based metaheuristic, such as evolutionary algorithms or swarm intelligence. The work on the integration of those metaheuristics already started within this thesis.
 
-The testbed of well-known functions can be further extended by different means of reduction of the cryptographic functions RC4 and HC-128. For RC4, we can use bit selection capabilities of the generator. Other plans are to extend the tool by already implemented CAESAR functions and new PRNG. We plan publishing the generator altogether with the randomness testing toolkit for NordSec conference.
+The testbed of well-known functions can be further extended by different means of reduction of the cryptographic functions RC4 and HC-128. For RC4, we can use bit selection capabilities of the \textit{generator}. Other plans are to extend the tool by already implemented CAESAR functions and new \textit{PRNGs}. We plan publishing the \textit{generator} altogether with the \textit{randomness testing toolkit} for NordSec conference.
+
+Presented implementation of neural networks may have limited results due to the analysis of a low amount of the tested data. A recurrent neural network, having an advantage of an internal state, may analyse a stream of data and try to predict next bit of the input. Such approach would show if the limitation of the neural networks were the limited amount of observed data.
 
 Regarding the artificial neural network, we began cooperation with pattern recognition team from University Ca’ Foscari Venice. The results of this cooperation are still open.
 
@@ -1319,46 +1291,36 @@ Regarding the artificial neural network, we began cooperation with pattern recog
 \chapter{Glossary}
 \label{chap:app-glos}
 
-\todo{Sort it lexicographically}
-
 \begin{description}
-    \item[Generator] is a tool build upon implementation of cryptographic function from EACirc, that allows generation of round-reduced and further customised cryptographic data.
-    \item[Connection bug] is a statistical issue of EACirc's evaluation. It is caused by evaluation of circuits, which has not connected input to output. Therefore the circuit produce the same distribution of the output byte per dataset. These distributions are compared by $\chi^{2}$ test, which fails with 0 for having not enough categories.
-    \item[Significance level $\alpha$] defines the probability that test reject the null hypothesis in case it is true. The significance level can be usually parametrised.
-    \item[Critical value] corresponds to the significance level. The significance level is the volume of distribution's extremes, the critical value is the $p$-value of such volume.
-    \item[Empirical critical value] TODO
-    
-    \item[Benchmarking functions] are subset of the well-known cryptographic functions analyses in this thesis, such that are possible, yet not straightforward for EACirc detection. Therefore some of the runs can find significant distinguisher, while others do not. Therefore such combination of function and round are useful for comparison of metaheuristics.
-    \item[Pruning] is the process of removal unused connectors and nodes from the circuit. Prunning is done by breath first search from the output with prior knowledge, what is the arity of functions in nodes.
-    \item[Rejection rate] is the number of EACirc runs that rejected the randomness hypothesis divided by total number of runs, usually 1\,000 runs.
-    \item[Binary weight] is the number of ones in the data.
-    \item[Weight evaluator] is method for fitness evaluation based on binary weight of the circuits outputs. If the amount of ones output by the circuit per tested dataset significantly differs from amount of ones from the reference dataset, than the tested data are non-random.
-    \item[Epoch] is the number of rounds evaluated on the same dataset. After the end of epoch, the dataset is regenerated.
-    \item[Test vector] is the least tested unit of data. It is usually a single ciphertext.
-    \item[Space exploration] is the process of broad search in the solution space for a feasible solution.
-    \item[Solution exploitation] is the process of advancement of already feasible solution.
-
-    \item[Artificial neural network (ANN)] TODO
-    \item[Convoluted neural network (CNN)] is type of ANN, where first layers are not fully connected, but forms smaller networks for detection of local patterns.
-    \item[Activation function] is processing the sum of inputs of the neuron to the output. It restrict the output to given interval, usually to $(-1, 1)$.
-    \begin{description}
-        \item[Sigmoid] TODO
-        \item[Softsign] TODO
-    \end{description}
-    \item[Crossentropy loss] TODO
-
-    \item[Strict avalanche criterion (SAC)] says, that a single bit flip in the input of the hash function should lead to flipping roughly half of the output bits. Even though it was stated for hash functions, it should apply to cryptographic ciphers as well.
-    \item[Pseudo random number generator (PRNG)] is a deterministic generator of pseudo-random numbers, wholly depending on its initial seed.
-    \item[Trully random number generator (TRNG)] (sometimes called hardware RNG) generates the random data from physical process.
-    \item[Quantum random number generator (QRNG)] are instance of TRNG, where the physical process corresponds to quantum event, such as excites photon's polarisation.
-    \item[Randomness testing toolkit (RTT)] is framework providing unified interface to statistical batteries NIST STS, Dieharded and TestU01.
-    \item[Local optimum] of the fitness landscape are local maxima. As hill-climbing methods get stuck on such solution, we other optimisation techniques were developed, usually with the goal evading the local optima.
-    \item[Fitness function] is a method for comparison of individual quality. Fitness is in this work defined for maximization problem. Therefore fitness equal to zero is the worst, while fitness equal to one is the best.
-    \item[Round reduced cryptographic function] is cryptographic function, where the iterative part like Fiestel network is reduced to given number of rounds. Zero rounds mean the iterative part is skipped at all. However, even zero rounds function can produce randomly looking data, as it may consist of strong pre-computation and post-computation. Some functions are irreducible.
-    \item[neighbour]
-    \item[neighbourhood]
-    \item[tabu list]
-    \item[monobit test]
+\item[Activation function] of artificial neural network is processing the sum of inputs of the neurone to the output. It restricts the output to given interval, usually to $(-1, 1)$.
+\item[Benchmarking functions] are a subset of the well-known cryptographic functions analysed in this thesis, such that are possible, yet not straightforward for EACirc detection. Therefore some of the runs can find significant distinguisher, while others do not. Therefore such combination of function and round are useful for comparison of metaheuristics.
+\item[Binary weight] is the number of ones in the data.
+\item[Connection bug] is a statistical issue of EACirc's evaluation. It is caused by evaluation of circuits, which has not connected the input to the output. Therefore, the circuit produces the same distribution of the output byte per dataset. These distributions are compared by $\chi^{2}$ test, which fails with 0 for having not enough categories.
+\item[Convoluted neural network (CNN)] is a type of artificial neural network, where the first few layers are not entirely connected, but they form smaller networks for detection of local patterns.
+\item[Critical value] corresponds to the \textit{significance level}. The \textit{significance level} is the volume of distribution's extremes, the \textit{critical value} is the $p$-value of such volume.
+\item[Empirical critical value] is a minimal measured \textit{rejection rate}, after which we reject the randomness hypothesis. Its value would be theoretically $2\times \alpha$  for 1\,000 EACirc runs. However, due to the \textit{connection bug} is the actual value slightly higher.
+\item[Epoch] is the number of rounds evaluated on the same dataset. After the end of \textit{epoch}, the dataset is regenerated.
+\item[Fitness function] is a method for comparison of individual quality. \textit{Fitness function} is in this work defined for maximisation problem. Therefore \textit{fitness} equal to zero is the worst, while \textit{fitness} equal to one is the best.
+\item[Generator] is a tool build upon implementation of cryptographic function from EACirc allowing generation of round-reduced and further customised cryptographic data.
+\item[Local optimum] of the \textit{fitness} landscape are local maxima. As hill-climbing methods get stuck on such solution, we other optimisation techniques were developed, usually with the goal evading the \textit{local optima}.
+\item[Monobit test] is the basic statistic test. It tests the amount of ones and zeroes in the data. It expects to have a similar amount of ones and zeroes.
+\item[Neighbour] solution is a candidate solution created by a single change by the \textit{mutation} operation. For example, in EACirc it is a single addition of removal of a connector or change of the Boolean operator in the node.
+\item[Neighbourhood] is the solution space around the current individual.
+\item[Overfitting] is a situation of the learning process when the individual specialises too tightly to the learning data. Therefore we change the learning datasets each \textit{epoch}, so the learning process leads to generalisation instead of the individual being too accurate.
+\item[Pseudo random number generator (PRNG)] is a deterministic generator of pseudo-random numbers, wholly depending on its initial seed.
+\item[Pruning] is the process of removal unused connectors and nodes from the circuit. \textit{Pruning} is done by breath first search from the output with prior knowledge, what is the arity of functions in nodes.
+\item[Quantum random number generator (QRNG)] is an instance of a truly random number generators, where the physical process corresponds to a measurement of a quantum event, such as photon's polarisation.
+\item[Randomness testing toolkit (RTT)] is framework providing a unified interface to statistical batteries NIST STS, Dieharded and TestU01.
+\item[Round-reduced cryptographic function] is a cryptographic function, where the iterative part such as Feistel network is reduced to given number of rounds. Zero rounds mean the iterative part is skipped at all. However, even zero rounds function can produce randomly looking data, as it may consist of strong pre-computation and post-computation. Some functions are irreducible.
+\item[Rejection rate] is the number of EACirc runs that rejected the randomness hypothesis divided by a total number of runs, usually 1\,000 runs.
+\item[Significance level $\alpha$] defines the probability that test rejects the null hypothesis when it is true. The \textit{significance level} can usually be parametrised.
+\item[Solution exploitation] is the process of advancement of an already feasible solution.
+\item[Space exploration] is the process of broad search in the solution space for a feasible solution.
+\item[Strict avalanche criterion (SAC)] says that a single bit flip in the input of the hash function should lead to flipping roughly half of the output bits. Even though it was stated for hash functions, it should apply to cryptographic ciphers as well.
+\item[Tabu list] is a set of visited individuals. Tabu search metaheuristic would not visit these solutions again to prevent repeating computation.
+\item[Test vector] is the least tested unit of data. It is usually a single ciphertext.
+\item[Trully random number generator (TRNG)] (sometimes called hardware RNG) generates the random data from the physical process.
+\item[Weight evaluator] is method for \textit{fitness} evaluation based on \textit{binary weight} of the circuits outputs. If the number of ones output by the circuit per tested dataset significantly differs from the number of ones from the reference dataset, then the tested data are non-random.
 \end{description}
 
 \chapter{Single-solution metaheuristics results}
@@ -1367,7 +1329,7 @@ Regarding the artificial neural network, we began cooperation with pattern recog
 \begin{table}[H]
 \centering
 \begin{tabular}{l|l l l l}
-Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
+\textbf{\large Function\textbackslash{}rounds} & \textbf{\large -1} & \textbf{\large 0} & \textbf{\large 1} & \textbf{\large 2}\\ \hline
 rnd\_rnd$_{\textnormal{no rounds}}$ & -- & \fn{}0.01681& -- & --    \\\\
 AES$_{3}$        & \fd{}1.0   & \fd{}0.305 & \fn{}0.026 & \fn{}--   \\
 BLAKE$_{1}$      & \fd{}1.0   & \fd{}0.051 & \fn{}0.018 & \fn{}0.021\\
@@ -1393,7 +1355,7 @@ Triple DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.015 & \fn{}0.029
 \begin{table}[H]
 \centering
 \begin{tabular}{l|l l l l}
-Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
+\textbf{\large Function\textbackslash{}rounds} & \textbf{\large -1} & \textbf{\large 0} & \textbf{\large 1} & \textbf{\large 2}\\ \hline
 rnd\_rnd$_{\textnormal{no rounds}}$ & -- & \fn{}0.01191& --  & --   \\\\
 AES$_{3}$        & \fd{}1.0   & \fd{}0.164 & \fn{}0.017 & \fn{}--   \\
 BLAKE$_{1}$      & \fd{}1.0   & \fd{}0.260 & \fn{}0.017 & \fn{}0.013\\
@@ -1419,7 +1381,7 @@ Triple DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.012 & \fn{}0.007
 \begin{table}[H]
 \centering
 \begin{tabular}{l|l l l l}
-Function\textbackslash{}rounds & -1 & 0 & 1 & 2\\ \hline
+\textbf{\large Function\textbackslash{}rounds} & \textbf{\large -1} & \textbf{\large 0} & \textbf{\large 1} & \textbf{\large 2}\\ \hline
 rnd\_rnd$_{\textnormal{no rounds}}$ & -- & \fn{}0.01124 & -- & --   \\\\
 AES$_{3}$        & \fd{}1.0   & \fd{}0.182 & \fn{}0.015 & \fn{}--   \\
 BLAKE$_{1}$      & \fd{}1.0   & \fd{}0.157 & \fn{}0.016 & \fn{}0.012\\
@@ -1432,11 +1394,11 @@ MD6$_{8}$        & \fd{}--    & \fd{}0.992 & \fn{}0.010 & \fn{}0.017\\
 Rabbit$_{0}$     &      --    & \fn{}0.010 & \fn{}0.014 & \fn{}0.018\\
 RC4$_{\textnormal{no rounds}}$& -- & \fn{}0.005 & --    & --        \\
 Salsa20$_{2}$    & \fd{}--    & \fd{}1.0   & \fn{}0.015 & \fn{}0.008\\
-SINGLE-DES$_{4}$ & \fd{}1.0   & \fd{}0.441 & \fn{}0.009 & \fn{}0.013\\
+Single DES$_{4}$ & \fd{}1.0   & \fd{}0.441 & \fn{}0.009 & \fn{}0.013\\
 Skein$_{3}$      & \fd{}1.0   & \fd{}1.0   & \fn{}0.011 & \fn{}0.009\\
 SOSEMANUK$_{4}$  & \fd{}--    & \fd{}1.0   & \fn{}0.007 & \fn{}0.009\\
 TEA$_{4}$        & \fd{}1.0   & \fd{}0.877 & \fn{}0.016 & \fn{}0.010\\
-TRIPLE-DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.009 & \fn{}0.004
+Triple DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.009 & \fn{}0.004
 \end{tabular}
 \caption{Results of variable neighbourhood search as EACirc metaheuristics on usable testbed.}
 \label{table:res-usable-vns}
