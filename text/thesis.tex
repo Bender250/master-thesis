@@ -65,16 +65,14 @@ A detectable non-randomness of cryptoprimitive's output signals a bias of the cr
 This thesis has three main contributions. The first is a development of a testbed of 16 well-known cryptographic functions used for randomness testing comparison. The second is an extension of EACirc by three new metaheuristics. One of them, called guided local search, outperforms all the others in terms of its success rate. The third contribution is an analysis of randomness tests produced by EACirc computation. Successful tests contain evidence of the bias in the tested data. The influence of tested metaheuristics on the complexity of these tests is analysed. It is shown that the guided local search produces the least complex tests, such that allow easier cryptanalysis.
 }
 
-\thesislong{thanks}{%todo: Valdo, Martin, Lubo
-I would like to thank members of CRoCS laboratory for a friendly environment with productive seasons and joyful fun and relaxation topics. From those, I thank EACirc team members, who consulted and criticised the topics presented in this thesis. Especially I thank Petr for supervising me with his never-ending enthusiasm for science at all.\\\\%
+\thesislong{thanks}{%
+I would like to thank members of CRoCS laboratory for a friendly environment with productive seasons and joyful fun and relaxation topics. From those, I thank EACirc team members for consulting and criticising the research presented in this thesis. Martin, Valdemar and Lubo gave me invaluable help with the thesis text. Especially I thank Petr for supervising me with his never-ending enthusiasm for science at all.\\\\%
 %
 I apologise to my friends, who deserved more of my presence, but they still kept me at least a bit social. I am very grateful to my girlfriend Marta, who never left me being normal and bored by the work, as well as having any unused free time.\\\\%
 %
 Most of all I owe to my parents, who always stand behind me. You always sensed the moments, when I need a help and surprised me with nice support. I am proud of having you, thanks.
 
-\vspace*{5cm}\noindent{}
-Computational resources were provided by the CESNET LM2015042 and the CERIT Scientific Cloud LM2015085, provided under the programme "Projects of Large Research, Development, and Innovations Infrastructures".\\\\%
-%
+\vspace*{7cm}\noindent{}\hspace*{-0.1cm}
 Computational resources were supplied by the Ministry of Education, Youth and Sports of the Czech Republic under the Projects CESNET (Project No. LM2015042) and CERIT-Scientific Cloud (Project No. LM2015085) provided within the program Projects of Large Research, Development and Innovations Infrastructures.\\\\%
 %
 We also acknowledge the support of Czech Science Foundation, the project GA16-08565S.
@@ -215,7 +213,7 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
 
 Cryptoprimitives, such as block ciphers, stream ciphers and hash functions are basic building blocks of secure communication. A development of such primitives is complex and time consuming. Therefore, the primitives are expected to be supported for a long time, even extended due to backwards compatibility. Hence, vulnerabilities in them can be exploited for a long time. An example of such occasion is biased stream function RC4, supported before the version TLS 1.3~\cite{dierks2008transport}.
 
-The cryptoprimitives are selected in contests such as AES~\cite{aes-competition}, eSTREAM~\cite{estream-competition}, SHA-3~\cite{sha3-competition} or CAESAR~\cite{caesar-competition}. Each contest consists of proposals submission, their iterative cryptanalysis and elimination, until a single or multiple finalists are selected as the winners. This thesis aims at the analysis part.
+The cryptoprimitives are selected in contests such as AES~\cite{aes-competition}, eStream~\cite{estream-competition}, SHA-3~\cite{sha3-competition} or CAESAR~\cite{caesar-competition}. Each contest consists of proposals submission, their iterative cryptanalysis and elimination, until a single or multiple finalists are selected as the winners. This thesis aims at the analysis part.
 
 There are multiple types of cryptanalysis, classified by used knowledge, required computation, and other criteria. We develop an automated cryptanalysis tool, which works on ciphertext with no prior information of the data. Our goal is not to decipher the data, but to inspect a selected property of the cryptoprimitives. For example, the properties can be following.
 
@@ -237,7 +235,7 @@ Other tests may check different types of non-randomness, like bits dependency an
 
 Statistical batteries are fixed set of tests. Therefore, the battery does not adapt to the tested data. The goal of the EACirc tool is to create a statistical test directly based on the tested data. To adapt to the tested data, EACirc utilises heuristic for problem optimisation. The goal of the problem optimisation is constructing a test capable of a bias detection. The aim of this thesis is to analyse alternative optimisation techniques and implement some of them to advance the optimisation process.
 
-Following this introduction, in the \cref{chap:eacirc} we explain the computation of EACirc. After that, in the \cref{chap:metaheuristics} we present methods of problem optimisation and we inspect their potential for application in randomness testing. The \cref{chap:method} defines analysis methodology and introduces the testing dataset. The results of the work are presented in \cref{chap:res}, followed by comparison with related work in \cref{chap:relatwork}. The \cref{chap:conclusion} concludes the thesis and proposes future direction in the area. The \cref{chap:app-glos} contains a glossary of defined and advanced terms. We emphasised these terms in the text by italic type. The \cref{chap:app-ss-res} shows some additional results.
+Following this introduction, in \cref{chap:eacirc} we explain the computation of EACirc. After that, in \cref{chap:metaheuristics} we present methods of problem optimisation and we inspect their potential for application in randomness testing. The \cref{chap:method} defines analysis methodology and introduces the testing dataset. The results of the work are presented in \cref{chap:res}, followed by comparison with related work in \cref{chap:relatwork}. The \cref{chap:conclusion} concludes the thesis and proposes future direction in the area. The \cref{chap:app-glos} contains a glossary of defined and advanced terms. We emphasised these terms in the text by italic type. The \cref{chap:app-ss-res} shows some additional results.
 
 Even though the research of this work was performed mainly by myself, the plural is used in the text. EACirc and other randomness testing tools are researched by a team at the Centre for Research on Cryptography and Security (CRoCS), Masaryk University\footnote{The team of randomness testing involves following people: Radka Cieslarová, Michal Hajas, Dušan Klinec, Matúš Nemec, Jiří Novotný, Ľubomír Obrátil, Marek Sýs, Petr Švenda, Martin Ukrop and others.}$^{,}$\footnote{The thesis materials together with an overview of the contributions are available online on the CRoCS's pages: \url{http://crcs.cz/thesis/kubicek2017}.}.
 
@@ -544,12 +542,12 @@ Therefore we switched from QRNG to pseudo random number generator (PRNG) PCG32~\
 
 Previous works on EACirc analysed candidates of cryptoprimitives competitions~\cite{estreamMgrThesis,sha3Thesis,ukropMgrThesis}. These works extended EACirc by many functions sharing the same interface. This approach was effective for broad analysis of the competition candidates, but it does not test well-known cryptographic functions like AES and DES.
 
-Therefore, for the comparison with other randomness testing tools, we decided to select a new test set of cryptographic functions. We chose the finalist of competitions SHA-3~\cite{sha3-competition} (BLAKE, Gr\o stl, JH, Keccak and Skein) and eSTREAM~\cite{estream-competition} (HC-128, Rabbit, Salsa20, SOSEMANUK and Grain), and above that, we implemented other block (AES, DES, 3-DES and TEA) and stream (RC4) functions.
+Therefore, for the comparison with other randomness testing tools, we decided to select a new test set of cryptographic functions. We chose the finalist of competitions SHA-3~\cite{sha3-competition} (BLAKE, Gr\o stl, JH, Keccak and Skein) and eStream~\cite{estream-competition} (HC-128, Rabbit, Salsa20, SOSEMANUK and Grain), and above that, we implemented other block (AES, DES, 3-DES and TEA) and stream (RC4) functions.
 
 \subsection{Reimplementation of stream handling in EACirc}
 \label{subsec:method-data-streams}
 
-The implementation of SHA-3 and eSTREAM candidates in EACirc was called projects. The projects were handling everything related to data generation, specifically IV, key and plaintext. Every project had its own implementation of the \textit{counter} plaintext generator, the \textit{strict avalanche criterion} generator, and other data sources.
+The implementation of SHA-3 and eStream candidates in EACirc was called projects. The projects were handling everything related to data generation, specifically IV, key and plaintext. Every project had its own implementation of the \textit{counter} plaintext generator, the \textit{strict avalanche criterion} generator, and other data sources.
 
 For the implementation of the new project for block ciphers, we decided to reimplement data generation in more variable and modifiable way. For this, we decided for data manipulation via streams, whose can be nested into each other. Each stream implements a simple interface with constructor and function \texttt{next}, which returns next test vector. The stream is specified only by the output size of the test vector.
 
@@ -561,7 +559,7 @@ The purpose of the streams is unification of all data manipulation in the whole 
         \item input streams: true and false bits generators, counter and multiple variants of the strict avalanche criterion generator, and
         \item PRNG's PCG32~\cite{pcgGen} and Mersenne Twister~\cite{matsumoto1998mersenne}.
     \end{itemize}
-    \item The projects of cryptographic functions. Namely project eSTREAM and SHA-3 and newly implemented block ciphers.
+    \item The projects of cryptographic functions. Namely project eStream and SHA-3 and newly implemented block ciphers.
     \item Postprocessing streams are applied to data from cryptographic functions for more advanced experiments. They allows us analysis of selected bits of the function.
 \end{itemize}
 
@@ -580,16 +578,16 @@ RC4 is also based on the educative repository~\cite{cryptoFunc}, but the code is
 
 All these functions together with the new interface of new block project and test vectors processing algorithm were released in minor version EACirc 4.1.
 
-\paragraph{Corrections and code review of SHA-3 and eSTREAM functions} was another part of streams update. Multiple cryptographic functions from previous implementation were incorrectly round-reduced.
+\paragraph{Corrections and code review of SHA-3 and eStream functions} was another part of streams update. Multiple cryptographic functions from previous implementation were incorrectly round-reduced.
 \label{par:method-data-funcs-bugs}
 
 \begin{itemize}
-    \item SHA-3 Skein, eSTREAM Rabbit, SOSEMANUK and F-FCSR were not round-reduced, but their implementation uses iterative approach, so we reduced them.
-    \item eSTREAM HC-128 stated in the project documentation and in header file, it can be round-reduced, but it had no effect in the core function at all.
-    \item eSTREAM Salsa20 used wrong implicit number of rounds for default settings.
+    \item SHA-3 Skein, eStream Rabbit, SOSEMANUK and F-FCSR were not round-reduced, but their implementation uses iterative approach, so we reduced them.
+    \item eStream HC-128 stated in the project documentation and in header file, it can be round-reduced, but it had no effect in the core function at all.
+    \item eStream Salsa20 used wrong implicit number of rounds for default settings.
 \end{itemize}
 
-These bugfixes together with fix of improper configuration of eSTREAM project were one of two major reasons for releasing EACirc 4.2. All these fixes together with valid configurations are described in project documentation~\cite{EACirc-wiki-streams}.
+These bugfixes together with fix of improper configuration of eStream project were one of two major reasons for releasing EACirc 4.2. All these fixes together with valid configurations are described in project documentation~\cite{EACirc-wiki-streams}.
 
 \subsection{Data generator tool}
 \label{subsec:method-data-generator}
@@ -614,7 +612,7 @@ For direct inter-method comparison, we need to use the same data for testing. Th
 \subsection{Single-solution methodology}
 \label{subsec:method-spec-ss}
 
-All single-solution metaheuristics were implemented into the EACirc tool. Therefore, this part extends the explanation of the single run evaluation from the \cref{chap:eacirc}.
+All single-solution metaheuristics were implemented into the EACirc tool. Therefore, this part extends the explanation of the single run evaluation from \cref{chap:eacirc}.
 
 The main advantage of single-solution metaheuristics is their simplicity and straightforward interpretation. However, the overall interpretation of EACirc results became complex, as we work with randomness that needs to be evaluated statistically. The complex approach also leads to significantly better results. The statistical evaluation as well as distributed computation automation is described below.
 
@@ -743,8 +741,6 @@ The generator takes as an input the \texttt{JSON} dump of the results from the p
 \subsubsection{\textbf{Goal specification}}
 \label{subsubsec:method-spec-ss-goal}
 
-\todo{Petr's comments are not corrected}
-
 The ultimate goal of the experiments with metaheuristics is increasing detection capabilities of non-randomness of tested datastream. The analysed functions, described in \cref{sec:method-data}, are round-reduced. The randomness of the data increases rapidly with the rounds addition, so the comparison of metaheuristics may not be enough fine-grained. We would need functions with a low increase of the randomness per round as a benchmark, but we did not observe such behaviour by any of the tested functions, nor our own design of benchmarking function does not behave that way~\cite{EACirc-lut}.
 
 Less ambitious, but still useful goal can be an increase of the \textit{rejection rate} of the null hypothesis per experiment. Rejecting only 10\,\% of runs lead to difficulties with the analysis of the output test. The higher is the \textit{rejection rate}, the easier is the interpretation of found distinguisher.
@@ -753,7 +749,7 @@ Another goal can be decreasing the computation time or the amount of used data. 
 
 We can also analyse specific goals per metaheuristics. Both variable neighbourhood search and Guided local search set a complementary target -- a simplification of the circuits for later analysis.
 
-\subsection{ANN methodology}
+\subsection{Artificial neural networks methodology}
 \label{subsubsec:method-spec-ms-aco}
 
 The neural network also classifies the test vectors into two sets -- the tested data set and the reference data set. Therefore, the implementation takes as an input two binary files -- the tested file and the reference file. We generate these files with the \textit{Generator}, so we ensure consistency and comparability of the results within the approaches.
@@ -832,7 +828,7 @@ SOSEMANUK$_{4}$  & \fd{}--    & \fd{}1.0   & \fn{}0.017 & \fn{}0.011\\
 TEA$_{4}$        & \fd{}1.0   & \fd{}0.444 & \fn{}0.012 & \fn{}0.013\\
 Triple DES$_{2}$ & \fd{}--    & \fd{}1.0   & \fn{}0.006 & \fn{}0.007
 \end{tabular}
-\caption{Results of iterated local search as EACirc metaheuristics on the well-known cryptographic functions. The values in the cells are the \textit{rejection rate} of the randomness hypothesis. The structure and the values in this table are explained in the \cref{sec:res-ss}.}
+\caption{Results of iterated local search as EACirc metaheuristics on the well-known cryptographic functions. The values in the cells are the \textit{rejection rate} of the randomness hypothesis. The structure and the values in this table are explained in \cref{sec:res-ss}.}
 \label{table:res-usable-ils}
 \end{table}
 
@@ -846,7 +842,7 @@ The results of iterated local search are shown in \cref{table:res-usable-ils}. F
 We also performed other tests, which showed some additional information.
 
 \begin{itemize}
-    \item It is possible to obtain the \textit{rejection rate} higher (up to full 100\,\%) than shows the \cref{table:res-usable-ils} for the \textit{benchmarking functions}. However, advancing the results require time-consuming manual fine-tuning to the tested data or more computational time. In the study of TEA~\cite{kubicek2016new}, we showed almost 100\,\% distinguisher for four rounds TEA. Obtaining such result required different shape of the circuit due to TEA block length and 100 times more test vectors. On the other hand, an increase of the \textit{rejection rate} by better metaheuristic applies in general, so all results should benefit such improvements.
+    \item It is possible to obtain the \textit{rejection rate} higher (up to full 100\,\%) than shows \cref{table:res-usable-ils} for the \textit{benchmarking functions}. However, advancing the results require time-consuming manual fine-tuning to the tested data or more computational time. In the study of TEA~\cite{kubicek2016new}, we showed almost 100\,\% distinguisher for four rounds TEA. Obtaining such result required different shape of the circuit due to TEA block length and 100 times more test vectors. On the other hand, an increase of the \textit{rejection rate} by better metaheuristic applies in general, so all results should benefit such improvements.
     
     \item The results shown in \cref{table:res-usable-ils} were tested with the \textit{epoch length} of 100 generations. It means that the metaheuristic performed 100 generations on the same dataset. This setup seems to lead to overfitting, as Ukrop examined in~\cite[Section~7.1]{ukropBcThesis}. We tried decreasing the \textit{epoch length} to 20, which lead to the increase of influence of the \textit{connection bug}, as the \textit{empirical critical value} raised to $0.03127$. Such setup did not increase the number of distinguished rounds for any function, but it increased the \textit{rejection rate} of all the \textit{benchmarking functions}. However, only the \textit{rejection rate} of three-round AES increased significantly to $0.982$. The same behaviour appeared for shorter \textit{epochs} for all metaheuristics.
 \end{itemize}
@@ -854,7 +850,7 @@ We also performed other tests, which showed some additional information.
 \subsection{Simulated annealing}
 \label{subsec:res-ss-sa}
 
-We tested the simulated annealing as a representative of single-solution metaheuristics that can accept a non-improving solution. The results are available in the Appendix as \cref{table:res-usable-sa}, as they are very similar to the \cref{table:res-usable-ils} with iterative local search results. A direct comparison of notable metaheuristics results on the \textit{benchmarking functions} will be summarised in \cref{sec:res-comp}.
+We tested the simulated annealing as a representative of single-solution metaheuristics that can accept a non-improving solution. The results are available in the Appendix as \cref{table:res-usable-sa}, as they are very similar to \cref{table:res-usable-ils} with iterative local search results. A direct comparison of notable metaheuristics results on the \textit{benchmarking functions} will be summarised in \cref{sec:res-comp}.
 
 The \textit{sanity experiment} ended with the \textit{rejection rate} of $0.01681$, which corresponds to a higher influence of the \textit{connection bug} for metaheuristics that accepts non-improving neighbour. As the \textit{rejection rate} of the random-random experiment increases, all other \textit{rejection rates} increase as well. Therefore, the \textit{connection bug} probably influenced \textit{benchmarking functions} results, so the increased \textit{rejection rate} of them may not imply a significant improvement.
 
@@ -894,7 +890,7 @@ The goals of the variable neighbourhood search are very similar to the guided lo
 
 If we have an unconnected circuit, we try adding a new connector, so the probability of reaching connected graph increases. In the opposite case, when we have a good working individual, we examine only solutions with fewer connectors.
 
-The variable neighbourhood search results are in the Appendix in the \cref{table:res-usable-vns}. It is performing better than the iterative local search. However, overall it performs slightly worse than guided local search, as can be seen at the end of this chapter in inter-approach comparison in \cref{table:ss-comparison}. It is probable that the limitation of the neighbourhood does not allow exploration of a significantly better solution in case of well-working solutions.
+The variable neighbourhood search results are in the Appendix in \cref{table:res-usable-vns}. It is performing better than the iterative local search. However, overall it performs slightly worse than guided local search, as can be seen at the end of this chapter in inter-approach comparison in \cref{table:ss-comparison}. It is probable that the limitation of the neighbourhood does not allow exploration of a significantly better solution in case of well-working solutions.
 
 
 \section{Analysis of the resulting circuit}
@@ -996,7 +992,7 @@ Layout\textbackslash{}batch size & 10 & 25 & 50 & 100 & 250 & 500 & 1000\\ \hlin
 \label{table:res-ann-speed}
 \end{table}
 
-An interpretation of the observations from the \cref{table:res-ann-acc,table:res-ann-speed} are the following.
+An interpretation of the observations from \cref{table:res-ann-acc,table:res-ann-speed} are the following.
 
 \begin{itemize}
     \item An increasing batch size decreases the learning speed, as can be seen in \cref{table:res-ann-speed}. Our reasoning for this observation is that more testing vectors per one iteration overload the network with too much information. An ideal batch size can be from 10 up to 50 test vectors.
@@ -1004,7 +1000,7 @@ An interpretation of the observations from the \cref{table:res-ann-acc,table:res
     \item The learning capabilities of the neural networks in our implementation are limited. Based on these observations, we cannot expect neural network is performing better than EACirc.
 \end{itemize}
 
-We evaluated one of the best working parametrisation (single neurone and batch size 25) of the neural network on the well-known cryptographic functions dataset. The results are in the \cref{table:res-usable-ann} where rows and cells are the same as in the previous results in the \cref{table:res-usable-ils} and in the cell is a final acceptance rate of the run. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$. It measures the quality of the ANN, similarly as a fitness function was the metaheuristics' metric. The colours have the same meaning as before, the \textit{critical value} used for rejection of randomness was set to 0.554, as such results have probability lower than 1\,\%.
+We evaluated one of the best working parametrisation (single neurone and batch size 25) of the neural network on the well-known cryptographic functions dataset. The results are in \cref{table:res-usable-ann} where rows and cells are the same as in the previous results in \cref{table:res-usable-ils} and in the cell is a final acceptance rate of the run. The \textit{acceptance rate} is equal to the ratio of $\frac{\#_{\textnormal{correct guesses}}}{\#_{\textnormal{total guesses}}}$. It measures the quality of the ANN, similarly as a fitness function was the metaheuristics' metric. The colours have the same meaning as before, the \textit{critical value} used for rejection of randomness was set to 0.554, as such results have probability lower than 1\,\%.
 
 \begin{table}
 \centering
@@ -1203,8 +1199,8 @@ From those results, we have multiple observations.
     \item EACirc performs similarly to NIST STS and TestU01 Small Crush. Dieharder is slightly better than EACirc.
     \item TestU01 Crush outperforms all other batteries having a disadvantage of the computation time and the amount of analysed data.
     \item High amount of failed test indicates the data are biased in multiple characteristics. Such data are usually rejected by all batteries. However, when only a single battery detects non-randomness, it is TestU01.
-    \item \textbf{TestU01 Rabbit was able to detect deviances in full Rabbit cipher.} After analysis of this result, we found that there was a report \textit{On a bias of Rabbit}~\cite{aumasson2007bias} during the eSTREAM competition, which discovered the same property. Even though this bias was found, Rabbit cipher was selected as software profile finalist, stating that the bias does not allow any feasible attack due to its complexity.
-    \item A similar observation is the bias of a hardware profile eSTREAM finalist Grain. TestU01 Crush can detect bias up to six rounds Grain, which is almost one-half of the full function (13 rounds). The only known cryptanalysis of Grain is a \textit{dynamic cube attack}~\cite{dinur2011breaking}. It does not explain the bias observed by us. Our round reduction is based on a limitation of the shuffle of the non-linear feedback shift registers, which may require more than six rounds to shuffle the data enough. The full Grain cipher has 13 rounds, which still provides some security margin.
+    \item \textbf{TestU01 Rabbit was able to detect deviances in full Rabbit cipher.} After analysis of this result, we found that there was a report \textit{On a bias of Rabbit}~\cite{aumasson2007bias} during the eStream competition, which discovered the same property. Even though this bias was found, Rabbit cipher was selected as software profile finalist, stating that the bias does not allow any feasible attack due to its complexity.
+    \item A similar observation is the bias of a hardware profile eStream finalist Grain. TestU01 Crush can detect bias up to six rounds Grain, which is almost one-half of the full function (13 rounds). The only known cryptanalysis of Grain is a \textit{dynamic cube attack}~\cite{dinur2011breaking}. It does not explain the bias observed by us. Our round reduction is based on a limitation of the shuffle of the non-linear feedback shift registers, which may require more than six rounds to shuffle the data enough. The full Grain cipher has 13 rounds, which still provides some security margin.
     \item The interpretation based on the probability of fail of $n$ sub-tests would not detect the non-randomness property of five-round Grain. The rejection approach is strict (so it has hight probability of type II error). However, a manual observation of the failing sub-tests are being the same as the failing sub-tests of four- and six-round Grain provide a necessary trust to our interpretation that the data are non-random. In addition, such results were examined via retesting on different data from the same setting.
     \item The results marked with asterisk on TestU01 Crush and Rabbit were manually classified as non-random. We did not highlight them due to consistency, as the interpretation method leaves them as passed test. However, the probability of those extreme results is below 1\,\%.
     \item A rejection of randomness by the battery do not have to be as a black-box (as we present here), but we can analyse, which test failed. However, depending on the test, it may be more difficult than analysis of the output circuit from EACirc.
@@ -1280,7 +1276,7 @@ Observations from the results are following.
 \end{itemize}
 
 
-\section{Metaheuristcs for randomness testing}
+\section{Metaheuristics for randomness testing}
 \label{sec:relatwork-paper}
 
 Besides statistical batteries, numerous other works did the cryptanalysis based on testing some of the statistical properties. We have encountered several works using genetic algorithms for statistical analysis of cryptoprimitives. Most of them analysed Tiny Encryption Algorithm (TEA), which is a simple block cipher designed by D. Wheeler and R. Needham in 1995~\cite{TEA}. It was used as a benchmark due to its simplicity and well-known vulnerabilities~\cite{TEAAttack}. The application of genetic algorithms started in 2002 by J. Hernández et al.~\cite{twoRoundsTea}, whose found statistical deviance in two-round TEA. Further improvements from the team were presented in 2004 finding the non-randomness in three- and four-round TEA as well~\cite{fourRoundsTea}. So far the best results using genetic algorithm were found by W. Hu~\cite{fiveRoundsTea}, who detected non-random properties for five-round TEA. We compared EACirc with these results in~\cite{kubicek2016new}.
@@ -1294,11 +1290,11 @@ Genetic algorithms were also used for analysis of four-round DES~\cite{song2007c
 \section{Summary}
 \label{sec:conclusion-summary}
 
-This work analysed the application of metaheuristics in randomness testing tools, especially in EACirc. The possibility of implementation with the potential issues was discussed in the \cref{chap:metaheuristics}. We extended EACirc tool by three new metaheuristics that represented different single-solution metaheuristics types. Guided local search metaheuristic performs better than the former algorithm. In addition, we showed it significantly simplify output distinguisher, which reduces the complexity of further cryptanalysis. Therefore, guided local search will be incorporated into the following release of the EACirc tool as the default metaheuristic.
+This work analysed the application of metaheuristics in randomness testing tools, especially in EACirc. The possibility of implementation with the potential issues was discussed in \cref{chap:metaheuristics}. We extended EACirc tool by three new metaheuristics that represented different single-solution metaheuristics types. Guided local search metaheuristic performs better than the former algorithm. In addition, we showed it significantly simplify output distinguisher, which reduces the complexity of further cryptanalysis. Therefore, guided local search will be incorporated into the following release of the EACirc tool as the default metaheuristic.
 
 Another tested method was using the artificial neural network. This area requires may require more theoretical knowledge of ANN to achieve better results. To do so, it may be necessary to significantly redesign the neural network algorithms. The artificial neural network works with floating points, and the discrete bit-level patterns do not fit the gradient descent algorithm for the selected data representation. As we examined the literature within this area, we have found no serious work on this problem. It is still an open question if the artificial neural networks can achieve better results in the recognition of cryptographic data.
 
-In comparison to state of the art in randomness testing, all our methods perform worse than the TestU01 statistical battery. In comparison with other statistical batteries, EACirc finally reached capabilities comparable with Dieharder. The only advantage of EACirc over TestU01 is the analysis of the developed distinguisher circuit, which may reveal concrete bytes dependencies. TestU01 Crush, the strongest battery setting, found bias of full Rabbit function, which shown to be a replication of already known results discovered during eSTREAM competition.
+In comparison to state of the art in randomness testing, all our methods perform worse than the TestU01 statistical battery. In comparison with other statistical batteries, EACirc finally reached capabilities comparable with Dieharder. The only advantage of EACirc over TestU01 is the analysis of the developed distinguisher circuit, which may reveal concrete bytes dependencies. TestU01 Crush, the strongest battery setting, found bias of full Rabbit function, which shown to be a replication of already known results discovered during eStream competition.
 
 An important product of this work is the testbed of well-known cryptographic function, which is an extension and correction of previous testing sets. Besides, we presented generator tool for the direct generation of the tested data, which can be used by developers of others randomness testing tools as a benchmark. It can be used as well by cryptographers to generate specifically modified cryptography data, usually reduced in the number of rounds.
 
