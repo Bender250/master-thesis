@@ -148,11 +148,8 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
 \newcommand{\reread}[1]{reread: \textbf{#1}}
 
 % table colours
-\definecolor{myred}{rgb}{0.84,0.10,0.11}
-\definecolor{mygreen}{rgb}{0.65,0.85,0.42}
-
-\newcommand{\fd}{\cellcolor{myred!15}}
-\newcommand{\fn}{\cellcolor{mygreen!20}}
+\newcommand{\fd}{\cellcolor{red!25}}
+\newcommand{\fn}{}
 
 % make captions italic
 \usepackage[format=plain,
@@ -799,7 +796,7 @@ Single-solutions metaheuristics use evaluation described in \cref{subsubsec:meth
 
 \Cref{table:res-usable-ils} and additional \cref{table:res-usable-sa,table:res-usable-gls,table:res-usable-vns} in the Appendix summarise results of the tested single-solution metaheuristics applied in EACirc. Every row of the table corresponds to one cryptographical function. The lower index after the function name specifies the number of rounds we limit the functions to in EACirc. The columns with -1, 0, +1 and +2 denote an offset to the number of rounds specified in the index. For example, AES$_{3}$ was tested reduced to two rounds, three rounds as default and four rounds. Five rounds were not tested, which is denoted by a dash in the corresponding cell. The number in the cell represents the \textit{rejection rate} for the particular case. For indistinguishable data, values around the \textit{rejection rate} of the \textit{sanity experiment} are expected. Results higher than twice the \textit{rejection rate} of the \textit{sanity experiment} can happen in less then 0.15\,\% cases for indistinguishable data, we denote it \textit{empirical critical value}. Therefore, results over the \textit{empirical critical value} are not considered random.
 
-We use colours to ease the comprehension. Red highlight denotes that EACirc detected non-randomness. Green highlight signals that EACirc has not found any evidence against the randomness of the tested data. Therefore, we cannot say anything about the randomness of the data (we can neither reject, nor accept their randomness hypothesis). We highlighted untested scenarios (dash in the cell) if the results were estimated from prior works~\cite{svenda2013towards,sys2014constructing,kubicek2016new,ukropBcThesis} or faster test by statistical batteries. All the functions behave as expected; their randomness never decreases with an increasing number of rounds.
+We use colours to ease the comprehension. Red highlight denotes that EACirc detected non-randomness, otherwise EACirc has not found any evidence against the randomness of the tested data. Therefore, we cannot say anything about the randomness of the data (we can neither reject, nor accept their randomness hypothesis). We highlighted untested scenarios (dash in the cell) if the results were estimated from prior works~\cite{svenda2013towards,sys2014constructing,kubicek2016new,ukropBcThesis} or faster test by statistical batteries. All the functions behave as expected; their randomness never decreases with an increasing number of rounds.
 
 \subsection{Iterated local search}
 \label{subsec:res-ss-ils}
@@ -1100,7 +1097,7 @@ There are also others statistical batteries: CryptoStat~\cite{kaminsky2013crypto
 \section{Statistical batteries}
 \label{sec:relatwork-stat}
 
-We evaluated the dataset of well-known cryptographic functions with NIST STS (faster implementation by Sýs et al. was used~\cite{sys2016algorithm}), Dieharder and TestU01 battery. Those batteries were automated in the project \textit{Randomness testing toolkit} (\textit{RTT})~\cite{rttgit} as part of the master thesis of Lubomír Obrátil~\cite{obratilMgrThesis}. \textit{RTT} is an online service, which allows the user to upload binary data and it executes the batteries on them. It automatically detects the best possible setting of the batteries, as they are parametrised mainly by the size of the input file. After the execution, \textit{RTT} postprocess the results, and outputs a human readable interpretation of them. Similarly to the previous visualisations in this thesis, we use colours to simplify the table interpretation, where red stands for rejected test and green for passed test.
+We evaluated the dataset of well-known cryptographic functions with NIST STS (faster implementation by Sýs et al. was used~\cite{sys2016algorithm}), Dieharder and TestU01 battery. Those batteries were automated in the project \textit{Randomness testing toolkit} (\textit{RTT})~\cite{rttgit} as part of the master thesis of Lubomír Obrátil~\cite{obratilMgrThesis}. \textit{RTT} is an online service, which allows the user to upload binary data and it executes the batteries on them. It automatically detects the best possible setting of the batteries, as they are parametrised mainly by the size of the input file. After the execution, \textit{RTT} postprocess the results, and outputs a human readable interpretation of them. Similarly to the previous visualisations in this thesis, red highlight implies test rejected randomness hypothesis simplifying the table interpretation.
 
 Such interpretation is straightforward. However, we show it may be incorrect in a very specific situation due to the statistical properties of the batteries. To prove that, we need to explain the interpretation in a statistical manner.
 
@@ -1116,7 +1113,7 @@ The batteries consist of a set of tests, that are parametrised up to hundreds of
 \subsection{Statistical batteries results}
 \label{subsec:relatwork-stat-res}
 
-The comparison of multiple batteries can be seen in \cref{table:res-batteries}. The visualisation required changes of the table. The rows of the table represent cryptographic functions reduced to the given number of rounds. These functions with rounds may repeat, if different statistical testing tools were able to detect non-randomness of the function reduced to a different number of rounds. A column represents a single statistical battery or EACirc tool with the guided local search metaheuristic. A cell contains the number of failed sub-tests of total sub-tests from the table header or EACirc's \textit{rejection rate}. Or interpretation of the randomness is signalised by the highlight. The red colour signalises the tool rejected randomness hypothesis, the cell is green othervise.
+The comparison of multiple batteries can be seen in \cref{table:res-batteries}. The visualisation required changes of the table. The rows of the table represent cryptographic functions reduced to the given number of rounds. These functions with rounds may repeat, if different statistical testing tools were able to detect non-randomness of the function reduced to a different number of rounds. A column represents a single statistical battery or EACirc tool with the guided local search metaheuristic. A cell contains the number of failed sub-tests of total sub-tests from the table header or EACirc's \textit{rejection rate}. The red highlight denotes our interpretation, signalising the tool rejected randomness hypothesis.
 
 \begin{table}[H]
 \centering
@@ -1262,7 +1259,7 @@ Genetic algorithms were also used for analysis of four-round DES~\cite{song2007c
 
 This work analysed the application of metaheuristics in randomness testing tools, especially in EACirc. The possibility of implementation with the potential issues was discussed in \cref{chap:metaheuristics}. We extended EACirc tool by three new metaheuristics that represented different single-solution metaheuristics types. Guided local search metaheuristic performs better than the former algorithm. In addition, we showed it significantly simplify output distinguisher, which reduces the complexity of further cryptanalysis. Therefore, guided local search will be incorporated into the following release of the EACirc tool as the default metaheuristic.
 
-Another tested method was using the artificial neural network. This area requires may require more theoretical knowledge of ANN to achieve better results. To do so, it may be necessary to significantly redesign the neural network algorithms. The artificial neural network works with floating points, and the discrete bit-level patterns do not fit the gradient descent algorithm for the selected data representation. As we examined the literature within this area, we have found no serious work on this problem. It is still an open question if the artificial neural networks can achieve better results in the recognition of cryptographic data.
+Another tested method was using the artificial neural network. We experimented with known models from pattern recognition field, without much success. As we examined the literature within this area, we have found no serious work on this problem. It is still an open question if the artificial neural networks can achieve better results in the recognition of cryptographic data. This area may require more theoretical knowledge of ANN to achieve better results. To do so, it may be necessary to significantly redesign the neural network algorithms. The artificial neural network works with floating points, and the discrete bit-level patterns do not fit the gradient descent algorithm for the selected data representation.
 
 In comparison to state of the art in randomness testing, all our methods perform worse than the TestU01 statistical battery. In comparison with other statistical batteries, EACirc finally reached capabilities comparable with Dieharder. The only advantage of EACirc over TestU01 is the analysis of the developed distinguisher circuit, which may reveal concrete bytes dependencies. TestU01 Crush, the strongest battery setting, found bias of full Rabbit function, which shown to be a replication of already known results discovered during eStream competition.
 
