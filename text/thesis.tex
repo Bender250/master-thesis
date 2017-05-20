@@ -142,11 +142,6 @@ We also acknowledge the support of Czech Science Foundation, the project GA16-08
 % intendation
 \usepackage{parskip}
 
-% my own progress commands
-\newcommand{\todo}[1]{TODO: \textit{#1}}
-\newcommand{\rewrite}[1]{rewrite: \textit{#1}}
-\newcommand{\reread}[1]{reread: \textbf{#1}}
-
 % table colours
 \newcommand{\fd}{\cellcolor{red!25}}
 \newcommand{\fn}{}
@@ -260,7 +255,7 @@ There is an enormous number of potential circuits. Therefore the computation sta
 
 Those two \textit{candidate solutions} are compared using the \textit{fitness} function. We want to minimise the $p$-value, which means maximise the \textit{fitness}. Therefore we select the \textit{candidate solutions} with the higher \textit{fitness}. We repeat the process 100 times, these iterations are called \textit{epoch}.
 
-At the end of the \textit{epoch}, there is a likelihood that the circuit exploited some property of the tested data. To not \textit{overfit} to the data, we change the tested datasets and repeat the \textit{epoch}.%TODO: toto neznamena automaticky preuceni
+If the \textit{epoch} is too long, the circuit may adapt to much to the current dataset, instead of generalising the non-randomness property. Such situation is called \textit{overfitting}. Therefore, we change the tested dataset and start a new \textit{epoch} and the \textit{epoch length} determines the learning process's potential.
 
 The whole process is called \textit{iterated local search}. It is a metaheuristic from a list of single-solution metaheuristics.
 
@@ -498,8 +493,7 @@ These models and algorithms can be used for various goals. Two main are feature 
 \subsection{Artificial neural networks}
 \label{subsec:opt-other-ann}
 
-The artificial neural networks (ANN) are classification optimisation method inspired by the process of learning of brain and neural system. The initial idea was inspired by the research of Donald Hebb~\cite{hebb49learning}, who described the neurones and the process of learning of living beings' neural systems. The Hebbian learning arose several trivial nonsupervised learning methods. Further development came with the invention of backpropagation algorithm by Paul Werbos~\cite{werbos75beyondThesis}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of algorithm and its implementation on GPUs. Both together allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks.
-% TODO: ?deeper introduction to ANN can be found in book http://www.deeplearningbook.org
+The artificial neural networks (ANN) are classification optimisation method inspired by the process of learning of brain and neural system. The initial idea was inspired by the research of Donald Hebb~\cite{hebb49learning}, who described the neurones and the process of learning of living beings' neural systems. The Hebbian learning arose several trivial nonsupervised learning methods. Further development came with the invention of backpropagation algorithm by Paul Werbos~\cite{werbos75beyondThesis}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of algorithm and its implementation on GPUs. Both together allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks. Please refer to Goodfellow's Deep Learning textbook~\cite{Goodfellow-et-al-2016} for more details about artificial neural networks.
 
 The artificial neural network consists of purpose specialised layers. The first layer is called an input layer, and its input are the data for classification. Then there may be multiple hidden layers, which sequentially process the output of previous layers. The data proceed to the last -- output layer, which classifies the data. Each layer consists of neurones. Each neurone takes as input the output from all neurones of previous layers, and weight for each connection multiplies these outputs. The output is processed by an \textit{activation function}, which ensures normalisation of the output. There are many types of \textit{activation function}, and each layer can use different \textit{activation function}. The most used \textit{activation function} is a sigmoid function, with a real number input and the output is the interval $(-1, 1)$ or $(0, 1)$.
 
@@ -790,8 +784,6 @@ In \cref{sec:res-ss} we show results of single-solution metaheuristics, followed
 \section{Single-solution metaheuristics}
 \label{sec:res-ss}
 
-%http://stattrek.com/online-calculator/binomial.aspx
-\todo{this was already in previous chapter}
 Single-solutions metaheuristics use evaluation described in \cref{subsubsec:method-spec-ss-stat}. It means, we execute EACirc 1\,000 times independently with the same setting and we evaluate how many of the runs rejected the randomness hypothesis. The number of rejections divided by the number of runs is called the \textit{rejection rate}. As we use a \textit{significance level} $\alpha=1\,\%$, the \textit{sanity experiment} should reject the randomness hypothesis on average in $1\,\%$ of the runs. As we would like to have higher confidence in this \textit{sanity experiment}, we perform it with 100\,000 runs. The probability of incorrect \textit{rejection rate} of such case can be computed from the binomial distribution. For example, a \textit{rejection rate} higher or equal to $1.2\,\%$ of the \textit{sanity experiment} with 1\,000 runs can occur with probability of 4.787\,\%, while the probability decreases to less than 0.001\,\% for 100\,000 runs. We include the measured \textit{rejection rate} to the first row of further presented result tables. Other rows contain results of round-reduced cryptographical functions.
 
 \Cref{table:res-usable-ils} and additional \cref{table:res-usable-sa,table:res-usable-gls,table:res-usable-vns} in the Appendix summarise results of the tested single-solution metaheuristics applied in EACirc. Every row of the table corresponds to one cryptographical function. The lower index after the function name specifies the number of rounds we limit the functions to in EACirc. The columns with -1, 0, +1 and +2 denote an offset to the number of rounds specified in the index. For example, AES$_{3}$ was tested reduced to two rounds, three rounds as default and four rounds. Five rounds were not tested, which is denoted by a dash in the corresponding cell. The number in the cell represents the \textit{rejection rate} for the particular case. For indistinguishable data, values around the \textit{rejection rate} of the \textit{sanity experiment} are expected. Results higher than twice the \textit{rejection rate} of the \textit{sanity experiment} can happen in less then 0.15\,\% cases for indistinguishable data, we denote it \textit{empirical critical value}. Therefore, results over the \textit{empirical critical value} are not considered random.
@@ -1081,7 +1073,7 @@ We presented our tools for randomness assessment, yet this area is broad, and ma
     \item[Dieharder] was developed by Robert G. Brown at the Duke University in 2004~\cite{brown2013dieharder}. It reimplements all tests of Diehard battery, and extends it by multiple additional tests. Dieharder also contains three of the fifteen tests of the NIST STS battery. However, it suffers similar bias flaws as NIST STS, as detected Obrátil in the submitted thesis~\cite{obratilMgrThesis}. % fourth
     \item[TestU01] is state of the art in statistical testing. It is a library, continuously developed by Université de Montréal since 2007~\cite{l2007testu01}. The design of the tests is innovative in comparison to previous batteries. It uses fewer tests, whose are parametrised to form more sub-tests. This approach outperforms all other statistical batteries, as will be shown in our results in \cref{table:res-batteries}. The TestU01 also implements multiple \textit{PRNG} from different categories, observing the same results, which proves the non-randomness. % fifth
 
-    % TODO: variants
+    TestU01 implements several batteries for specific purposes. The batteries share some of the tests.
     \item[PractRand] is another competitor to the TestU01~\cite{dotypractically}. The author claims that the PracRand suits better for testing a large amount of data in comparison to other batteries. However, we have not testified this claim.
     \item[RaBiGeTe] is a statistical battery for Windows users~\cite{rabigete}. It implements some of the NIST STS's tests and some of Donald Knuth's tests.
 \end{description}
