@@ -269,7 +269,7 @@ A computational problem is a task to find a solution for the given question. An 
 
 Metaheuristics are applicable for optimisation problems if a programmer can provide three crucial parts. The first is an instance of candidate solution for the problem; it is the circuit in EACirc. The second is a function to vary the solution, in EACirc it is the mutation. The third and usually the most important is the \textit{fitness function}, which measures the quality of the solution. Metaheuristics use these parts to follow the landscape of the problem, and they try to find better solutions during the time.
 
-The main advantage of metaheuristics is that they are well-known and studied. This overview, as well as implementation ideas, are following book Metaheuristics from Talbi~\cite{talbi2009metaheuristics}. Please refer to this book for more examples of metaheuristic applications. The citations that are mentioned in this thesis extend the literature of the book, mainly in areas close to an application in cryptography.
+The main advantage of metaheuristics is that they are well-known and studied. This over\-view, as well as implementation ideas, are following book Metaheuristics from Talbi~\cite{talbi2009metaheuristics}. Please refer to this book for more examples of metaheuristic applications. The citations that are mentioned in this thesis extend the literature of the book, mainly in areas close to an application in cryptography.
 
 The number of candidate solutions inspected simultaneously splits metaheuristics into two categories: single-solution metaheuristics are present in \cref{sec:opt-single-sol} and population-based metaheuristics in \cref{sec:opt-population}. \Cref{sec:opt-other} describes other methods. All the approaches are firstly described and then analysed for the application in randomness testing. If the application is suitable, we describe the possible implementation in more detail.
 
@@ -361,7 +361,7 @@ The EACirc computation can get trapped in a \textit{local optimum} mainly in two
 
 We do not need to fix the first case, as such individual would be replaced in the next \textit{epoch}. However, we can use guided local search to improve individual from the second case. Our alternative \textit{fitness function} can be designed to reflect the density of the circuit. Such \textit{fitness} would simplify the solution, which would help us with the interpretation of the last individual. Alternatively, we can use completely different \textit{fitness function}.
 
-We decided to implement guided local search in EACirc, as it also represents single-solution metaheuristics with a change of the objective function from \cref{fig:opt-single-sol-overview}.
+We decided to implement guided local search in EACirc, as it also represents single-solu\-tion metaheuristics with a change of the objective function from \cref{fig:opt-single-sol-overview}.
 
 \subsection{Noisy method}
 \label{subsec:opt-single-sol-nois}
@@ -474,7 +474,7 @@ The scatter search method is highly utilising the combination of the individuals
     \item The \textit{reference set} incorporates the candidate individuals based on the \textit{fitness}.
 \end{enumerate}
 
-The main issue of application is the second step, where the solutions are combined. We would have to develop a function, which combines multiple solutions affecting their shared properties. However, there is no guarantee that various advanced individuals share the same property. Also, the approach is similar to evolutionary algorithms. Therefore, we did not test it.
+The main issue of application is the second step, where the solutions are combined. We would have to develop a function, which combines multiple solutions and affects their shared properties. However, there is no guarantee that various advanced individuals share the same property. Also, the approach is similar to evolutionary algorithms. Therefore, we did not test it.
 
 \subsection{Other swarm intelligence methods}
 \label{subsec:opt-popul-si}
@@ -640,7 +640,7 @@ Considering the basic setting for single-solution metaheuristics, EACirc consume
              \approx 4.8 \textnormal{\,GiB per experiment}
         \end{aligned}
     \end{equation*}
-    \caption{The amount of tested data analysed by EACirc for a single configuration of randomness testing experiment. A single run also evaluates randomness of the data, however, the capability of EACirc decreases in such mode. A single result is prone to incorrect evaluation due to statistical errors.}
+    \caption{The amount of tested data analysed by EACirc for a single configuration of randomness testing experiment. A single run also evaluates data randomness, however, the capability of EACirc decreases in such mode. A single result is prone to incorrect evaluation due to statistical errors.}
     \label{fig:dataUsage}
 \end{figure*}
 
@@ -657,7 +657,7 @@ The scripts are executed in the following steps.
 \begin{enumerate}[noitemsep,topsep=3pt,parsep=3pt,partopsep=3pt]
  \item Firstly, a preprocessor creates necessary configuration files for the experiment.
  \item Secondly, MetaCentrum scripts distribute the computation among the grid infrastructure.
- \item Thirdly, after the computation finishes, the postprocessor script aggregates the results. 
+ \item Thirdly, the postprocessor script aggregates the results after the computation.
  \item Finally, the table generator script generates a human readable version of the results as well as \textsc{JSON} dump of the whole experiment. The whole process is shown in \cref{fig:scripts}.
 \end{enumerate}
 
@@ -785,7 +785,7 @@ Single-solutions metaheuristics use evaluation described in \cref{subsubsec:meth
 
 \Cref{table:res-usable-ils} and additional \cref{table:res-usable-sa,table:res-usable-gls,table:res-usable-vns} in the Appendix summarise results of the tested single-solution metaheuristics applied in EACirc. Every row of the table corresponds to one cryptographical function. The lower index after the function name specifies the number of rounds we limit the functions to in EACirc. The columns with -1, 0, +1 and +2 denote an offset to the number of rounds specified in the index. For example, AES$_{3}$ was tested reduced to two rounds, three rounds as default, and four rounds. Five rounds were not tested, which is denoted by a dash in the corresponding cell. The number in the cell represents the \textit{rejection rate} for the particular case. For indistinguishable data, values around the \textit{rejection rate} of the \textit{sanity experiment} are expected. Results higher than twice the \textit{rejection rate} of the \textit{sanity experiment} can happen in less than 0.15\,\% cases for indistinguishable data, we denote it as \textit{empirical critical value}. Therefore, results over the \textit{empirical critical value} are not considered random.
 
-We use red highlight to ease the comprehension denoting that EACirc detected non-randomness. Otherwise, EACirc has not found any evidence against the randomness of the tested data. Therefore, we cannot say anything about the randomness of the data (we can neither reject, nor accept their randomness hypothesis). We highlighted untested scenarios (dash in the cell) if the results were estimated from prior works~\cite{svenda2013towards,sys2014constructing,kubicek2016new,ukropBcThesis} or faster test by statistical batteries. All the functions behave as expected; their randomness never decreases with an increasing number of rounds.
+We use red highlight to ease the comprehension denoting that EACirc detected non-ran\-domness. Otherwise, EACirc has not found any evidence against the randomness of the tested data. Therefore, we cannot say anything about the randomness of the data (we can neither reject, nor accept their randomness hypothesis). We highlighted untested scenarios (dash in the cell) if the results were estimated from prior works~\cite{svenda2013towards,sys2014constructing,kubicek2016new,ukropBcThesis} or faster test by statistical batteries. All the functions behave as expected; their randomness never decreases with an increasing number of rounds.
 
 \subsection{Iterated local search}
 \label{subsec:res-ss-ils}
@@ -1289,7 +1289,7 @@ Regarding the artificial neural network, we began cooperation with pattern recog
     \item[Neighbour] solution is a candidate solution created by a single change by the \textit{mutation} operation. For example, in EACirc it is a single addition of removal of a connector or change of the Boolean operator in the node.
     \item[Neighbourhood] is the solution space around the current individual.
     \item[Overfitting] is a situation of the learning process when the individual specialises too tightly to the learning data. Therefore, we change the learning datasets each \textit{epoch}, so the learning process leads to generalisation instead of the individual being too accurate.
-    \item[Pseudo-random number generator (PRNG)] is a deterministic generator of pseudo-random numbers, fully depending on its initial seed.
+    \item[Pseudo-random number generator (PRNG)] is a deterministic generator of pseudo-ran\-dom numbers, fully depending on its initial seed.
     \item[Pruning] is the process of removal unused connectors and nodes from the circuit. \textit{Pruning} is done by breath first search from the output with prior knowledge, what is the arity of functions in nodes.
     \item[Quantum random number generator (QRNG)] is an instance of a truly random number generators, where the physical process corresponds to a measurement of a quantum event, such as photon's polarisation.
     \item[Randomness Testing Toolkit (RTT)] is framework providing a unified interface to statistical batteries NIST STS, Dieharded and TestU01.
@@ -1328,7 +1328,7 @@ The data attachment available in the thesis repository\footnote{\url{http://is.m
     The source code of the experiments with artificial neural networks with commit \texttt{aedc153} from 2017-05-20.
     \item \texttt{results}
     
-    Underlying data for the thesis experiments. Contains folders \texttt{related\_work} with results of the compression and batteries, \texttt{ann} with results of the artificial neural networks together with the visualisation of the learning process, and \texttt{ss\_metaheuristics} with results, binaries, and replication scripts of single-solution metaheuristics. The last folder also contains the analysis of the circuits.
+    Underlying data for the thesis experiments. Contains folders \texttt{related\_work} with results of the compression and batteries, \texttt{ann} with results of the artificial neural networks together with the visualisation of the learning process, and \texttt{ss\_metaheur} with results, binaries, and replication scripts of single-solution metaheuristics. The last folder also contains the analysis of the circuits.
     \item \texttt{thesis-src}
     
     Thesis text source including bibliography and used images.
