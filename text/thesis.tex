@@ -17,7 +17,7 @@
     notable,
     nolof,
     nolot,
-  %draft, %TODO remove, place final instead
+    final
   %% More options are listed in the user guide at
   %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
 ]{fithesis3}
@@ -355,7 +355,7 @@ Guided local search is a single-solution metaheuristic based on dynamic changing
 The EACirc computation can get trapped in a \textit{local optimum} mainly in two cases:
 
 \begin{enumerate}[noitemsep,topsep=3pt,parsep=3pt,partopsep=3pt]
-    \item the individual got lucky to guess current test set, but it will not be successful in next \textit{epoch}, or
+    \item the individual got lucky to guess current test set, but it will not be successful in the next \textit{epoch}, or
     \item the individual is already successful due to finding feature of the tested data, but it could not get better.
 \end{enumerate}
 
@@ -543,7 +543,7 @@ Therefore, for the comparison with other randomness testing tools, we decided to
 
 The implementation of SHA-3 and eStream candidates in EACirc was called projects. The projects were handling everything related to data generation, specifically IV, key and plaintext. Every project had its own implementation of the \textit{counter} plaintext generator, the \textit{strict avalanche criterion} generator, and other data sources.
 
-For the implementation of the new project for block ciphers, we decided to reimplement data generation in more variable and unified way. For this, we decided for data manipulation via streams, which can be nested into each other. All streams inherit from an abstract class \texttt{stream} with a minimalistic interface. The streams have to specify its \texttt{size}, and they have to implement method \texttt{next()}, which returns next \textit{test vector}. We have the following types of streams in EACirc.
+For the implementation of the new project for block ciphers, we decided to reimplement data generation in more variable and unified way. For this, we decided for data manipulation via streams, which can be nested into each other. All streams inherit from an abstract class \texttt{stream} with a minimalistic interface. The streams have to specify its \texttt{size}, and they have to implement method \texttt{next()}, which returns the next \textit{test vector}. We have the following types of streams in EACirc.
 
 \begin{itemize}
     \item Data sources streams are used as an input to cryptographic functions or as reference data. An example of such streams are:
@@ -1043,7 +1043,7 @@ TEA$_4$     & \fd{}0.444         & \fd{}0.244             & \fd{}0.729          
 
 \begin{itemize}
     \item Guided local search is always more successful than the baseline iterated local search, and it is almost always the best among the tested methods. The single better result of simulated annealing does not mean it is better than guided local search, due to the higher \textit{empirical critical value} caused by the \textit{connection bug}. The same holds for four-round TEA and variable neighbourhood search, as it has a longer computation time.
-    \item The ANN can detect bit-level non-randomness, while EACirc cannot. The bit-oriented evaluation is expected to to be crucial for the cryptanalysis. However, this did not lead to the creation of ANN distinguisher for any function, that would EACirc not be able to distinguish.
+    \item The ANN can detect bit-level non-randomness, while EACirc cannot. The bit-ori\-ented evaluation is expected to to be crucial for the cryptanalysis. However, this did not lead to the creation of ANN distinguisher for any function, that would EACirc not be able to distinguish.
     \item The runtime of the simulated annealing and the guided local search is the same as the runtime of the iterated local search. The variable neighbourhood search can take up to five times longer. The data consumption of all metaheuristics in EACirc is the same, as described in \cref{fig:dataUsage}.
     
     In comparison, the neural networks need significantly less data (as was shown in \cref{fig:ann-dataUsage}). One run of ANN takes about ten times less time than one EACirc run. However, due to varying capabilities, these numbers are not comparable. EACirc can also find distinguishers for the two-round AES within less than ten \textit{epochs}, even though we set 300 \textit{epochs} as the default. Interesting comparison of the efficiency of EACirc implementation is that C++ EACirc consumes twelve times more data per second of computation than ANN implemented in Python.
@@ -1219,12 +1219,11 @@ Triple DES$_{2}$                 & --     \fn & --     \fn & --     \fn & --    
 \label{table:res-compression}
 \end{table}
 
-Observations from the results are following.
+Observations from the results in \cref{table:res-compression} are following.
 
 \begin{itemize}
-    \item The efficiency of newer \textit{bzip2} on cryptographic data is not higher than the efficiency of \textit{gzip} and \textit{zip}.
-    \item The fact that we have to reduce functions to very few rounds is probably caused by character (byte-level) specialisation of the compression algorithms. The cryptographic data may contain more bit-level dependencies.
-    \item The artificial neural networks perform slightly better than compression algorithms. ANN have an advantage of bit-level data inspection, while they can test only a single \textit{test vector} (16 bytes) of data. The similar results of ANN and compression algorithms may indicate significant data non-randomness, such as disproportion of zeroes and ones.
+    \item The efficiency of newer \textit{bzip2} on cryptographic data is not higher than the efficiency of \textit{gzip} and \textit{zip}. The fact that we have to reduce functions to very few rounds is probably caused by character (byte-level) specialisation of the compression algorithms. The cryptographic data may contain more bit-level dependencies.
+    \item The artificial neural networks perform slightly better than compression algorithms. ANN have an advantage of bit-level data inspection, while they can test only a single \textit{test vector} (16 bytes) of data.% The similar results of ANN and compression algorithms may indicate significant data non-randomness, such as disproportion of zeroes and ones.
 \end{itemize}
 
 
@@ -1259,7 +1258,7 @@ Our team develop a bit-oriented randomness testing project. It does not utilise 
 
 The testbed of well-known functions can be further extended by different means of reduction of the cryptographic functions RC4 and HC-128. For RC4, we can use bit selection capabilities of the \textit{generator}. Other plans are to extend the tool by already implemented CAESAR functions and new \textit{PRNGs}. We plan to publish the \textit{generator} altogether with the \textit{Randomness Testing Toolkit} for NordSec conference.
 
-Presented implementation of neural networks may have limited results due to the analysis of a low amount of the tested data. A recurrent neural network, having an advantage of an internal state, may analyse a stream of data and try to predict next bit of the input. Such approach would show if the limitation of the neural networks were the limited amount of observed data.
+Presented implementation of neural networks may have limited results due to the analysis of a low amount of the tested data. A recurrent neural network, having an advantage of an internal state, may analyse a stream of data and try to predict the next bit of the input. Such approach would show if the limitation of the neural networks were the limited amount of observed data.
 
 Regarding the artificial neural network, we began cooperation with pattern recognition team from University Ca’ Foscari Venice. The results of this cooperation are still open.
 
