@@ -489,24 +489,24 @@ The application issues for our problem are similar as for ant colony optimisatio
 
 There are various optimisation methods, which are not classified as single-solution or population-based metaheuristics. However, those models or algorithms are still capable of learning of classification.
 
-The classification is important in machine learning area. Therefore, the following models have developed advanced methods not only to the process of learning but also the interpretation of the results, detection of outliers, learning on a low amount of data or non-complete data. Because of these advantages, we decided to experiment with them.
+The classification is important in machine learning field. The field also includes algorithms for the interpretation of the results, detection of outliers, learning on a low amount of data or non-complete data. Because of these advantages, we decided to experiment with machine learning models.
 
 These models and algorithms can be used for various goals. Two main are feature selection and classification. Our principal aim is the data classification, while we expect, that the model itself will select the features. The model has to adapt to the data. Therefore, we cannot make manual feature selection.
 
 \subsection{Artificial neural networks}
 \label{subsec:opt-other-ann}
 
-The artificial neural networks (ANN) are classification optimisation method inspired by the process of learning of brain and neural system. The initial idea was inspired by the research of Donald Hebb~\cite{hebb49learning}, who described the neurones and the process of learning of living beings' neural systems. The Hebbian learning arose several trivial nonsupervised learning methods. Further development came with the invention of backpropagation algorithm by Paul Werbos~\cite{werbos75beyondThesis}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of algorithm and its implementation on GPUs. Both together allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks. Please refer to Goodfellow's Deep Learning textbook~\cite{Goodfellow-et-al-2016} for more details about artificial neural networks.
+The artificial neural networks (ANN) are classification optimisation method inspired by the process of learning of brain and neural system. The initial idea was inspired by the research of Donald Hebb~\cite{hebb49learning}, who described the neurones and the process of learning of living beings' neural systems. The Hebbian learning arose several trivial nonsupervised learning methods. Further development came with the invention of backpropagation algorithm by Paul Werbos~\cite{werbos75beyondThesis}. The last rapid increase of usability of artificial neural networks came in 2006 with significant speed-up both of the algorithms and their implementation on GPUs. Both together allowed deeper networks and more analysed data due to parallelization, leading to rapid progress in scalability and usability of artificial neural networks. Please refer to Goodfellow's Deep Learning textbook~\cite{Goodfellow-et-al-2016} for more details about artificial neural networks.
 
-The artificial neural network consists of purpose specialised layers. The first layer is called an input layer, and its input are the data for classification. Then there may be multiple hidden layers, which sequentially process the output of previous layers. The data proceed to the last -- output layer, which classifies the data. Each layer consists of neurones. Each neurone takes as input the output from all neurones of previous layers, and weight for each connection multiplies these outputs. The output is processed by an \textit{activation function}, which ensures normalisation of the output. There are many types of \textit{activation function}, and each layer can use different \textit{activation function}. The most used \textit{activation function} is a sigmoid function, with a real number input and the output is the interval $(-1, 1)$ or $(0, 1)$.
+The artificial neural network consists of purpose specialised layers. The first layer is called an input layer, and its input are the data for classification. Then there may be multiple hidden layers, which sequentially process the output of previous layers. The data proceed to the last -- output layer, which classifies the data. Each layer consists of neurones. Each neurone takes as input the output from all neurones of previous layers, multiplied by weight for each connection. The output is processed by an \textit{activation function}, which ensures its normalisation. There are many types of \textit{activation function}, and each layer can use different \textit{activation function}. The most used \textit{activation function} is a sigmoid function, with a real number input and the output is the interval $(-1, 1)$ or $(0, 1)$.
 
-The artificial neural networks were used to solve various problems in classification and pattern recognition. The most common are applications in image processing, signal processing, text data processing and in robotics and system control.
+The artificial neural networks were used to solve various problems in classification and pattern recognition. The most common are applications in image processing, signal processing, text data processing, robotics, and system control.
 
-In cryptography, we have seen fewer applications of ANN. The main area of application of ANN in cryptography is authentication~\cite{li2001remote}, as it is a classification problem, where learning methods can bring speed-up traded off by approximation that allows errors.
+In cryptography, we have seen fewer applications of ANN. The main area of application of ANN in cryptography is authentication~\cite{li2001remote}, as it is a classification problem.
 
-An application in encryption is even rarer. For example, researchers from Google Brain showed an experiment where they let neural network develop encryption function for communication. Another neural network was intercepting the communication and attempting to decrypt it~\cite{abadi2016learning}. Preceding works~\cite{shihab2006backpropagation, volna2012cryptography} did not get such attention as Google's work, but they had a similar objective with simpler assumptions. However, all these works are far from application in cryptography. The only inspiration from them to our project is normalisation of binary data to floats, that was done by encoding zero as $-0.5$ and one as $+0.5$. We have found no further relevant application of ANN in the classification of binary data.
+An application in encryption is even rarer. For example, researchers from Google Brain showed an experiment where they let two neural networks develop encryption function for communication. Another neural network was intercepting the communication and attempting to decrypt it~\cite{abadi2016learning}. Preceding works~\cite{shihab2006backpropagation, volna2012cryptography} did not get such attention as Google's work, but they had a similar objective with simpler assumptions. However, all these works are far from application in cryptography. The only inspiration from them to our project is normalisation of binary data to floats, that was done by encoding zero as $-0.5$ and one as $+0.5$. We have found no further relevant application of ANN in the classification of binary data.
 
-We would like to utilise the developed approach of learning in classification by ANN. However, the application of ANN in our scope is not straightforward. We do not know in advance, what are the features in the data. Therefore, the network has to have the whole ciphertext as an input. We encode the binary input to floats (0 as $-0.5$ and 1 as $+0.5$) based on intuition supported by other works~\cite{abadi2016learning,shihab2006backpropagation}. We tried both fully connected network (where every node is connected to every node of previous layer or every input bit), and convolution network, where the first layer has only a limited local interval of inputs. 
+We decided to utilise the best practices of learning in classification by ANN. However, the application of ANN in our scope is not straightforward. We do not know in advance, what are the features in the data. Therefore, the network has to have the whole ciphertext as an input. We encode the binary input to floats (0 as $-0.5$ and 1 as $+0.5$) based on intuition supported by other works~\cite{abadi2016learning,shihab2006backpropagation}. We tried both fully connected network (where every node is connected to every node of previous layer or every input bit), and convolution network, where the first layer has only a limited local interval of inputs. 
 
 
 \subsection{Other statistical classification methods}
@@ -519,22 +519,22 @@ There are several other models or algorithms of statistical classification. Thos
 
 The primary testing goal of EACirc is to assess randomness of ciphertext of cryptographic functions. As most of the cryptographic functions are in a scope of automated analysis semantic secure, EACirc can identify non-randomness only for reduced functions. The functions can be reduced for example in a number of rounds, by processing selected plaintexts and keys, and by selecting only specific bits of the output. As the analysis of reduced versions of cryptographic functions is the main goal of the EACirc project, it is also selected as the testing scenario for comparison of analysed metaheuristics.
 
-The approach for evaluation is briefly described in \cref{chap:eacirc}. The tested data were produced from 16 different cryptographic functions. These functions are reduced by the number of rounds. We selected intervals of rounds based on EACirc reference capabilities, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds. Usually we test also $i-1$ and $i+2$ rounds, for broader comparison of the results with state of the art of statistical testing cryptanalysis.
+The approach for evaluation is briefly described in \cref{chap:eacirc}. The tested data were produced from 16 different cryptographic functions. These functions are reduced by the number of rounds. We selected intervals of rounds based on EACirc reference capabilities, such that the EACirc is capable of distinguishing function reduced to $i$ rounds, but it is not able to distinguish $i+1$ rounds. Usually, we test also $i-1$ and $i+2$ rounds, for broader comparison of the results with state of the art of statistical testing cryptanalysis.
 
 EACirc works as a distinguisher between the tested dataset (produced by the cryptographic function) and the reference random data. Formerly we used \textit{quantum random number generator} (\textit{QRNG}) services as the source of the reference data. The need of having \textit{QRNG} data for the computation has the following disadvantages.
 
 \begin{itemize}
     \item Transmission of the reference data on the computation grid brings a slowdown and a more complex handling of the computations.
-    \item Potential of an error with the data manipulation. QRNG are not error-less, for example, Quantis device we tested in our laboratory produced biased data (see results on \cite{rttquantis}). Detection of such biases is common use-case of randomness testing.
+    \item The potential of an error with the data manipulation. \textit{QRNG} are not error-less, for example, Quantis device we tested in our laboratory produced biased data (see results on \cite{rttquantis}). Detection of such biases is common use-case of randomness testing.
     \item More requirements on EACirc's users and developers. We have to ship the tool with the reference data.
 \end{itemize}
 
-Therefore, we switched from QRNG to \textit{pseudo random number generator} (\textit{PRNG}) PCG32~\cite{pcgGen} as reference data generator. PCG32 is fast and computationally strong \textit{PRNG}. We did experiment of comparison PCG32 with QRNG and we found no bias, as well as we retested old results using QRNG newly with \textit{PRNG} and the results are the same. Hence, we believe build-in \textit{PRNG} is a more secure and convenient option.
+Therefore, we switched from \textit{QRNG} to \textit{pseudo-random number generator} (\textit{PRNG}) PCG32~\cite{pcgGen} as reference data generator. PCG32 is fast and computationally strong \textit{PRNG}. We did an experiment with comparison PCG32 to \textit{QRNG}, and we found no bias. We also retested old results using \textit{QRNG} newly with \textit{PRNG}, and the results are the same. Hence, we believe built-in \textit{PRNG} is a more secure and convenient option.
 
 \section{Used data}
 \label{sec:method-data}
 
-Previous works on EACirc analysed candidates of cryptoprimitives competitions~\cite{estreamMgrThesis,sha3Thesis,ukropMgrThesis}. These works extended EACirc by many functions sharing the same interface. This approach was effective for broad analysis of the competition candidates, but it does not test well-known cryptographic functions like AES and DES.
+Former works on EACirc analysed candidates of cryptoprimitives competitions~\cite{estreamMgrThesis,sha3Thesis,ukropMgrThesis}. These works extended EACirc by many functions sharing the same interface. This approach was effective for broad analysis of the competition candidates, but it does not test well-known cryptographic functions like AES and DES.
 
 Therefore, for the comparison with other randomness testing tools, we decided to select a new test set of cryptographic functions. We chose the finalist of competitions SHA-3~\cite{sha3-competition} (BLAKE, Gr\o stl, JH, Keccak and Skein) and eStream~\cite{estream-competition} (HC-128, Rabbit, Salsa20, SOSEMANUK and Grain), and above that, we implemented other block (AES, DES, 3-DES and TEA) and stream (RC4) functions.
 
@@ -543,28 +543,26 @@ Therefore, for the comparison with other randomness testing tools, we decided to
 
 The implementation of SHA-3 and eStream candidates in EACirc was called projects. The projects were handling everything related to data generation, specifically IV, key and plaintext. Every project had its own implementation of the \textit{counter} plaintext generator, the \textit{strict avalanche criterion} generator, and other data sources.
 
-For the implementation of the new project for block ciphers, we decided to reimplement data generation in more variable and modifiable way. For this, we decided for data manipulation via streams, which can be nested into each other. Each stream implements a simple interface with constructor and function \texttt{next}, which returns next \textit{test vector}. The stream is specified only by the output size of the \textit{test vector}.
-
-The purpose of the streams is unification of all data manipulation in the whole project, independent on the used cryptographic function. All streams inherit from abstract class \texttt{stream} with minimalistic interface. The streams have to specify its \texttt{size} and they have to implement method \texttt{next()}, which returns next \textit{test vector}. We have currently various types of streams in EACirc.
+For the implementation of the new project for block ciphers, we decided to reimplement data generation in more variable and unified way. For this, we decided for data manipulation via streams, which can be nested into each other. All streams inherit from an abstract class \texttt{stream} with a minimalistic interface. The streams have to specify its \texttt{size}, and they have to implement method \texttt{next()}, which returns next \textit{test vector}. We have the following types of streams in EACirc.
 
 \begin{itemize}
-    \item Data sources streams, that are used as an input to cryptographic functions or as reference data. Example of such streams are:
+    \item Data sources streams are used as an input to cryptographic functions or as reference data. An example of such streams are:
     \begin{itemize}
         \item input streams: true and false bits generators, counter and multiple variants of the \textit{strict avalanche criterion} generator, and
         \item \textit{PRNGs} PCG32~\cite{pcgGen} and Mersenne Twister~\cite{matsumoto1998mersenne}.
     \end{itemize}
     \item The projects of cryptographic functions. Namely project eStream and SHA-3 and newly implemented block ciphers.
-    \item Postprocessing streams are applied to data from cryptographic functions for more advanced experiments. They allows us analysis of selected bits of the function.
+    \item Postprocessing streams are applied to data from cryptographic functions for more advanced experiments. They allow us an analysis of selected bits of the function.
 \end{itemize}
 
-The streams are completely configurable via \texttt{JSON} configuration file. As the streams can be nested, the structure is described as a \texttt{JSON} tree. The configuration file update changed the file's structure. Therefore, the configuration files are not backwards compatible. Nevertheless, the configuration is described and shown on examples in the project's documentation~\cite{EACirc-wiki-streams}.
+The streams are completely configurable via \texttt{JSON} configuration file. As the streams can be nested, the structure is described as a \texttt{JSON} tree. The configuration file update changed the file's structure. Therefore, the configuration files are not backwards compatible. Nevertheless, the configuration is explained in examples in the project's documentation~\cite{EACirc-wiki-streams}.
 
 All these changes significantly simplified the codebase, unified many implementations of the same functionality and broadened the experiment capabilities of EACirc. Therefore, it was the main feature for EACirc~4.1 release.
 
 \subsection{Implementation of functions}
 \label{subsec:method-data-funcs}
 
-AES, DES and 3-DES implementations follows educative repository~\cite{cryptoFunc}. The author of this repository verifies the encryption to the \textit{test vectors} to ensure correctly working implementation. The only modification of the code is a limitation of the functions in the number of rounds.
+AES, DES and 3-DES implementations follow educative repository~\cite{cryptoFunc}. The author of this repository verifies the encryption to the \textit{test vectors} to ensure correctly working implementation. The only modification of the code is a limitation of the functions in the number of rounds.
 
 TEA implementation is based on Wikipedia code~\cite{teaWiki}, and it was already implemented in EACirc before. The implementation was simplified and reduced due to changes in the interface. It is also reduced to the selected number of rounds.
 
@@ -572,27 +570,23 @@ RC4 is also based on the educative repository~\cite{cryptoFunc}, but the code is
 
 All these functions together with the new interface of new block project and the \textit{test vectors} processing algorithm were released in minor version EACirc 4.1.
 
-\paragraph{Corrections and code review of SHA-3 and eStream functions} was another part of streams update. Multiple cryptographic functions from previous implementation were incorrectly round-reduced.
+\paragraph{Corrections and code review of SHA-3 and eStream functions} were another part of the streams update. Multiple cryptographic functions from the previous implementation were incorrectly round-reduced.
 \label{par:method-data-funcs-bugs}
 
 \begin{itemize}
-    \item SHA-3 Skein, eStream Rabbit, SOSEMANUK and F-FCSR were not round-reduced, but their implementation uses iterative approach, so we reduced them.
-    \item eStream HC-128 stated in the project documentation and in header file, it can be round-reduced, but it had no effect in the core function at all.
-    \item eStream Salsa20 used wrong implicit number of rounds for default settings.
+    \item SHA-3 Skein, eStream Rabbit, SOSEMANUK and F-FCSR were not round-reduced, but their implementation uses an iterative approach, so we reduced them.
+    \item eStream HC-128 stated in the header file and the project documentation, it can be round-reduced, but it had no effect on the function at all.
+    \item eStream Salsa20 used a wrong implicit number of rounds for default settings.
 \end{itemize}
 
-These bugfixes together with fix of improper configuration of eStream project were one of two major reasons for releasing EACirc 4.2. All these fixes together with valid configurations are described in project documentation~\cite{EACirc-wiki-streams}.
+These bugfixes together with a fix of an improper configuration of eStream project were one of two major reasons for releasing EACirc 4.2. All these fixes together with valid configurations are described in project documentation~\cite{EACirc-wiki-streams}.
 
 \subsection{Data generator tool}
 \label{subsec:method-data-generator}
 
-For direct comparison of the tested methods, we need to analyse the same data. EACirc has build in generation of \textit{test vectors} feeding the computation, as is described in \cref{sec:method-data}. Therefore, we implemented side project from EACirc for production of data. Within the thesis in denoted as \textit{generator} and it shares the source code of cryptographic functions with EACirc. This is done using GitHub submodules, so the \textit{generator} has its repository~\cite{EACircStreams}.
+For direct comparison of the tested methods, we need to analyse the same data. EACirc has a built-in generation of the \textit{test vectors} feeding the computation, as is described in \cref{sec:method-data}. Therefore, we implemented a side project from EACirc for the production of data. Within the thesis in denoted as a \textit{generator} and it shares the source code of cryptographic functions with EACirc. The codebase sharing is done using GitHub submodules, so the \textit{generator} has its repository~\cite{EACircStreams}.
 
-The \textit{generator} is fully configurable via \texttt{JSON} configuration file as EACirc. The structure of the file is reduced, as the configuration describes only generated data. So the \textit{generator} inherits all the capabilities of streams, providing complex control on the data production. For simplification and automation, we also prepared script, that generates configuration files for the most common settings, which allows a simple execution by command line arguments. For even simpler access to testing data, we generated 100~MB file for each basic setting per each widely-known cryptographic function (described in \cref{subsec:method-data-funcs}) reduced to wide interval of rounds. This dataset is publicly accessible from \textit{generator's} repository~\cite{EACircStreams}.
-
-We have an ongoing publication plan, which will crucially utilise the \textit{generator}. It will be a paper on statistical testing tools comparison on wide variety of cryptographic data. The \textit{generator} will be used as it unifies many different cryptographic functions and it can reduce the functions in the number of rounds, or selection of specified bits. The \textit{generator} has already all the necessary features.
-
-An important work for the \textit{generator} was fixing the implementation bugs, described in previous~\cref{par:method-data-funcs-bugs}.
+The \textit{generator} is fully configurable via \texttt{JSON} configuration file as EACirc. The structure of the file is reduced, as the configuration describes only generated data. So the \textit{generator} inherits all the capabilities of streams, providing a complex control on the data production. For simplification and automation, we also prepared a script generating configuration files for the most common settings, which allows a simple execution by command line arguments. For even simpler access to testing data, we generated 100~MB file for each basic setting per each widely-known cryptographic function (described in \cref{subsec:method-data-funcs}) reduced to a wide interval of rounds. The plaintext for this data was the counter stream. This dataset and broader description how it was generated are publicly accessible from \textit{generator's} repository~\cite{EACircStreams}.
 
 
 \section{Methodology for specific optimisation methods}
@@ -608,7 +602,7 @@ For direct inter-method comparison, we need to use the same data for testing. Th
 
 All single-solution metaheuristics were implemented into the EACirc tool. Therefore, this part extends the explanation of the single run evaluation from \cref{chap:eacirc}.
 
-The main advantage of single-solution metaheuristics is their simplicity and straightforward interpretation. However, the overall interpretation of EACirc results became complex, as we work with randomness that needs to be evaluated statistically. The complex approach also leads to significantly better results. The statistical evaluation as well as distributed computation automation is described below.
+The main advantage of single-solution metaheuristics is their simplicity and straightforward interpretation. However, the overall interpretation of EACirc results became complex, as we work with randomness that needs to be evaluated statistically. The complex approach also leads to significantly better results. The statistical evaluation, as well as distributed computation automation, are described below.
 
 
 \subsubsection{\textbf{Statistical evaluation}}
@@ -616,7 +610,7 @@ The main advantage of single-solution metaheuristics is their simplicity and str
 
 As was stated in \cref{sec:eac-comp}, the \textit{fitness} of an individual is $1 - p$-value of two sample $\chi^{2}$ test, which tests, if the output bytes per source have the same distribution. For a well-working individual on a non-random data, the \textit{fitness} is close to 1. As the quality of the individual decreases, the \textit{fitness} decreases as well. However, completely random guess like coin tossing has the $p$-value uniformly distributed on the interval (0, 1).
 
-As the $p$-values are uniformly distributed for a random guess, getting high $p$-value can imply two scenarios. Either the $\chi^{2}$ test rejected the null hypothesis that the distributions are independent, and it scored a significant output. Or we were lucky on seemingly random data, and the test returned high $p$-value from a uniform distribution on interval $(0, 1)$. Therefore, we avoid interpretation of a single $p$-value. We collect a single $p$-value per every \textit{epoch} computed on a fresh dataset. We process these $p$-values by a Kolmogorov-Smirnov test at the end of the run. The Kolmogorov-Smirnov test analyses the uniformity of usually 300 $p$-values. This test is using \textit{significance level} $\alpha = 1\,\%$, so it rejects the null hypothesis that tested data are random, in a case they are random, in 1\,\% of runs. To avoid such case, we run the experiment with the same setting 1\,000 times and we analyse the \textit{rejection rate} given as the number of failed KS tests per 1\,000 runs. If the \textit{rejection rate} is around 1\,\%, the data seem to be random. If it is significantly higher, the experiment rejected randomness hypothesis of the tested data.
+As the $p$-values are uniformly distributed for a random guess, getting high $p$-value can imply two scenarios. Either the $\chi^{2}$ test rejected the null hypothesis that the distributions are independent, and it scored a significant output. Alternatively, we were lucky on seemingly random data, and the test returned high $p$-value from a uniform distribution on the interval $(0, 1)$. Therefore, we avoid interpretation of a single $p$-value. We collect a single $p$-value per every \textit{epoch} computed on a new dataset. We process these $p$-values by a Kolmogorov-Smirnov test at the end of the run. The Kolmogorov-Smirnov test analyses the uniformity of usually 300 $p$-values. This test is using \textit{significance level} $\alpha = 1\,\%$, so it rejects the null hypothesis that tested data are random, in a case they are random, in 1\,\% of runs. To avoid such case, we run the experiment with the same setting 1\,000 times, and we analyse the \textit{rejection rate} given as the number of failed KS tests per 1\,000 runs. If the \textit{rejection rate} is around 1\,\%, the data seem to be random. If it is significantly higher, the experiment rejected randomness hypothesis of the tested data.
 
 This approach is vastly increasing the amount of data needed for the computation, as well as the overall run-time. This method is a trade-off for the success rate of EACirc, as different evaluators do not need statistical evaluation. Hence they need much fewer data; however, such evaluators are slightly worse based on the results from~\cite{svenda2013towards}.
 
@@ -646,19 +640,19 @@ Considering the basic setting for single-solution metaheuristics, EACirc consume
              \approx 4.8 \textnormal{\,GiB per experiment}
         \end{aligned}
     \end{equation*}
-    \caption{The amount of tested data analysed by EACirc for a single configuration of randomness testing experiment. A single run also evaluates randomness of the data, however the capability of EACirc decreases in such mode, and single result is prone to incorrect evaluation due to statistical errors.}
+    \caption{The amount of tested data analysed by EACirc for a single configuration of randomness testing experiment. A single run also evaluates randomness of the data, however, the capability of EACirc decreases in such mode. A single result is prone to incorrect evaluation due to statistical errors.}
     \label{fig:dataUsage}
 \end{figure*}
 
 
-\subsubsection{\textbf{Computation automisation}}
+\subsubsection{\textbf{Computation automation}}
 \label{subsubsec:method-spec-ss-auto}
 
-This part contains implementation and running details about the experiment's workflow. It is not crucial for understanding the main goal of this thesis -- the evaluation of multiple metaheuristics in randomness testing.
+This part contains implementation and running details about the experiment's workflow. It is not crucial for understanding the main goal of this thesis -- the evaluation of multiple metaheuristics in randomness testing. It documents the experiment's workflow for the purpose of replication.
 
-As EACirc needs repeated computation on MetaCentrum grid infrastructure, the automation for binary deployment, computation distribution, aggregation of the results and their postprocessing are required.
+As EACirc execution needs to be repeated on MetaCentrum grid infrastructure, the automation for binary deployment, computation distribution, aggregation of the results and their postprocessing is required.
 
-The scripts are executed in few following steps.
+The scripts are executed in the following steps.
 
 \begin{enumerate}[noitemsep,topsep=3pt,parsep=3pt,partopsep=3pt]
  \item Firstly, a preprocessor creates necessary configuration files for the experiment.
@@ -667,16 +661,16 @@ The scripts are executed in few following steps.
  \item Finally, the table generator script generates a human readable version of the results as well as \textsc{JSON} dump of the whole experiment. The whole process is shown in \cref{fig:scripts}.
 \end{enumerate}
 
-The EACirc project formelly used tool Oneclick created by Lubomír Obrátil~\cite{obratilBcThesis}. The Oneclick was a single tool for both preprocessing and postprocessing phase, and the run was parametrized. However, this approach was programmed for BOINC infrastracture and it is outdated for the MetaCentrum. The advantages of new scripts are: 
+The EACirc project formerly used tool Oneclick created by Lubomír Obrátil~\cite{obratilBcThesis}. The Oneclick was a single tool for both preprocessing and postprocessing phase, and the run was parametrized. However, this approach was programmed for BOINC infrastructure being outdated for the MetaCentrum. The advantages of new scripts are: 
 
 \begin{itemize}
-    \item they are single purpose, easier to modify one without affecting other,
+    \item they are single purpose, so it is easier to modify one without affecting other,
     \item they are written in bash (running scripts for MetaCentrum scheduler) and Python (processing), so they do not need to be compiled,
-    \item they maintained up-to-date for the newest EACirc,
+    \item they are maintained up-to-date for the newest EACirc,
     \item they are faster, as MetaCentrum computation do not require formerly used redundancy procedures.
 \end{itemize}
 
-These scripts are expected to be modified by individual researchers for the needs of their experiments, so the scripts are stored in GitHub repository~\cite{eaUtils}, and users are supposed to fork them. The repository also contains \texttt{readme.md} file, with specifies the first steps of computations on MetaCentrum with these scripts. Every script also contains documentation in the code (concerning expected modifications for individual purposes), and when it is run without arguments, it prints out a help message.
+These scripts are expected to be modified by individual researchers for the needs of their experiments, so the scripts are stored in GitHub repository~\cite{eaUtils}, and users are supposed to fork them. The repository also contains \texttt{readme.md} file specifying the first steps of computations on MetaCentrum with these scripts. Every script also contains documentation in the code (concerning expected modifications for individual purposes), and when it is run without arguments, it prints out a help message.
 
 \begin{figure}[t]
 \begin{nomar}
@@ -712,13 +706,13 @@ These scripts are expected to be modified by individual researchers for the need
 
 \paragraph{Preprocessor}
 
-EACirc computation is based on a configuration file with specification and environment settings for particular experiment. As the test suite contains tens variations of parameters, it is necessary to automatize config files creation, so the user would not make a mistake during this process. The script is written in Python.
+EACirc computation is based on a configuration file with specification and environment settings for a particular experiment. As the test suite contains tens variations of parameters, it is necessary to automatize config files creation, so the user would not make a mistake during this process. The script is written in Python.
 
 \paragraph{Running scripts}
 
-The scripts for distribution of computation among the MetaCentrum network are a result of Martin Ukrop's thesis~\cite{ukropMgrThesis}. They are continuously maintained in \texttt{EACirc-utils} repository~\cite{eaUtils} for current EACirc version as well as the MetaCentrum updates.
+The scripts for distribution of the computations among the MetaCentrum network are a result of Martin Ukrop's thesis~\cite{ukropMgrThesis}. They are continuously maintained in \texttt{EACirc-utils} repository~\cite{eaUtils} for the current EACirc version as well as the MetaCentrum updates.
 
-As each experiment needs to be run multiple times for statistical evaluation, the scripts repeat the computation in a loop with different seeds usually for 1\,000 times. The results of the computation are then collected by these running scripts.
+As each experiment needs to be run multiple times for statistical evaluation, so the scripts repeat the computation in a loop with different seeds usually for 1\,000 times. The same scripts then collect the results of the computation.
 
 The current version of these scripts is also published on the GitHub~\cite{eaUtils}, and the forked repository is ready to run experiments in the usual way.
 
@@ -735,20 +729,20 @@ The generator takes as an input the \texttt{JSON} dump of the results from the p
 \subsubsection{\textbf{Goal specification}}
 \label{subsubsec:method-spec-ss-goal}
 
-The ultimate goal of the experiments with metaheuristics is increasing detection capabilities of non-randomness of tested datastream. The analysed functions, described in \cref{sec:method-data}, are round-reduced. The randomness of the data increases rapidly with the rounds addition, so the comparison of metaheuristics may not be enough fine-grained. We would need functions with a low increase of the randomness per round as a benchmark, but we did not observe such behaviour by any of the tested functions, nor our own design of benchmarking function does not behave that way~\cite{EACirc-lut}.
+The ultimate goal of the experiments with metaheuristics is increasing detection capabilities of non-randomness of tested datastream. The analysed functions, described in \cref{sec:method-data}, are round-reduced. The randomness of the data increases rapidly with the rounds addition, so the comparison of metaheuristics may not be fine-grained enough. We would need functions with a low increase of the randomness per round as a benchmark, but we did not observe such behaviour by any of the tested functions, nor our own design of benchmarking function does not behave that way~\cite{EACirc-lut}.
 
-Less ambitious, but still useful goal can be an increase of the \textit{rejection rate} of the null hypothesis per experiment. Rejecting only 10\,\% of runs lead to difficulties with the analysis of the output test. The higher is the \textit{rejection rate}, the easier is the interpretation of found distinguisher.
+Less ambitious, but still useful goal can be an increase in the \textit{rejection rate} of the null hypothesis per experiment. Rejecting only 10\,\% of runs lead to difficulties with the analysis of the output test. The higher the \textit{rejection rate}, the easier is the interpretation of found distinguisher.
 
 Another goal can be decreasing the computation time or the amount of used data. As we usually fix the \textit{epoch length} to 100 iterations, the data usage and CPU time are directly related. Moreover, as the amount of used data is already high in this settings of EACirc, the time comparison is more valuable than consumed data comparison.
 
-We can also analyse specific goals per metaheuristics. Both variable neighbourhood search and Guided local search set a complementary target -- a simplification of the circuits for later analysis.
+We can also analyse specific goals per metaheuristics. Both variable neighbourhood search and guided local search set a complementary target -- a simplification of the circuits for later analysis.
 
 \subsection{Artificial neural networks methodology}
 \label{subsubsec:method-spec-ms-aco}
 
-The neural network also classifies the \textit{test vectors} into two sets -- the tested data set and the reference data set. Therefore, the implementation takes as an input two binary files -- the tested file and the reference file. We generate these files with the \textit{generator}, so we ensure consistency and comparability of the results within the approaches.
+The neural network also classifies the \textit{test vectors} into two sets -- the tested data set and the reference data set. Therefore, the implementation takes as input two binary files -- the tested file and the reference file. We generate these files with the \textit{generator}, so we ensure consistency and comparability of the results of the approaches.
 
-The execution of the neural network consist of a training phase, where we iteratively changing the batches of the learning data, and an evaluation phase, where we use fresh data for the final evaluation of the network's \textit{success rate}. The whole computation needs significantly fewer input data than EACirc, as is shown in \cref{fig:ann-dataUsage}.
+The execution of the neural network consists of a training phase, where we are iteratively changing the batches of the learning data, and an evaluation phase, where we use fresh data for the final evaluation of the network's \textit{success rate}. The whole computation needs significantly fewer input data than EACirc, as is shown in \cref{fig:ann-dataUsage}.
 
 \begin{figure*}[t]
     \begin{equation*}
@@ -773,7 +767,7 @@ The execution of the neural network consist of a training phase, where we iterat
     \label{fig:ann-dataUsage}
 \end{figure*}
 
-We prepared an automation scripts for an easier analysis of multiple files together. We have a script for sequential execution of all the runs for all the binary files in the given directory, which produces the results in \texttt{JSON} format. This file is afterwards proceed by a script, which plots the learning progress and final \textit{success rate}.
+We prepared automation scripts for an easier analysis of multiple files together. We have a script for sequential execution of all the runs for all the binary files in the given directory, which produces the results in \texttt{JSON} format. This file is afterwards proceeded by a script, which plots the learning progress and final \textit{success rate}.
 
 
 \chapter{Results}
@@ -1299,7 +1293,7 @@ Regarding the artificial neural network, we began cooperation with pattern recog
     \item[Neighbour] solution is a candidate solution created by a single change by the \textit{mutation} operation. For example, in EACirc it is a single addition of removal of a connector or change of the Boolean operator in the node.
     \item[Neighbourhood] is the solution space around the current individual.
     \item[Overfitting] is a situation of the learning process when the individual specialises too tightly to the learning data. Therefore, we change the learning datasets each \textit{epoch}, so the learning process leads to generalisation instead of the individual being too accurate.
-    \item[Pseudo random number generator (PRNG)] is a deterministic generator of pseudo-random numbers, wholly depending on its initial seed.
+    \item[Pseudo-random number generator (PRNG)] is a deterministic generator of pseudo-random numbers, wholly depending on its initial seed.
     \item[Pruning] is the process of removal unused connectors and nodes from the circuit. \textit{Pruning} is done by breath first search from the output with prior knowledge, what is the arity of functions in nodes.
     \item[Quantum random number generator (QRNG)] is an instance of a truly random number generators, where the physical process corresponds to a measurement of a quantum event, such as photon's polarisation.
     \item[Randomness testing toolkit (RTT)] is framework providing a unified interface to statistical batteries NIST STS, Dieharded and TestU01.
@@ -1311,7 +1305,7 @@ Regarding the artificial neural network, we began cooperation with pattern recog
     \item[Strict avalanche criterion (SAC)] says that a single bit flip in the input of the hash function should lead to flipping roughly half of the output bits. Even though it was stated for hash functions, it should apply to cryptographic ciphers as well.
     \item[Tabu list] is a set of visited individuals. Tabu search metaheuristic would not visit these solutions again to prevent repeating computation.
     \item[Test vector] is the least tested unit of data. It is usually a single ciphertext.
-    \item[Trully random number generator (TRNG)] (sometimes called hardware RNG) generates the random data from the physical process.
+    \item[Trully-random number generator (TRNG)] (sometimes called hardware RNG) generates the random data from the physical process.
     \item[Weight evaluator] is method for \textit{fitness} evaluation based on \textit{binary weight} of the circuits outputs. If the number of ones output by the circuit per tested dataset significantly differs from the number of ones from the reference dataset, then the tested data are non-random.
 \end{description}
 
